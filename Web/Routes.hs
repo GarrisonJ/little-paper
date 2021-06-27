@@ -8,3 +8,6 @@ instance AutoRoute StaticController
 instance AutoRoute PostsController
 instance AutoRoute SessionsController
 
+
+instance AutoRoute UsersController
+

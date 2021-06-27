@@ -23,3 +23,10 @@ INSERT INTO public.posts (id, body, created_on) VALUES ('a12f91ae-fc95-4ea9-8a9f
 ALTER TABLE public.posts ENABLE TRIGGER ALL;
 
 
+ALTER TABLE public.users DISABLE TRIGGER ALL;
+
+
+
+ALTER TABLE public.users ENABLE TRIGGER ALL;
+
+
