@@ -12,3 +12,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
+SET SESSION AUTHORIZATION DEFAULT;
+
+ALTER TABLE public.posts DISABLE TRIGGER ALL;
+
+INSERT INTO public.posts (id, body, created_on) VALUES ('5511da99-fcb6-4773-a557-f3287285718a', 'test', '1858-11-17');
+INSERT INTO public.posts (id, body, created_on) VALUES ('a12f91ae-fc95-4ea9-8a9f-064275633576', 'asdf', '1858-11-17');
+
+
+ALTER TABLE public.posts ENABLE TRIGGER ALL;
+
+

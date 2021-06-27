@@ -10,6 +10,10 @@ instance View WelcomeView where
                   <h1 style="margin-bottom: 2rem; font-size: 2rem; font-weight: 300; border-bottom: 1px solid white; padding-bottom: 0.25rem; border-color: hsla(196, 13%, 60%, 1)">
                       IHP
                   </h1>
+                  <a href={NewSessionAction}>Login</a>
+                  <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+
+
 
                   <h2 style="margin-top: 0; margin-bottom: 0rem; font-weight: 900; font-size: 3rem">
                       Hello from Ha
