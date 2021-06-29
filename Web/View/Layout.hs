@@ -62,7 +62,7 @@ sidebar = [hsx|
         </div>
         <ul class="list-unstyled components">
             <li>
-                <a href="/">Home</a>
+                <a href={PostsAction}>Home</a>
             </li>
             <li>
                 <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>

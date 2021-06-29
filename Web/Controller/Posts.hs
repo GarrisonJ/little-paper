@@ -37,7 +37,9 @@ instance Controller PostsController where
                     redirectTo EditPostAction { .. }
 
     action CreatePostAction = do
+        let userId = get #id currentUser
         let post = newRecord @Post
+                    |> set #userId userId
         post
             |> buildPost
             |> ifValid \case
