@@ -1,4 +1,4 @@
-module Web.View.Layout (defaultLayout, Html) where
+module Web.View.Layout (defaultLayout, welcomePageLayout, Html) where
 
 import IHP.ViewPrelude
 import IHP.Environment
@@ -20,11 +20,55 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     <title>App</title>
 </head>
 <body>
-    <div class="container mt-4">
-        {renderFlashMessages}
-        {inner}
+    <div class="wrapper">
+        {sidebar}
+        <div class="container mt-4">
+            {renderFlashMessages}
+            <div id="content">
+                {inner}
+            </div>
+        </div>
+
     </div>
 </body>
+|]
+
+welcomePageLayout :: Html -> Html
+welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
+<head>
+    {metaTags}
+
+    {stylesheets}
+    {scripts}
+
+    <title>App</title>
+</head>
+<body>
+        <div class="container mt-4">
+        {renderFlashMessages}
+            <div id="content">
+                {inner}
+            </div>
+        </div>
+</body>
+|]
+
+
+sidebar :: Html
+sidebar = [hsx|
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Little Paper</h3>
+        </div>
+        <ul class="list-unstyled components">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+            </li>
+        </ul>
+    </nav>
 |]
 
 stylesheets :: Html

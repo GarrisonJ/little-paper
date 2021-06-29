@@ -5,6 +5,7 @@ import Web.View.Users.Index
 import Web.View.Users.New
 import Web.View.Users.Edit
 import Web.View.Users.Show
+import Web.Controller.Static
 
 instance Controller UsersController where
     action UsersAction = do
@@ -48,7 +49,7 @@ instance Controller UsersController where
                         |> set #passwordHash hashed
                         |> createRecord
                     setSuccessMessage "You have registered successfully"
-                    redirectTo UsersAction
+                    redirectToPath "/"
 
     action DeleteUserAction { userId } = do
         user <- fetch userId

@@ -7,6 +7,8 @@ import Web.View.Posts.Edit
 import Web.View.Posts.Show
 
 instance Controller PostsController where
+    beforeAction = ensureIsUser
+
     action PostsAction = do
         posts <- query @Post |> fetch
         render IndexView { .. }
