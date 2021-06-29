@@ -23,10 +23,12 @@ instance Controller PostsController where
 
     action EditPostAction { postId } = do
         post <- fetch postId
+        accessDeniedUnless (get #userId post == currentUserId)
         render EditView { .. }
 
     action UpdatePostAction { postId } = do
         post <- fetch postId
+        accessDeniedUnless (get #userId post == currentUserId)
         post
             |> buildPost
             |> ifValid \case
@@ -51,6 +53,7 @@ instance Controller PostsController where
 
     action DeletePostAction { postId } = do
         post <- fetch postId
+        accessDeniedUnless (get #userId post == currentUserId)
         deleteRecord post
         setSuccessMessage "Post deleted"
         redirectTo PostsAction
