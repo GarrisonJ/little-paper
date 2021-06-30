@@ -9,6 +9,7 @@ import Web.Controller.Static
 
 instance Controller UsersController where
     action UsersAction = do
+        ensureIsUser
         users <- query @User |> fetch
         render IndexView { .. }
 
@@ -20,7 +21,10 @@ instance Controller UsersController where
         user <- fetch userId
         render ShowView { .. }
 
+    -- TODO We need multiple types of actions. Those for admins, and those for users
+    -- Users should only be able to edit themselves
     action EditUserAction { userId } = do
+        ensureIsUser
         user <- fetch userId
         render EditView { .. }
 
@@ -52,6 +56,7 @@ instance Controller UsersController where
                     redirectToPath "/"
 
     action DeleteUserAction { userId } = do
+        ensureIsUser
         user <- fetch userId
         deleteRecord user
         setSuccessMessage "User deleted"
