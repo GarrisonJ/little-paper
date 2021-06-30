@@ -1,4 +1,4 @@
-module Web.View.Layout (defaultLayout, welcomePageLayout, Html) where
+module Web.View.Layout (defaultLayout, welcomePageLayout, basicLayout, Html) where
 
 import IHP.ViewPrelude
 import IHP.Environment
@@ -30,6 +30,26 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
         </div>
 
     </div>
+</body>
+|]
+
+basicLayout :: Html -> Html
+basicLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
+<head>
+    {metaTags}
+
+    {stylesheets}
+    {scripts}
+
+    <title>App</title>
+</head>
+<body>
+        <div class="container mt-4">
+        {renderFlashMessages}
+            <div id="content">
+                {inner}
+            </div>
+        </div>
 </body>
 |]
 

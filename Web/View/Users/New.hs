@@ -4,6 +4,9 @@ import Web.View.Prelude
 data NewView = NewView { user :: User }
 
 instance View NewView where
+    beforeRender view = do
+        setLayout basicLayout
+
     html NewView { .. } = [hsx|
         <nav>
             <ol class="breadcrumb">
