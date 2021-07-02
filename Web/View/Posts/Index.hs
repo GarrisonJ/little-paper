@@ -1,7 +1,7 @@
 module Web.View.Posts.Index where
 import Web.View.Prelude
 
-data IndexView = IndexView { posts :: [Post] }
+data IndexView = IndexView { posts :: [Include "userId" Post] }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
@@ -27,10 +27,13 @@ instance View IndexView where
     |]
 
 
-renderPost :: Post -> Html
+renderPost :: Include "userId" Post -> Html
 renderPost post = [hsx|
     <tr>
-        <td>{post}</td>
+        <td>{get #body post}</td>
+        <td>{get #createdOn post}</td>
+        <td>{post |> get #userId |> get #email}</td>
+
         <td><a href={ShowPostAction (get #id post)}>Show</a></td>
         <td><a href={EditPostAction (get #id post)} class="text-muted">Edit</a></td>
         <td><a href={DeletePostAction (get #id post)} class="js-delete text-muted">Delete</a></td>

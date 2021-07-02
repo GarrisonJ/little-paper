@@ -11,6 +11,8 @@ instance Controller PostsController where
 
     action PostsAction = do
         posts <- query @Post |> fetch
+            >>= collectionFetchRelated #userId
+
         render IndexView { .. }
 
     action NewPostAction = do
