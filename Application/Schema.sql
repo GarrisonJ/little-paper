@@ -11,7 +11,8 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     locked_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     failed_login_attempts INT DEFAULT 0 NOT NULL,
-    timezone TEXT NOT NULL
+    timezone TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE
 );
 CREATE INDEX posts_user_id_index ON posts (user_id);
 ALTER TABLE posts ADD CONSTRAINT posts_ref_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION;

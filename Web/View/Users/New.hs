@@ -22,6 +22,7 @@ renderForm :: User -> Html
 renderForm user = formFor user [hsx|
     {(textField #email)}
     {(textField #passwordHash)}
+    {(textField #username)}
     {(textField #timezone)}
     {submitButton}
 |]

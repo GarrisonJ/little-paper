@@ -54,9 +54,10 @@ instance Controller UsersController where
     action CreateUserAction = do
         let user = newRecord @User
         user
-            |> fill @["email", "passwordHash"]
+            |> fill @["email", "passwordHash", "username"]
             |> validateField #email isEmail
             |> validateField #passwordHash nonEmpty
+            |> validateField #username nonEmpty
             |> ifValid \case
                 Left user -> render NewView { .. }
                 Right user -> do
@@ -77,4 +78,4 @@ instance Controller UsersController where
         redirectTo UsersAction
 
 buildUser user = user
-    |> fill @["email","passwordHash","failedLoginAttempts","timezone"]
+    |> fill @["email","passwordHash","failedLoginAttempts","timezone", "username"]
