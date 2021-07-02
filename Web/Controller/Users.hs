@@ -26,6 +26,7 @@ instance Controller UsersController where
     -- This should have no restrictions
     action ShowUserAction { userId } = do
         user <- fetch userId
+            >>= fetchRelated #posts
         render ShowView { .. }
 
     -- Form to edit user
