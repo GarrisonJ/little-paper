@@ -85,6 +85,12 @@ sidebar = [hsx|
                 <a href={PostsAction}>Home</a>
             </li>
             <li>
+                <a href={ShowCurrentUserAction}>Profile</a>
+            </li>
+            <li>
+                <a href={EditCurrentUserAction}>Settings</a>
+            </li>
+            <li>
                 <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
             </li>
         </ul>

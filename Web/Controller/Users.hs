@@ -6,6 +6,7 @@ import Web.View.Users.New
 import Web.View.Users.Edit
 import Web.View.Users.Show
 import Web.Controller.Static
+import Web.View.Users.TimezoneSelectorHelper (allTimezones, TimezoneText)
 
 instance Controller UsersController where
 
@@ -29,11 +30,20 @@ instance Controller UsersController where
             >>= fetchRelated #posts
         render ShowView { .. }
 
+    action ShowCurrentUserAction = do
+        user <- fetch currentUserId
+            >>= fetchRelated #posts
+        render ShowView { .. }
+
     -- Form to edit user
     -- Users should only be able to edit themselves
     action EditUserAction { userId } = do
         user <- fetch userId
         accessDeniedUnless (get #id user == currentUserId)
+        render EditView { .. }
+
+    action EditCurrentUserAction = do
+        user <- fetch currentUserId
         render EditView { .. }
 
     -- Update a profile
@@ -55,10 +65,12 @@ instance Controller UsersController where
     action CreateUserAction = do
         let user = newRecord @User
         user
-            |> fill @["email", "passwordHash", "username"]
+            |> fill @["email", "passwordHash", "timezone", "username"]
             |> validateField #email isEmail
             |> validateField #passwordHash nonEmpty
             |> validateField #username nonEmpty
+            -- TODO: This may need a better error message, but this should never happen.
+            |> validateField #timezone (isInList allTimezones)
             |> ifValid \case
                 Left user -> render NewView { .. }
                 Right user -> do

@@ -35,8 +35,10 @@ data UsersController
     = UsersAction
     | NewUserAction
     | ShowUserAction { userId :: !(Id User) }
+    | ShowCurrentUserAction
     | CreateUserAction
     | EditUserAction { userId :: !(Id User) }
+    | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
     | DeleteUserAction { userId :: !(Id User) }
     deriving (Eq, Show, Data)

@@ -1,5 +1,6 @@
 module Web.View.Users.Edit where
 import Web.View.Prelude
+import Web.View.Users.TimezoneSelectorHelper (allTimezones, TimezoneText)
 
 data EditView = EditView { user :: User }
 
@@ -18,8 +19,6 @@ instance View EditView where
 renderForm :: User -> Html
 renderForm user = formFor user [hsx|
     {(textField #email)}
-    {(textField #passwordHash)}
-    {(textField #failedLoginAttempts)}
-    {(textField #timezone)}
+    {(selectField #timezone allTimezones) { fieldLabel = "Prefered Timezone"}}
     {submitButton}
 |]
