@@ -3,7 +3,8 @@ CREATE TABLE posts (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
     body TEXT NOT NULL,
     created_on DATE NOT NULL,
-    user_id UUID NOT NULL
+    user_id UUID NOT NULL,
+    UNIQUE(user_id, created_on)
 );
 CREATE TABLE users (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,

@@ -5,6 +5,10 @@ import Web.View.Posts.Index
 import Web.View.Posts.New
 import Web.View.Posts.Edit
 import Web.View.Posts.Show
+import Data.Time.Zones.All
+import Data.Time
+import Data.Time.Zones (utcToLocalTimeTZ, utcToLocalTimeTZ ,utcTZ)
+import Data.Text.Encoding (encodeUtf8)
 
 instance Controller PostsController where
     beforeAction = ensureIsUser
@@ -16,8 +20,15 @@ instance Controller PostsController where
         render IndexView { .. }
 
     action NewPostAction = do
-        let post = newRecord
-        render NewView { .. }
+        day <- getUserDay $ get #timezone currentUser
+        dailyPost <- getDailyPost day
+        case dailyPost of
+            Just _ -> do
+                setErrorMessage "You already created a post today"
+                redirectTo PostsAction
+            Nothing -> do
+                let post = newRecord
+                render NewView { .. }
 
     action ShowPostAction { postId } = do
         post <- fetch postId
@@ -41,17 +52,23 @@ instance Controller PostsController where
                     redirectTo EditPostAction { .. }
 
     action CreatePostAction = do
-        let userId = get #id currentUser
-        let post = newRecord @Post
-                    |> set #userId userId
-        post
-            |> buildPost
-            |> ifValid \case
-                Left post -> render NewView { .. } 
-                Right post -> do
-                    post <- post |> createRecord
-                    setSuccessMessage "Post created"
-                    redirectTo PostsAction
+        day <- getUserDay $ get #timezone currentUser
+        dailyPost <- getDailyPost day
+        case dailyPost of
+            Just _ -> do
+                setErrorMessage "You already created a post today"
+                redirectTo PostsAction
+            Nothing -> do
+                newRecord @Post
+                    |> set #userId currentUserId
+                    |> set #createdOn day
+                    |> buildPost
+                    |> ifValid \case
+                        Left post -> render NewView { .. }
+                        Right post -> do
+                            post <- post |> createRecord
+                            setSuccessMessage "Post created"
+                            redirectTo PostsAction
 
     action DeletePostAction { postId } = do
         post <- fetch postId
@@ -61,4 +78,15 @@ instance Controller PostsController where
         redirectTo PostsAction
 
 buildPost post = post
-    |> fill @["body","createdOn"]
+    |> fill @'["body"]
+
+getUserDay :: Text -> IO (Day)
+getUserDay preferedTimezone = do
+    let preferedTimezoneParsed = fromMaybe utcTZ $ tzByName $ encodeUtf8 preferedTimezone
+    currentLocalTime <- (utcToLocalTimeTZ preferedTimezoneParsed) <$> getCurrentTime
+    return $ localDay currentLocalTime
+
+getDailyPost :: (?modelContext :: ModelContext) => Day -> IO (Maybe Post)
+getDailyPost day = query @Post
+            |> filterWhere (#createdOn, day)
+            |> fetchOneOrNothing

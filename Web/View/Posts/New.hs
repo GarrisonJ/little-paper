@@ -1,7 +1,9 @@
 module Web.View.Posts.New where
 import Web.View.Prelude
 
-data NewView = NewView { post :: Post }
+data NewView = NewView { post :: Post,
+                         day :: Day,
+                         dailyPost :: Maybe Post }
 
 instance View NewView where
     html NewView { .. } = [hsx|
@@ -11,13 +13,12 @@ instance View NewView where
                 <li class="breadcrumb-item active">New Post</li>
             </ol>
         </nav>
-        <h1>New Post</h1>
+        <h3>{day}</h3>
         {renderForm post}
     |]
 
 renderForm :: Post -> Html
 renderForm post = formFor post [hsx|
-    {(textField #body)}
-    {(textField #createdOn)}
+    {(textField #body) { disableLabel = True }}
     {submitButton}
 |]
