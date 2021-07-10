@@ -7,7 +7,6 @@ import IHP.LoginSupport.Types
 
 data WebApplication = WebApplication deriving (Eq, Show)
 
-
 data StaticController = WelcomeAction deriving (Eq, Show, Data)
 
 data PostsController
@@ -31,14 +30,17 @@ data SessionsController
     | CreateSessionAction
     | DeleteSessionAction
     deriving (Eq, Show, Data)
+
 data UsersController
     = UsersAction
     | NewUserAction
-    | ShowUserAction { userId :: !(Id User) }
-    | ShowCurrentUserAction
     | CreateUserAction
     | EditUserAction { userId :: !(Id User) }
     | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
     | DeleteUserAction { userId :: !(Id User) }
+    deriving (Eq, Show, Data)
+
+data ProfilesController
+    = ShowProfileAction { username :: !(Text) }
     deriving (Eq, Show, Data)

@@ -23,18 +23,6 @@ instance Controller UsersController where
         let user = newRecord
         render NewView { .. }
 
-    -- Show a users profile
-    -- This should have no restrictions
-    action ShowUserAction { userId } = do
-        user <- fetch userId
-            >>= fetchRelated #posts
-        render ShowView { .. }
-
-    action ShowCurrentUserAction = do
-        user <- fetch currentUserId
-            >>= fetchRelated #posts
-        render ShowView { .. }
-
     -- Form to edit user
     -- Users should only be able to edit themselves
     action EditUserAction { userId } = do
@@ -71,7 +59,9 @@ instance Controller UsersController where
             |> validateField #username nonEmpty
             -- TODO: This may need a better error message, but this should never happen.
             |> validateField #timezone (isInList allTimezones)
-            |> ifValid \case
+            |> validateIsUnique #email
+            >>= validateIsUnique #username
+            >>= ifValid \case
                 Left user -> render NewView { .. }
                 Right user -> do
                     hashed <- hashPassword (get #passwordHash user)

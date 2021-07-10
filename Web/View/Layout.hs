@@ -85,7 +85,7 @@ sidebar = [hsx|
                 <a href={PostsAction}>Home</a>
             </li>
             <li>
-                <a href={ShowCurrentUserAction}>Profile</a>
+                <a href={ShowProfileAction (get #username currentUser)}>Profile</a>
             </li>
             <li>
                 <a href={EditCurrentUserAction}>Settings</a>

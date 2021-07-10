@@ -32,9 +32,10 @@ renderPost post = [hsx|
     <tr>
         <td>{get #body post}</td>
         <td>{get #createdOn post}</td>
-        <td><a href={ShowUserAction (post |> get #userId |> get #id) }>{post |> get #userId |> get #username}</a></td>
+        <td><a href={ShowProfileAction username}>{username}</a></td>
         <td><a href={ShowPostAction (get #id post)}>Show</a></td>
         <td><a href={EditPostAction (get #id post)} class="text-muted">Edit</a></td>
         <td><a href={DeletePostAction (get #id post)} class="js-delete text-muted">Delete</a></td>
     </tr>
 |]
+    where username = post |> get #userId |> get #username
