@@ -39,6 +39,7 @@ data UsersController
     | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
     | DeleteUserAction { userId :: !(Id User) }
+    | CreateFollowAction
     deriving (Eq, Show, Data)
 
 data ProfilesController

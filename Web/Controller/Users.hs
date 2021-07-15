@@ -80,5 +80,30 @@ instance Controller UsersController where
         setSuccessMessage "User deleted"
         redirectTo UsersAction
 
+    action CreateFollowAction = do
+        let userId = param @(Id User) "id"
+
+        follow <- query @UserFollow
+            |> filterWhere (#followerId, currentUserId)
+            |> filterWhere (#userId, userId)
+            |> fetchOneOrNothing
+
+        case follow of
+            Just f -> do
+                deleteRecord f
+                setSuccessMessage "Unfollowed"
+            Nothing -> newRecord @UserFollow
+                |> set #followerId currentUserId
+                |> set #userId userId
+                |> ifValid \case
+                    Left _ -> setSuccessMessage "Something happened"
+                    Right follow -> do
+                        follow |> createRecord
+                        setSuccessMessage "Followed"
+
+        user <- fetch userId
+        let username = get #username user
+        redirectToPath $ "/user/" <> username
+
 buildUser user = user
     |> fill @["email","passwordHash","failedLoginAttempts","timezone", "username"]

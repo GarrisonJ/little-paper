@@ -84,3 +84,7 @@ ul ul a {
     padding-left: 30px !important;
     background: var(--alabaster);
 }
+
+.follow-button {
+    display: inline-table;
+}
