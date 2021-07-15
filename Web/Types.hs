@@ -11,6 +11,7 @@ data StaticController = WelcomeAction deriving (Eq, Show, Data)
 
 data PostsController
     = PostsAction
+    | FollowedPostAction
     | NewPostAction
     | ShowPostAction { postId :: !(Id Post) }
     | CreatePostAction

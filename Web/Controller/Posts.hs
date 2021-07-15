@@ -19,9 +19,20 @@ instance Controller PostsController where
 
         render IndexView { .. }
 
+
+    action FollowedPostAction = do
+        posts <- query @Post
+                |> innerJoin @UserFollow (#userId, #userId)
+                |> filterWhereJoinedTable @UserFollow (#followerId, currentUserId)
+                |> fetch
+            >>= collectionFetchRelated #userId
+
+
+        render IndexView { .. }
+
     action NewPostAction = do
         day <- getUserDay $ get #timezone currentUser
-        dailyPost <- getDailyPost day
+        dailyPost <- getDailyPost currentUserId day
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
@@ -53,7 +64,7 @@ instance Controller PostsController where
 
     action CreatePostAction = do
         day <- getUserDay $ get #timezone currentUser
-        dailyPost <- getDailyPost day
+        dailyPost <- getDailyPost currentUserId day
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
@@ -86,7 +97,8 @@ getUserDay preferedTimezone = do
     currentLocalTime <- (utcToLocalTimeTZ preferedTimezoneParsed) <$> getCurrentTime
     return $ localDay currentLocalTime
 
-getDailyPost :: (?modelContext :: ModelContext) => Day -> IO (Maybe Post)
-getDailyPost day = query @Post
+getDailyPost :: (?modelContext :: ModelContext) => Id User -> Day -> IO (Maybe Post)
+getDailyPost userId day = query @Post
+            |> filterWhere (#userId, userId)
             |> filterWhere (#createdOn, day)
             |> fetchOneOrNothing
