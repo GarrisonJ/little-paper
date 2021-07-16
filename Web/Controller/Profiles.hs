@@ -10,7 +10,7 @@ instance Controller ProfilesController where
 
         follow <- query @UserFollow
                         |> filterWhere (#followerId, currentUserId)
-                        |> filterWhere (#userId, get #id user)
+                        |> filterWhere (#followedId, get #id user)
                         |> fetchOneOrNothing
 
         let followed = case follow of

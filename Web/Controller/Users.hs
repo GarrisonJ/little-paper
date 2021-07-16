@@ -68,8 +68,15 @@ instance Controller UsersController where
                     user <- user
                         |> set #passwordHash hashed
                         |> createRecord
+                    setUserToFollowSelf
                     setSuccessMessage "You have registered successfully"
                     redirectToPath "/"
+        -- Every user follows themself, this makes things eaiser later
+        where
+            setUserToFollowSelf = newRecord @UserFollow
+                |> set #followerId currentUserId
+                |> set #followedId currentUserId
+                |> createRecord
 
     -- Delete a user
     -- Only a user can delete themselves
@@ -85,7 +92,7 @@ instance Controller UsersController where
 
         follow <- query @UserFollow
             |> filterWhere (#followerId, currentUserId)
-            |> filterWhere (#userId, userId)
+            |> filterWhere (#followedId, userId)
             |> fetchOneOrNothing
 
         case follow of
@@ -94,7 +101,7 @@ instance Controller UsersController where
                 setSuccessMessage "Unfollowed"
             Nothing -> newRecord @UserFollow
                 |> set #followerId currentUserId
-                |> set #userId userId
+                |> set #followedId userId
                 |> ifValid \case
                     Left _ -> setSuccessMessage "Something happened"
                     Right follow -> do

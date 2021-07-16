@@ -19,14 +19,14 @@ instance Controller PostsController where
 
         render IndexView { .. }
 
-
     action FollowedPostAction = do
+        -- Every user follows themself
         posts <- query @Post
-                |> innerJoin @UserFollow (#userId, #userId)
+                |> innerJoin @UserFollow (#userId, #followedId)
                 |> filterWhereJoinedTable @UserFollow (#followerId, currentUserId)
+                |> orderByDesc #createdOn
                 |> fetch
             >>= collectionFetchRelated #userId
-
 
         render IndexView { .. }
 
@@ -43,6 +43,8 @@ instance Controller PostsController where
 
     action ShowPostAction { postId } = do
         post <- fetch postId
+            >>= fetchRelated #userId
+
         render ShowView { .. }
 
     action EditPostAction { postId } = do
