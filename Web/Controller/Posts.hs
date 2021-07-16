@@ -74,7 +74,8 @@ instance Controller PostsController where
             Nothing -> do
                 newRecord @Post
                     |> set #userId currentUserId
-                    |> set #createdOn day
+                    |> set #createdOnDay day
+                    |> set #userTimezoneSnapshot (get #timezone currentUser)
                     |> buildPost
                     |> ifValid \case
                         Left post -> render NewView { .. }
@@ -102,5 +103,5 @@ getUserDay preferedTimezone = do
 getDailyPost :: (?modelContext :: ModelContext) => Id User -> Day -> IO (Maybe Post)
 getDailyPost userId day = query @Post
             |> filterWhere (#userId, userId)
-            |> filterWhere (#createdOn, day)
+            |> filterWhere (#createdOnDay, day)
             |> fetchOneOrNothing

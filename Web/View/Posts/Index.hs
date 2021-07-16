@@ -31,7 +31,7 @@ renderPost :: Include "userId" Post -> Html
 renderPost post = [hsx|
     <tr>
         <td>{get #body post}</td>
-        <td>{get #createdOn post}</td>
+        <td>{get #createdOnDay post}</td>
         <td><a href={ShowProfileAction username}>{username}</a></td>
         <td><a href={ShowPostAction (get #id post)}>Show</a></td>
         <td><a href={EditPostAction (get #id post)} class="text-muted">Edit</a></td>

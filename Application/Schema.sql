@@ -2,8 +2,10 @@
 CREATE TABLE posts (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
     body TEXT NOT NULL,
-    created_on DATE NOT NULL,
+    created_on_day DATE NOT NULL,
     user_id UUID NOT NULL,
+    created_on TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    user_timezone_snapshot TEXT NOT NULL,
     UNIQUE(user_id, created_on)
 );
 CREATE TABLE users (
