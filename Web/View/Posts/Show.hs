@@ -1,7 +1,7 @@
 module Web.View.Posts.Show where
 import Web.View.Prelude
 
-data ShowView = ShowView { post :: Post }
+data ShowView = ShowView { post :: Include "userId" Post }
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
@@ -11,6 +11,7 @@ instance View ShowView where
                 <li class="breadcrumb-item active">Show Post</li>
             </ol>
         </nav>
-        <h1>Show Post</h1>
-        <p>{post}</p>
+        <h2>{get #createdOn post}</h2>
+        <p>{get #body post}</p>
+        <p>{post |> get #userId |> get #username}</p>
     |]
