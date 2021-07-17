@@ -9,6 +9,7 @@ import Data.Time.Zones.All
 import Data.Time
 import Data.Time.Zones (utcToLocalTimeTZ, utcToLocalTimeTZ ,utcTZ)
 import Data.Text.Encoding (encodeUtf8)
+import Data.Text (unpack)
 
 instance Controller PostsController where
     beforeAction = ensureIsUser
@@ -42,7 +43,7 @@ instance Controller PostsController where
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
-                redirectTo PostsAction
+                redirectTo FollowedPostsAction
             Nothing -> do
                 let post = newRecord
                 render NewView { .. }
@@ -52,6 +53,30 @@ instance Controller PostsController where
             >>= fetchRelated #userId
 
         render ShowView { .. }
+
+    action ShowPostForDayAction { username, day } = do
+        user <- (query @User |> filterWhere (#username, username) |> fetchOneOrNothing)
+        case (user, parseDay day) of
+            (Just user, Just dayParsed) -> do
+                post <- query @Post
+                    |> filterWhere (#userId, get #id user)
+                    |> filterWhere (#createdOnDay, dayParsed)
+                    |> fetchOneOrNothing
+                    -- TODO: This statement should be simplifed some how
+                    >>= \case
+                        Just post -> fmap pure $ fetchRelated #userId post
+                        Nothing -> pure Nothing
+
+                case post of
+                    Nothing -> do
+                        setErrorMessage "Couldn't find that post"
+                        redirectTo FollowedPostsAction
+                    Just post -> render ShowView { .. }
+            _ -> do
+                setErrorMessage "Couldn't find that post"
+                redirectTo FollowedPostsAction
+        where
+            parseDay = parseTimeM False defaultTimeLocale "%-Y-%-m-%d" . Data.Text.unpack
 
     action EditPostAction { postId } = do
         post <- fetch postId

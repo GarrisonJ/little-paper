@@ -14,6 +14,7 @@ data PostsController
     | FollowedPostsAction
     | NewPostAction
     | ShowPostAction { postId :: !(Id Post) }
+    | ShowPostForDayAction { username :: !(Text), day :: !(Text) }
     | CreatePostAction
     | EditPostAction { postId :: !(Id Post) }
     | UpdatePostAction { postId :: !(Id Post) }
