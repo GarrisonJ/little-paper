@@ -19,7 +19,7 @@ instance Controller PostsController where
 
         render IndexView { .. }
 
-    action FollowedPostAction = do
+    action FollowedPostsAction = do
         -- Every user follows themself
         posts <- query @Post
                 |> innerJoin @UserFollow (#userId, #followedId)
@@ -70,7 +70,7 @@ instance Controller PostsController where
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
-                redirectTo PostsAction
+                redirectTo FollowedPostsAction
             Nothing -> do
                 newRecord @Post
                     |> set #userId currentUserId
@@ -82,14 +82,14 @@ instance Controller PostsController where
                         Right post -> do
                             post <- post |> createRecord
                             setSuccessMessage "Post created"
-                            redirectTo PostsAction
+                            redirectTo FollowedPostsAction
 
     action DeletePostAction { postId } = do
         post <- fetch postId
         accessDeniedUnless (get #userId post == currentUserId)
         deleteRecord post
         setSuccessMessage "Post deleted"
-        redirectTo PostsAction
+        redirectTo FollowedPostsAction
 
 buildPost post = post
     |> fill @'["body"]

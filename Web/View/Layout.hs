@@ -84,10 +84,10 @@ sidebar :: Html
 sidebar = [hsx|
     <div id="sidebar-wrapper" class="border-right border-dark">
         <div class="sidebar-heading">
-            <a href={PostsAction}>Daily</a>
+            <a href={FollowedPostsAction}>Daily</a>
         </div>
         <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={PostsAction}>Home</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={FollowedPostsAction}>Home</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={ShowProfileAction (get #username currentUser)}>Profile</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={EditCurrentUserAction}>Settings</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3 js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
@@ -111,7 +111,7 @@ topnav = [hsx|
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-            <a class="nav-link" href={PostsAction}>Home</a>
+            <a class="nav-link" href={FollowedPostsAction}>Home</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
