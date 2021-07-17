@@ -48,6 +48,6 @@ renderPost :: Post -> Html
 renderPost post = [hsx|
     <tr>
         <td>{get #body post}</td>
-        <td>{get #createdOn post}</td>
+        <td>{get #createdOnDay post}</td>
     </tr>
 |]

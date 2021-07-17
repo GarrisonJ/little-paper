@@ -27,7 +27,11 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
             <div class="container-fluid">
                 {renderFlashMessages}
                 <div id="content">
-                    {inner}
+                    <div class="row justify-content-center">
+                        <div class="col-11" style="margin-top: 10px">
+                            {inner}
+                         </div>
+                    </div>
                 </div>
             </div>
         </div>
