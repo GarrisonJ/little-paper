@@ -82,9 +82,9 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 
 sidebar :: Html
 sidebar = [hsx|
-    <div class="border-end bg-white" id="sidebar-wrapper">
-        <div class="sidebar-heading border-bottom bg-light">
-            Daily
+    <div id="sidebar-wrapper" class="border-right border-dark">
+        <div class="sidebar-heading">
+            <a href={PostsAction}>Daily</a>
         </div>
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={PostsAction}>Home</a>
@@ -97,7 +97,7 @@ sidebar = [hsx|
 
 topnav:: Html
 topnav = [hsx|
-    <nav class="navbar navbar-expand-lg navbar-light bg-light d-block d-md-none">
+    <nav class="navbar navbar-expand-lg navbar-light d-block d-md-none">
     <a class="navbar-brand" href="#">Daily</a>
     <button class="navbar-toggler"
             type="button"

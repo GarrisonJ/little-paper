@@ -1,9 +1,8 @@
 :root {
-
---alabaster: #e9e9e1ff;
---manatee: #9898a0ff;
---steel-blue: #527da4ff;
---dark-purple: #2f131eff;
+    --alabaster: #e9e9e1ff;
+    --manatee: #9898a0ff;
+    --steel-blue: #527da4ff;
+    --dark-purple: #2f131eff;
 }
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
@@ -11,7 +10,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fafafa;
+    background: var(--alabaster);
 }
 
 p {
@@ -30,4 +29,23 @@ a, a:hover, a:focus {
 
 .follow-button {
     display: inline-table;
+}
+
+/************ Sidebar ************/
+
+#sidebar-wrapper {
+    background: var(--alabaster);
+}
+
+.list-group-item-light {
+    background: var(--alabaster);
+}
+
+.list-group-item {
+    border-color: var(--alabaster);
+}
+
+.list-group-item-light.list-group-item-action:hover, .list-group-item-light.list-group-item-action:focus {
+  color: var(--dark-purple);
+  background-color: var(--steel-blue);
 }

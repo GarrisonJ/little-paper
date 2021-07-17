@@ -14,6 +14,8 @@ instance View IndexView where
                         <th></th>
                         <th></th>
                         <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>{forEach posts renderPost}</tbody>
