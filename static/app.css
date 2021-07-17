@@ -1,18 +1,3 @@
-.wrapper {
-    display: flex;
-    align-items: stretch;
-}
-
-#sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    min-height: 100vh;
-}
-
-#sidebar.active {
-    margin-left: -250px;
-}
-
 :root {
 
 --alabaster: #e9e9e1ff;
@@ -41,48 +26,6 @@ a, a:hover, a:focus {
     color: inherit;
     text-decoration: none;
     transition: all 0.3s;
-}
-
-#sidebar {
-    background: var(--alabaster);
-    color: var(--dark-purple);
-    transition: all 0.3s;
-}
-
-#sidebar .sidebar-header {
-    padding: 20px;
-    background: var(--alabaster);
-}
-
-#sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid #47748b;
-}
-
-#sidebar ul p {
-    color: var(--dark-purple);
-    padding: 10px;
-}
-
-#sidebar ul li a {
-    padding: 10px;
-    font-size: 1.1em;
-    display: block;
-}
-#sidebar ul li a:hover {
-    color: #7386D5;
-    background: var(--alabaster);
-    color: var(--dark-purple);
-}
-
-#sidebar ul li.active > a, a[aria-expanded="true"] {
-    background: var(--alabaster);
-    color: var(--dark-purple);
-}
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: var(--alabaster);
 }
 
 .follow-button {

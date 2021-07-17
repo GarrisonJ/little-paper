@@ -20,12 +20,15 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     <title>App</title>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="d-flex" id="wrapper">
         {sidebar}
-        <div class="container mt-4">
-            {renderFlashMessages}
-            <div id="content">
-                {inner}
+        <div id="page-content-wrapper">
+            {topnav}
+            <div class="container-fluid">
+                {renderFlashMessages}
+                <div id="content">
+                    {inner}
+                </div>
             </div>
         </div>
 
@@ -73,27 +76,50 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 </body>
 |]
 
-
 sidebar :: Html
 sidebar = [hsx|
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3>Little Paper</h3>
+    <div class="border-end bg-white" id="sidebar-wrapper">
+        <div class="sidebar-heading border-bottom bg-light">
+            Daily
         </div>
-        <ul class="list-unstyled components">
-            <li>
-                <a href={PostsAction}>Home</a>
-            </li>
-            <li>
-                <a href={ShowProfileAction (get #username currentUser)}>Profile</a>
-            </li>
-            <li>
-                <a href={EditCurrentUserAction}>Settings</a>
-            </li>
-            <li>
-                <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
-            </li>
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={PostsAction}>Home</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={EditCurrentUserAction}>Settings</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3 js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+        </div>
+    </div>
+|]
+
+topnav:: Html
+topnav = [hsx|
+    <nav class="navbar navbar-expand-lg navbar-light bg-light d-block d-md-none">
+    <a class="navbar-brand" href="#">Daily</a>
+    <button class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link" href={PostsAction}>Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+        </li>
         </ul>
+    </div>
     </nav>
 |]
 
@@ -101,6 +127,7 @@ stylesheets :: Html
 stylesheets = [hsx|
         <link rel="stylesheet" href="/vendor/bootstrap.min.css"/>
         <link rel="stylesheet" href="/vendor/flatpickr.min.css"/>
+        <link rel="stylesheet" href="/sidebar.css"/>
         <link rel="stylesheet" href="/app.css"/>
     |]
 
@@ -118,6 +145,7 @@ scripts = [hsx|
         <script src="/vendor/turbolinksMorphdom.js"></script>
         <script src="/helpers.js"></script>
         <script src="/ihp-auto-refresh.js"></script>
+        <script src="/sidebar.js"></script>
     |]
 
 metaTags :: Html
