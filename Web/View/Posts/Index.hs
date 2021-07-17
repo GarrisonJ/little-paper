@@ -1,11 +1,12 @@
 module Web.View.Posts.Index where
 import Web.View.Prelude
 
-data IndexView = IndexView { posts :: [Include "userId" Post] }
+data IndexView = IndexView { posts :: [Include "userId" Post], todaysPost :: Maybe Post }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
-        <h1>Index <a href={pathTo NewPostAction} class="btn btn-primary ml-4">+ New</a></h1>
+        {renderPostInput}
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -22,6 +23,26 @@ instance View IndexView where
             </table>
         </div>
     |]
+        where
+            renderPostInput = case todaysPost of
+                    Just p -> [hsx|<h3>You posted something today! Nice Job!</h3>|]
+                    Nothing -> [hsx|
+                                <div>You have't posted today!</div>
+                                {renderPostForm (newRecord :: Post)}
+                            |]
+
+
+renderPostForm :: Post -> Html
+renderPostForm post = formForWithOptions post postFormOptions [hsx|
+    {(textareaField #body) { disableLabel = True }}
+    {submitButton { label= "Submit"} }
+|]
+
+postFormOptions :: FormContext (Post) -> FormContext (Post)
+postFormOptions formContext =
+    formContext
+    |> set #formAction (pathTo CreatePostAction)
+
 
 
 renderPost :: Include "userId" Post -> Html

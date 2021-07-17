@@ -17,6 +17,9 @@ instance Controller PostsController where
         posts <- query @Post |> fetch
             >>= collectionFetchRelated #userId
 
+        day <- getUserDay $ get #timezone currentUser
+        todaysPost <- getDailyPost currentUserId day
+
         render IndexView { .. }
 
     action FollowedPostsAction = do
@@ -27,6 +30,9 @@ instance Controller PostsController where
                 |> orderByDesc #createdOn
                 |> fetch
             >>= collectionFetchRelated #userId
+
+        day <- getUserDay $ get #timezone currentUser
+        todaysPost <- getDailyPost currentUserId day
 
         render IndexView { .. }
 
