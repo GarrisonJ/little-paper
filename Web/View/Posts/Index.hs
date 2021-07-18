@@ -1,5 +1,6 @@
 module Web.View.Posts.Index where
 import Web.View.Prelude
+import Web.View.Posts.Show
 
 data IndexView = IndexView { posts :: [Include "userId" Post], todaysPost :: Maybe Post }
 
@@ -12,14 +13,9 @@ instance View IndexView where
                 <thead>
                     <tr>
                         <th>Post</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
                     </tr>
                 </thead>
-                <tbody>{forEach posts renderPost}</tbody>
+                <tbody>{forEach posts (\p ->Web.View.Posts.Show.renderPost (get #userId p) p )}</tbody>
             </table>
         </div>
     |]
@@ -42,18 +38,3 @@ postFormOptions :: FormContext (Post) -> FormContext (Post)
 postFormOptions formContext =
     formContext
     |> set #formAction (pathTo CreatePostAction)
-
-
-
-renderPost :: Include "userId" Post -> Html
-renderPost post = [hsx|
-    <tr>
-        <td>{get #body post}</td>
-        <td>{get #createdOnDay post}</td>
-        <td><a href={ShowProfileAction username}>{username}</a></td>
-        <td><a href={ShowPostAction (get #id post)}>Show</a></td>
-        <td><a href={EditPostAction (get #id post)} class="text-muted">Edit</a></td>
-        <td><a href={DeletePostAction (get #id post)} class="js-delete text-muted">Delete</a></td>
-    </tr>
-|]
-    where username = post |> get #userId |> get #username

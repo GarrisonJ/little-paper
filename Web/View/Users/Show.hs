@@ -1,5 +1,6 @@
 module Web.View.Users.Show where
 import Web.View.Prelude
+import qualified Web.View.Posts.Show (renderPost)
 
 data ShowView = ShowView { user :: Include "posts" User, followed :: Bool }
 
@@ -22,7 +23,7 @@ instance View ShowView where
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>{forEach (user |> get #posts) renderPost}</tbody>
+                <tbody>{forEach (user |> get #posts) (Web.View.Posts.Show.renderPost user)}</tbody>
             </table>
         </div>
     |]

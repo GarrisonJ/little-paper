@@ -5,13 +5,36 @@ data ShowView = ShowView { post :: Include "userId" Post }
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href={PostsAction}>Posts</a></li>
-                <li class="breadcrumb-item active">Show Post</li>
-            </ol>
-        </nav>
-        <h2>{get #createdOn post}</h2>
-        <p>{get #body post}</p>
-        <p>{post |> get #userId |> get #username}</p>
+        {renderPost (post |> get #userId) post}
+
     |]
+
+renderPost user post = [hsx|
+    <tr>
+        <td>
+            <div class="card post-card">
+                <div class="card-body">
+                    <div class="dropdown float-right">
+                        <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {kebabHorizontal}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href={EditPostAction (get #id post)}>Edit</a>
+                            <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
+                        </div>
+                    </div>
+                    <h5 class="card-title"><a href={ShowProfileAction username}>{username}</a></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <a href={ShowPostAction (get #id post)}>
+                            {get #createdOnDay post}
+                        </a>
+                    </h6>
+                    <p class="card-text" style="white-space: pre-wrap;">{get #body post}</p>
+                </div>
+            </div>
+        </td>
+    </tr>
+|]
+    where
+        username = user |> get #username
+        kebabHorizontal = [hsx|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>|]
