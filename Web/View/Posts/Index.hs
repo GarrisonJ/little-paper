@@ -15,7 +15,7 @@ instance View IndexView where
                         <th>Post</th>
                     </tr>
                 </thead>
-                <tbody>{forEach posts (\p ->Web.View.Posts.Show.renderPost (get #userId p) p )}</tbody>
+                <tbody>{forEach posts (\p ->Web.View.Posts.Show.renderPost (get #userId p) p)}</tbody>
             </table>
         </div>
     |]

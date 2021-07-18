@@ -71,12 +71,12 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     <title>Daily</title>
 </head>
 <body>
-        <div class="container mt-4">
-        {renderFlashMessages}
-            <div id="content">
-                {inner}
-            </div>
+    <div class="container-fluid">
+    {renderFlashMessages}
+        <div id="content">
+            {inner}
         </div>
+    </div>
 </body>
 |]
 
