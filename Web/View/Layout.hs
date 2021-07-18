@@ -17,7 +17,7 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     {stylesheets}
     {scripts}
 
-    <title>App</title>
+    <title>Daily</title>
 </head>
 <body>
     <div class="d-flex" id="wrapper">
@@ -48,7 +48,7 @@ basicLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     {stylesheets}
     {scripts}
 
-    <title>App</title>
+    <title>Daily</title>
 </head>
 <body>
         <div class="container mt-4">
@@ -68,7 +68,7 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     {stylesheets}
     {scripts}
 
-    <title>App</title>
+    <title>Daily</title>
 </head>
 <body>
         <div class="container mt-4">
