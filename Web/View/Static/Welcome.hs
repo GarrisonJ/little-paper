@@ -26,10 +26,10 @@ instance View WelcomeView where
                             <p>Join Today!</p>
                         </div>
                         <div class="row p-3">
-                            <button type="button" class="btn btn-primary btn-lg" href={NewSessionAction}>Log in</button><br>
+                            <a type="button" class="btn btn-primary btn-lg" href={NewSessionAction}>Log in</a><br>
                         </div>
                         <div class="row p-3">
-                            <button type="button" class="btn btn-secondary btn-lg" href={NewUserAction}>Sign up</button>
+                            <a type="button" class="btn btn-secondary btn-lg" href={NewUserAction}>Sign up</a>
                         </div>
                         <div style="bottom: 10px; position: fixed;">
                             <small class="text-muted">
