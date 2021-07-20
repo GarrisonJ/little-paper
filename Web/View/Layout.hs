@@ -51,12 +51,13 @@ basicLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     <title>Daily</title>
 </head>
 <body>
-        <div class="container mt-4">
+    <div class="container mt-4">
+        <h1><a href="/">Daily</a></h1>
         {renderFlashMessages}
-            <div id="content">
-                {inner}
-            </div>
+        <div id="content">
+            {inner}
         </div>
+    </div>
 </body>
 |]
 
