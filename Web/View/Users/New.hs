@@ -18,7 +18,15 @@ instance View NewView where
                 document.getElementById('user_timezone').value = tz;
             });
         </script>
-        {renderForm user}
+        <div class="h-100">
+            <div class="d-flex align-items-center">
+                <div class="w-100">
+                    <div style="max-width: 400px" class="mx-auto mb-5">
+                        {renderForm user}
+                    </div>
+                </div>
+            </div>
+        </div>
     |]
 
 renderForm :: User -> Html
