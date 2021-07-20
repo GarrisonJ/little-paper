@@ -7,6 +7,7 @@ import Web.View.Users.Edit
 import Web.View.Users.Show
 import Web.Controller.Static
 import Web.View.Users.TimezoneSelectorHelper (allTimezones, TimezoneText)
+import Text.Regex.TDFA
 
 instance Controller UsersController where
 
@@ -56,8 +57,8 @@ instance Controller UsersController where
             |> fill @["email", "passwordHash", "timezone", "username"]
             |> validateField #email isEmail
             |> validateField #passwordHash nonEmpty
-            |> validateField #username nonEmpty
-            -- TODO: This may need a better error message, but this should never happen.
+            |> validateField #username ((hasMaxLength 15) |> withCustomErrorMessage "Your username must be shorter than 15 characters.")
+            |> validateField #username isUsernameChars
             |> validateField #timezone (isInList allTimezones)
             |> validateIsUnique #email
             >>= validateIsUnique #username
@@ -77,6 +78,10 @@ instance Controller UsersController where
                 |> set #followerId currentUserId
                 |> set #followedId currentUserId
                 |> createRecord
+
+            isUsernameChars :: Text -> ValidatorResult
+            isUsernameChars text | text =~ ("([A-Za-z0-9\\_]+)" :: Text) = Success
+            isUsernameChars text = Failure "Your username can only contain letters, numbers and '_'"
 
     -- Delete a user
     -- Only a user can delete themselves

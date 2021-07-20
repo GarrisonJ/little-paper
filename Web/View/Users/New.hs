@@ -1,6 +1,8 @@
 module Web.View.Users.New where
 import Web.View.Prelude
 import Web.View.Users.TimezoneSelectorHelper (allTimezones, TimezoneText)
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
 
 data NewView = NewView { user :: User }
 
@@ -16,13 +18,6 @@ instance View NewView where
                 document.getElementById('user_timezone').value = tz;
             });
         </script>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href={UsersAction}>Users</a></li>
-                <li class="breadcrumb-item active">New User</li>
-            </ol>
-        </nav>
-        <h1>New User</h1>
         {renderForm user}
     |]
 
@@ -30,7 +25,11 @@ renderForm :: User -> Html
 renderForm user = formFor user [hsx|
     {(textField #email)}
     {(passwordField #passwordHash) { fieldLabel = "Password"}}
-    {(textField #username)}
+    <label>Username</label>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">@</span>
+        {(textField #username) { disableLabel=True, disableGroup=True }}
+    </div>
     {(selectField #timezone allTimezones) { fieldLabel = "Prefered Timezone (You can change this later)"}}
     {submitButton}
 |]
