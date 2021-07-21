@@ -4,20 +4,22 @@ import IHP.AuthSupport.View.Sessions.New
 
 instance View (NewView User) where
     beforeRender view = do
-        setLayout basicLayout
+        setLayout welcomePageLayout
 
-    html NewView { .. } = [hsx|
+    html NewView { .. } = placeNextToWelcomeImage
+        [hsx|
         <div class="h-100" id="sessions-new">
-            <div class="d-flex align-items-center">
+            <div class="d-flex justify-content-md-center align-items-center vh-100">
                 <div class="w-100">
                     <div style="max-width: 400px" class="mx-auto mb-5">
+                        <h1><a href="/">Daily</a></h1>
                         <h5>Please login</h5>
                         {renderForm user}
                     </div>
                 </div>
             </div>
         </div>
-    |]
+        |]
 
 renderForm :: User -> Html
 renderForm user = [hsx|
