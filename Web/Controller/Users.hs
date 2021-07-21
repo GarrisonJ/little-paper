@@ -8,6 +8,7 @@ import Web.View.Users.Show
 import Web.Controller.Static
 import Web.View.Users.TimezoneSelectorHelper (allTimezones, TimezoneText)
 import Text.Regex.TDFA
+import Web.Mail.Users.Confirmation
 
 instance Controller UsersController where
 

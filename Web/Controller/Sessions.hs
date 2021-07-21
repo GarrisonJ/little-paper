@@ -9,4 +9,8 @@ instance Controller SessionsController where
     action CreateSessionAction = Sessions.createSessionAction @User
     action DeleteSessionAction = Sessions.deleteSessionAction @User
 
-instance Sessions.SessionsControllerConfig User
+instance Sessions.SessionsControllerConfig User where
+    beforeLogin user = do
+        unless (get #isconfirmed user) do
+            setErrorMessage "Please click the confirmation link we sent to your email"
+            redirectTo NewSessionAction

@@ -15,7 +15,8 @@ CREATE TABLE users (
     locked_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     failed_login_attempts INT DEFAULT 0 NOT NULL,
     timezone TEXT NOT NULL,
-    username TEXT NOT NULL UNIQUE
+    username TEXT NOT NULL UNIQUE,
+    isConfirmed BOOLEAN DEFAULT false NOT NULL
 );
 CREATE UNIQUE INDEX user_username_index ON users (LOWER(username));
 CREATE INDEX posts_user_id_index ON posts (user_id);
