@@ -7,7 +7,6 @@ data IndexView = IndexView { posts :: [Include "userId" Post], todaysPost :: May
 instance View IndexView where
     html IndexView { .. } = [hsx|
         {renderPostInput}
-
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -21,10 +20,14 @@ instance View IndexView where
     |]
         where
             renderPostInput = case todaysPost of
-                    Just p -> [hsx|<h3>You posted something today! Nice Job!</h3>|]
+                    Just p -> [hsx|<h3>You posted something today. Nice job!</h3>|]
                     Nothing -> [hsx|
-                                <div>You have't posted today!</div>
+                                <div class="card bg-light">
+                                <div class="card-header">You have't posted today!</div>
+                                <div class="card-body">
                                 {renderPostForm (newRecord :: Post)}
+                                </div>
+                                </div>
                             |]
 
 
