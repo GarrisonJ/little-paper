@@ -16,6 +16,7 @@ SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE public.admins DISABLE TRIGGER ALL;
 
+INSERT INTO public.admins (id, email, password_hash, locked_at, failed_login_attempts) VALUES ('fd055f4f-ed96-47ec-bec4-56ac1971bc26', 'garrison.jensen@gmail.com', 'sha256|17|hZ/o2gMbCCaHs4qGWMn5Mw==|KsF8hk9gHsW2iavQB8/TTADeDhV76o58aWaBMBGhIN8=', NULL, 0);
 
 
 ALTER TABLE public.admins ENABLE TRIGGER ALL;
@@ -23,9 +24,6 @@ ALTER TABLE public.admins ENABLE TRIGGER ALL;
 
 ALTER TABLE public.users DISABLE TRIGGER ALL;
 
-INSERT INTO public.users (id, email, password_hash, locked_at, failed_login_attempts, timezone, username, isconfirmed) VALUES ('ac0bd45e-3173-4a94-bf7a-09b5fafe05db', 'afasdfa@asdf.com', 'sha256|17|8mf6ZQywPLdOfoMoSLvMtw==|zP+SkZob7OU3icIsE5A9tMnicisJHT2iAqyWFwR2ON8=', NULL, 0, 'America/Los_Angeles', 'tom', true);
-INSERT INTO public.users (id, email, password_hash, locked_at, failed_login_attempts, timezone, username, isconfirmed) VALUES ('feec9d78-4e93-4890-aa75-99454f58ed70', 'testingtesting@something.com', 'sha256|17|GOXFXt+b+ghkD4422913OA==|xXgmpisk8Yuv8DQETWtQxBto82GlwZkHvG9XZuGa6MI=', NULL, 0, 'America/Los_Angeles', 'testing', true);
-INSERT INTO public.users (id, email, password_hash, locked_at, failed_login_attempts, timezone, username, isconfirmed) VALUES ('13bd7e41-d784-4914-9746-2067fd43a88f', 'garrison.jensen@gmail.com', 'sha256|17|rjTB34+dsq7dHyCuFAv+nA==|ICie7eFFh+VyWT//TlSl5aurcBaa7zbD398/LFJmmGI=', NULL, 0, 'America/Los_Angeles', 'garrison', true);
 
 
 ALTER TABLE public.users ENABLE TRIGGER ALL;

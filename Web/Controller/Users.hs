@@ -38,9 +38,15 @@ instance Controller UsersController where
     action UpdateUserAction { userId } = do
         user <- fetch userId
         accessDeniedUnless (get #id user == currentUserId)
+
+        let profilePictureOptions = ImageUploadOptions
+                { convertTo = "jpg"
+                , imageMagickOptions = "-resize '1024x1024^' -gravity north -extent 1024x1024 -quality 85% -strip"
+                }
         user
             |> buildUser
-            |> ifValid \case
+            |> uploadImageWithOptions profilePictureOptions #pictureUrl
+            >>= ifValid \case
                 Left user -> render EditView { .. }
                 Right user -> do
                     user <- user |> updateRecord
@@ -111,4 +117,4 @@ instance Controller UsersController where
         redirectToPath $ "/user/" <> username
 
 buildUser user = user
-    |> fill @["email","passwordHash","failedLoginAttempts","timezone", "username"]
+    |> fill @["email","passwordHash","failedLoginAttempts","timezone", "username", "pictureUrl"]

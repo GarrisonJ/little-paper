@@ -16,7 +16,8 @@ CREATE TABLE users (
     failed_login_attempts INT DEFAULT 0 NOT NULL,
     timezone TEXT NOT NULL,
     username TEXT NOT NULL UNIQUE,
-    isConfirmed BOOLEAN DEFAULT false NOT NULL
+    isConfirmed BOOLEAN DEFAULT false NOT NULL,
+    picture_url TEXT DEFAULT NULL
 );
 CREATE UNIQUE INDEX user_username_index ON users (LOWER(username));
 CREATE INDEX posts_user_id_index ON posts (user_id);
