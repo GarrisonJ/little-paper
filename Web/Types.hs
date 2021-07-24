@@ -37,10 +37,8 @@ data UsersController
     = UsersAction
     | NewUserAction
     | CreateUserAction
-    | EditUserAction { userId :: !(Id User) }
     | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
-    | DeleteUserAction { userId :: !(Id User) }
     | CreateFollowAction
     deriving (Eq, Show, Data)
 

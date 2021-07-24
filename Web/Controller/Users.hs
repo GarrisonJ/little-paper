@@ -22,15 +22,12 @@ instance Controller UsersController where
     -- The new user form
     -- This should have no restrictions
     action NewUserAction = do
-        let user = newRecord
-        render NewView { .. }
-
-    -- Form to edit user
-    -- Users should only be able to edit themselves
-    action EditUserAction { userId } = do
-        user <- fetch userId
-        accessDeniedUnless (get #id user == currentUserId)
-        render EditView { .. }
+        -- Don't let loggedin users create new users
+        case currentUserOrNothing of
+            Just _ -> redirectToPath "/"
+            Nothing -> do
+                let user = newRecord
+                render NewView { .. }
 
     action EditCurrentUserAction = do
         user <- fetch currentUserId
@@ -48,50 +45,45 @@ instance Controller UsersController where
                 Right user -> do
                     user <- user |> updateRecord
                     setSuccessMessage "User updated"
-                    redirectTo EditUserAction { .. }
+                    redirectTo EditCurrentUserAction
 
     -- Create a user action
     -- Anybody can create a user
     action CreateUserAction = do
-        let user = newRecord @User
-        user
-            |> fill @["email", "passwordHash", "timezone", "username"]
-            |> validateField #email isEmail
-            |> validateField #passwordHash nonEmpty
-            |> validateField #username ((hasMaxLength 15) |> withCustomErrorMessage "Your username must be shorter than 15 characters.")
-            |> validateField #username isUsernameChars
-            |> validateField #timezone (isInList allTimezones)
-            |> validateIsUnique #email
-            >>= validateIsUnique #username
-            >>= ifValid \case
-                Left user -> render NewView { .. }
-                Right user -> do
-                    hashed <- hashPassword (get #passwordHash user)
-                    user <- user
-                        |> set #passwordHash hashed
+        -- Don't let loggedin users create new users
+        case currentUserOrNothing of
+            Just _ -> redirectToPath "/"
+            Nothing -> do
+                let user = newRecord @User
+                user
+                    |> fill @["email", "passwordHash", "timezone", "username"]
+                    |> validateField #email isEmail
+                    |> validateField #passwordHash nonEmpty
+                    |> validateField #username ((hasMaxLength 15) |> withCustomErrorMessage "Your username must be shorter than 15 characters.")
+                    |> validateField #username isUsernameChars
+                    |> validateField #timezone (isInList allTimezones)
+                    |> validateIsUnique #email
+                    >>= validateIsUnique #username
+                    >>= ifValid \case
+                        Left user -> render NewView { .. }
+                        Right user -> do
+                            hashed <- hashPassword (get #passwordHash user)
+                            user <- user
+                                |> set #passwordHash hashed
+                                |> createRecord
+                            setUserToFollowSelf
+                            setSuccessMessage "You have registered successfully"
+                            redirectToPath "/"
+                -- Every user follows themself, this makes things eaiser later
+                where
+                    setUserToFollowSelf = newRecord @UserFollow
+                        |> set #followerId currentUserId
+                        |> set #followedId currentUserId
                         |> createRecord
-                    setUserToFollowSelf
-                    setSuccessMessage "You have registered successfully"
-                    redirectToPath "/"
-        -- Every user follows themself, this makes things eaiser later
-        where
-            setUserToFollowSelf = newRecord @UserFollow
-                |> set #followerId currentUserId
-                |> set #followedId currentUserId
-                |> createRecord
 
-            isUsernameChars :: Text -> ValidatorResult
-            isUsernameChars text | text =~ ("([A-Za-z0-9\\_]+)" :: Text) = Success
-            isUsernameChars text = Failure "Your username can only contain letters, numbers and '_'"
-
-    -- Delete a user
-    -- Only a user can delete themselves
-    action DeleteUserAction { userId } = do
-        user <- fetch userId
-        accessDeniedUnless (get #id user == currentUserId)
-        deleteRecord user
-        setSuccessMessage "User deleted"
-        redirectTo UsersAction
+                    isUsernameChars :: Text -> ValidatorResult
+                    isUsernameChars text | text =~ ("([A-Za-z0-9\\_]+)" :: Text) = Success
+                    isUsernameChars text = Failure "Your username can only contain letters, numbers and '_'"
 
     action CreateFollowAction = do
         let userId = param @(Id User) "id"

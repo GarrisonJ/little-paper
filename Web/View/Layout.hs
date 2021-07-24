@@ -69,6 +69,7 @@ sidebar = [hsx|
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={FollowedPostsAction}>Home</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={UsersAction}>Find People</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={EditCurrentUserAction}>Settings</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3 js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
         </div>
@@ -95,6 +96,9 @@ topnav = [hsx|
         </li>
         <li class="nav-item">
             <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href={UsersAction}>Find People</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href={EditCurrentUserAction}>Settings</a>

@@ -6,12 +6,6 @@ data ShowView = ShowView { user :: Include "posts" User, followed :: Bool }
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href={UsersAction}>Users</a></li>
-                <li class="breadcrumb-item active">Show User</li>
-            </ol>
-        </nav>
         <h1>{get #username user} {followButton}</h1>
         <div class="table-responsive">
             <table class="table">
