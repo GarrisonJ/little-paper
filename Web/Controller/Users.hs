@@ -71,15 +71,15 @@ instance Controller UsersController where
                             user <- user
                                 |> set #passwordHash hashed
                                 |> createRecord
-                            setUserToFollowSelf
+                            setUserToFollowSelf (get #id user)
                             setSuccessMessage "You have registered successfully"
                             redirectToPath "/"
-                -- Every user follows themself, this makes things eaiser later
                 where
-                    setUserToFollowSelf = newRecord @UserFollow
-                        |> set #followerId currentUserId
-                        |> set #followedId currentUserId
-                        |> createRecord
+                    -- Every user follows themself, this makes things eaiser later
+                    setUserToFollowSelf newUserId = newRecord @UserFollow
+                                        |> set #followerId newUserId
+                                        |> set #followedId newUserId
+                                        |> createRecord
 
                     isUsernameChars :: Text -> ValidatorResult
                     isUsernameChars text | text =~ ("([A-Za-z0-9\\_]+)" :: Text) = Success
