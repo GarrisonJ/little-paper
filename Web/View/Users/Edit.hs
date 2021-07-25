@@ -12,7 +12,7 @@ instance View EditView where
         where
             picturePath :: Text
             picturePath = case get #pictureUrl user of
-                            Nothing -> "/"
+                            Nothing -> "/space.jpeg"
                             Just url -> url
 
             renderForm :: User -> Html
