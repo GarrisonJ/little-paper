@@ -7,15 +7,8 @@ data IndexView = IndexView { posts :: [Include "userId" Post], todaysPost :: May
 instance View IndexView where
     html IndexView { .. } = [hsx|
         {renderPostInput}
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Post</th>
-                    </tr>
-                </thead>
-                <tbody>{forEach posts (\p ->Web.View.Posts.Show.renderPost (get #userId p) p)}</tbody>
-            </table>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <div>{forEach posts (\p -> Web.View.Posts.Show.renderPost (get #userId p) p)}</div>
         </div>
     |]
         where

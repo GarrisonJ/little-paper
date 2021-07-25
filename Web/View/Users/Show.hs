@@ -7,18 +7,8 @@ data ShowView = ShowView { user :: Include "posts" User, followed :: Bool }
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <h1>{get #username user} {followButton}</h1>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Post</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>{forEach (user |> get #posts) (Web.View.Posts.Show.renderPost user)}</tbody>
-            </table>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            {forEach (user |> get #posts) (Web.View.Posts.Show.renderPost user)}
         </div>
     |]
         where
