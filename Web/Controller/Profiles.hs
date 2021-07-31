@@ -5,7 +5,10 @@ import Web.View.Users.Show
 
 instance Controller ProfilesController where
     action ShowProfileAction { username } = do
-        user <- (query @User |> filterWhere (#username, username) |> fetchOne)
+        user <- query @User
+                    |> filterWhere (#isConfirmed, True)
+                    |> filterWhere (#username, username)
+                    |> fetchOne
                     >>= fetchRelated #posts
 
         follow <- query @UserFollow

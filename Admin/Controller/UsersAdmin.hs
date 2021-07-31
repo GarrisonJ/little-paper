@@ -55,4 +55,4 @@ instance Controller UsersAdminController where
         redirectTo UsersAdminAction
 
 buildUser user = user
-    |> fill @["email","passwordHash","failedLoginAttempts","timezone","username","isconfirmed"]
+    |> fill @["email","passwordHash","failedLoginAttempts","timezone","username","isConfirmed"]

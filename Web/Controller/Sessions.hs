@@ -11,6 +11,6 @@ instance Controller SessionsController where
 
 instance Sessions.SessionsControllerConfig User where
     beforeLogin user = do
-        unless (get #isconfirmed user) do
+        unless (get #isConfirmed user) do
             setErrorMessage "Please click the confirmation link we sent to your email"
             redirectTo NewSessionAction

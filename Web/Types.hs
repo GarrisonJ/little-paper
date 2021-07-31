@@ -40,6 +40,7 @@ data UsersController
     | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
     | CreateFollowAction
+    | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Int) }
     deriving (Eq, Show, Data)
 
 data ProfilesController

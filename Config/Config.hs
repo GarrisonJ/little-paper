@@ -4,13 +4,16 @@ import IHP.Prelude
 import IHP.Environment
 import IHP.FrameworkConfig
 import IHP.Mail
+import System.Environment
 
 config :: ConfigBuilder
 config = do
-    option Development
-    option (AppHostname "localhost")
-    option $ SMTP
-        { host = "smtp.myisp.com"
-        , port = 2525
-        , credentials = Nothing -- or Just ("myusername","hunter2")
+    -- other options here, then add:
+
+    awsSesAccessKey <- liftIO $ fromString <$> System.Environment.getEnv "IHP_AWS_SES_ACCESS_KEY"
+    awsSesSecretKey <- liftIO $ fromString <$> System.Environment.getEnv "IHP_AWS_SES_SECRET_KEY"
+    option $ SES
+        { accessKey = awsSesAccessKey
+        , secretKey = awsSesSecretKey
+        , region = "us-west-2" -- YOUR REGION
         }

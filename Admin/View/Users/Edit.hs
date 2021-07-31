@@ -22,6 +22,6 @@ renderForm user = formFor user [hsx|
     {(textField #failedLoginAttempts)}
     {(textField #timezone)}
     {(textField #username)}
-    {(textField #isconfirmed)}
+    {(textField #isConfirmed)}
     {submitButton}
 |]

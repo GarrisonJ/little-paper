@@ -9,14 +9,16 @@ import Web.Controller.Static
 import Web.View.Users.TimezoneSelectorHelper (allTimezones, TimezoneText)
 import Text.Regex.TDFA
 import Web.Mail.Users.Confirmation
+import System.Random
 
 instance Controller UsersController where
 
     -- List all of the users.
-    -- TODO: This should be restricted to admins
     action UsersAction = do
         ensureIsUser
-        users <- query @User |> fetch
+        users <- query @User
+            |> filterWhere (#isConfirmed, True)
+            |> fetch
         render IndexView { .. }
 
     -- The new user form
@@ -74,11 +76,20 @@ instance Controller UsersController where
                         Left user -> render NewView { .. }
                         Right user -> do
                             hashed <- hashPassword (get #passwordHash user)
+                            confirmationKey <- randomRIO (1 :: Int, 999999)
                             user <- user
                                 |> set #passwordHash hashed
+                                |> set #confirmationKey confirmationKey
                                 |> createRecord
                             setUserToFollowSelf (get #id user)
-                            setSuccessMessage "You have registered successfully"
+                            -- If we are in production, send an authentication email
+                            -- Otherwise, just auto confirm and sign in
+                            if isProduction
+                                then sendMail ConfirmationMail { user }
+                                else user |> set #isConfirmed True
+                                          |> updateRecord
+                                          >>= \_ -> pure ()
+                            setSuccessMessage "We sent you an email!"
                             redirectToPath "/"
                 where
                     -- Every user follows themself, this makes things eaiser later
@@ -116,5 +127,45 @@ instance Controller UsersController where
         let username = get #username user
         redirectToPath $ "/user/" <> username
 
+
+    action ConfirmUserEmailAction { userId, confirmationKey } = do
+        case currentUserOrNothing of
+            -- Send users who are signed in home
+            Just _ -> redirectToPath "/"
+            Nothing -> do
+
+                -- Find user
+                user <- query @User
+                    |> filterWhere (#id, userId)
+                    |> fetchOneOrNothing
+
+                case user of
+                    -- If user doesn't exists, we may have deleted it because we can't let an
+                    -- unconfirmed email stay for too long.
+                    Nothing -> do
+                        setErrorMessage "Sorry, we couldn't confirm your email. \
+                                        \ Confirmation emails expire in 2 hours. \
+                                        \ Try signing up again"
+                        redirectToPath "/"
+
+                    Just user -> do
+                        -- Increment how many times someone tried to confirm this email.
+                        -- Someone might be trying to hack. We should be hiding the userId
+                        -- but just in case.
+                        user
+                            |> modify #failedEmailConfirmAttempts (\count -> count + 1)
+                            |> updateRecord
+
+                        if get #confirmationKey user /= confirmationKey
+                            -- Not providing an error here, there is no flow to get here unless
+                            -- someone is hacking.
+                            then redirectToPath "/"
+                            else do
+                                user
+                                    |> set #isConfirmed True
+                                    |> updateRecord
+                                login user
+                                redirectToPath "/" -- TODO Redirect to page specific to new users
+
 buildUser user = user
-    |> fill @["email","passwordHash","failedLoginAttempts","timezone", "username", "pictureUrl"]
+    |> fill @["email","passwordHash","failedLoginAttempts","timezone","username","pictureUrl"]
