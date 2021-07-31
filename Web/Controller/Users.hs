@@ -111,9 +111,7 @@ instance Controller UsersController where
             |> fetchOneOrNothing
 
         case follow of
-            Just f -> do
-                deleteRecord f
-                setSuccessMessage "Unfollowed"
+            Just f -> deleteRecord f
             Nothing -> newRecord @UserFollow
                 |> set #followerId currentUserId
                 |> set #followedId userId
@@ -121,7 +119,7 @@ instance Controller UsersController where
                     Left _ -> setSuccessMessage "Something happened"
                     Right follow -> do
                         follow |> createRecord
-                        setSuccessMessage "Followed"
+                        pure ()
 
         user <- fetch userId
         let username = get #username user
