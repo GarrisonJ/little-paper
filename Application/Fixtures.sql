@@ -37,7 +37,6 @@ ALTER TABLE public.posts ENABLE TRIGGER ALL;
 
 ALTER TABLE public.user_follows DISABLE TRIGGER ALL;
 
-INSERT INTO public.user_follows (id, follower_id, followed_id) VALUES ('46492645-342b-4562-b9a5-af08fc61f148', '35dfaee8-b59e-4097-88ad-526cab85b1e8', '35dfaee8-b59e-4097-88ad-526cab85b1e8');
 
 
 ALTER TABLE public.user_follows ENABLE TRIGGER ALL;

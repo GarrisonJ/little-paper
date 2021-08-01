@@ -84,7 +84,7 @@ instance Controller UsersController where
                             setUserToFollowSelf (get #id user)
                             -- If we are in production, send an authentication email
                             -- Otherwise, just auto confirm and sign in
-                            if isProduction
+                            if False -- TODO: Set his up in Production
                                 then sendMail ConfirmationMail { user }
                                 else user |> set #isConfirmed True
                                           |> updateRecord
@@ -125,45 +125,60 @@ instance Controller UsersController where
         let username = get #username user
         redirectToPath $ "/user/" <> username
 
-
     action ConfirmUserEmailAction { userId, confirmationKey } = do
+        -- Send users who are signed in home
         case currentUserOrNothing of
-            -- Send users who are signed in home
             Just _ -> redirectToPath "/"
             Nothing -> do
-
-                -- Find user
+                -- Find user who is trying to confirm thier email
                 user <- query @User
                     |> filterWhere (#id, userId)
                     |> fetchOneOrNothing
 
                 case user of
-                    -- If user doesn't exists, we may have deleted it because we can't let an
-                    -- unconfirmed email stay for too long.
-                    Nothing -> do
-                        setErrorMessage "Sorry, we couldn't confirm your email. \
-                                        \ Confirmation emails expire in 2 hours. \
-                                        \ Try signing up again"
-                        redirectToPath "/"
-
+                    Nothing -> failConfirm
                     Just user -> do
-                        -- Increment how many times someone tried to confirm this email.
-                        -- Someone might be trying to hack. We should be hiding the userId
-                        -- but just in case.
-                        user
-                            |> modify #failedEmailConfirmAttempts (\count -> count + 1)
-                            |> updateRecord
-
-                        if get #confirmationKey user /= confirmationKey
-                            -- Not providing an error here, there is no flow to get here unless
-                            -- someone is hacking.
-                            then redirectToPath "/"
+                        -- If the user is locked out of email confirms, that means they tried to confirm
+                        -- too many times. Their uncofirmed account will eventually be deleted.
+                        -- We don't want to delete right away because then they can just sign up again
+                        -- and attempt to guess the confirmation key over and over.
+                        if get #isEmailConfirmLocked user
+                            then failConfirm
                             else do
-                                user
-                                    |> set #isConfirmed True
-                                    |> updateRecord
-                                login user
-                                redirectToPath "/" -- TODO Redirect to page specific to new users
+                                -- If someone has tried to confirm this email lots of times
+                                -- they are trying to hack, we should lock the account and
+                                -- it will eventually be auto deleted
+                                if get #failedEmailConfirmAttempts user >= maxConfirmAttempts
+                                    then do
+                                        user
+                                            |> set #isEmailConfirmLocked True
+                                            |> updateRecord
+
+                                        failConfirm
+                                    else do
+                                        -- Increment how many times someone tried to confirm this email.
+                                        user
+                                            |> modify #failedEmailConfirmAttempts (\count -> count + 1)
+                                            |> updateRecord
+
+                                        if get #confirmationKey user /= confirmationKey
+                                            then failConfirm
+                                            else do
+                                                user
+                                                    |> set #isConfirmed True
+                                                    |> updateRecord
+                                                login user
+                                                redirectToPath "/" -- TODO Redirect to page specific to new users
+                where
+                    maxConfirmAttempts = 10
+                    failConfirm = setErrorMessage failedToConfirmMessage >> redirectToPath "/"
+
+                    -- Let's give the likely hackers the same error message for all errors
+                    -- so they don't know how many chances they have before the timeout.
+                    -- This is the only valid error message a real user might recive.
+                    failedToConfirmMessage = "Sorry, we couldn't confirm your email. \
+                                            \ Confirmation emails expire in 2 hours. \
+                                            \ Try signing up again"
 
 buildUser user = user
-    |> fill @["email","passwordHash","failedLoginAttempts","timezone","username","pictureUrl"]
+    |> fill @["email","passwordHash","timezone","username","pictureUrl"]
