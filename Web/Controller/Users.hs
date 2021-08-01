@@ -139,36 +139,25 @@ instance Controller UsersController where
                     Nothing -> failConfirm
                     Just user -> do
                         -- If the user is locked out of email confirms, that means they tried to confirm
-                        -- too many times. Their uncofirmed account will eventually be deleted.
+                        -- too many times. Their unconfirmed account will eventually be deleted.
                         -- We don't want to delete right away because then they can just sign up again
                         -- and attempt to guess the confirmation key over and over.
-                        if get #isEmailConfirmLocked user
+                        if get #failedEmailConfirmAttempts user >= maxConfirmAttempts
                             then failConfirm
                             else do
-                                -- If someone has tried to confirm this email lots of times
-                                -- they are trying to hack, we should lock the account and
-                                -- it will eventually be auto deleted
-                                if get #failedEmailConfirmAttempts user >= maxConfirmAttempts
-                                    then do
-                                        user
-                                            |> set #isEmailConfirmLocked True
-                                            |> updateRecord
+                                -- Increment how many times someone tried to confirm this email.
+                                user
+                                    |> modify #failedEmailConfirmAttempts (\count -> count + 1)
+                                    |> updateRecord
 
-                                        failConfirm
+                                if get #confirmationKey user /= confirmationKey
+                                    then failConfirm
                                     else do
-                                        -- Increment how many times someone tried to confirm this email.
                                         user
-                                            |> modify #failedEmailConfirmAttempts (\count -> count + 1)
+                                            |> set #isConfirmed True
                                             |> updateRecord
-
-                                        if get #confirmationKey user /= confirmationKey
-                                            then failConfirm
-                                            else do
-                                                user
-                                                    |> set #isConfirmed True
-                                                    |> updateRecord
-                                                login user
-                                                redirectToPath "/" -- TODO Redirect to page specific to new users
+                                        login user
+                                        redirectToPath "/" -- TODO Redirect to page specific to new users
                 where
                     maxConfirmAttempts = 10
                     failConfirm = setErrorMessage failedToConfirmMessage >> redirectToPath "/"
