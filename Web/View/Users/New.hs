@@ -44,6 +44,6 @@ renderForm user = formFor user [hsx|
     </div>
     {(hiddenField #timezone)}
     <div class="d-grid mx-auto">
-        {submitButton {label="Sign up", buttonClass="btn rainbow-button"}}
+        {submitButton {label="Signup", buttonClass="btn rainbow-button"}}
     </div>
 |]
