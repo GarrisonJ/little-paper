@@ -16,7 +16,12 @@ instance View NewView where
                 <div class="d-flex justify-content-md-center align-items-center vh-100">
                     <div class="w-100">
                         <div class="mx-auto mb-5">
+                            <h1><a href="/">Daily</a></h1>
+                            <h5>Signup today! 🎉</h5>
                             {renderForm user}
+                            <div class="text-center m-2">
+                                <a href={NewSessionAction}>Login</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -31,14 +36,13 @@ instance View NewView where
 
 renderForm :: User -> Html
 renderForm user = formFor user [hsx|
-    {(textField #email)}
-    {(passwordField #passwordHash) { fieldLabel = "Password"}}
-    <label>Username</label>
+    {(textField #email) {disableLabel=True, placeholder="Email"}}
+    {(passwordField #passwordHash) { fieldLabel = "Password", disableLabel=True, placeholder="Password"}}
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">@</span>
-        {(textField #username) { disableLabel=True, disableGroup=True }}
+        {(textField #username) { disableLabel=True, disableGroup=True, placeholder="Username" }}
     </div>
-    {(selectField #timezone allTimezones) { fieldLabel = "Prefered Timezone (You can change this later)"}}
+    {(hiddenField #timezone)}
     <div class="d-grid mx-auto">
         {submitButton {label="Signup", buttonClass="btn rainbow-button"}}
     </div>

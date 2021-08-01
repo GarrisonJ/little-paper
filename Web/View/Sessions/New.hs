@@ -15,6 +15,9 @@ instance View (NewView User) where
                         <h1><a href="/">Daily</a></h1>
                         <h5>Please login</h5>
                         {renderForm user}
+                        <div class="text-center m-2">
+                            <a href={NewUserAction}>Signup</a>
+                        </div>
                     </div>
                 </div>
             </div>

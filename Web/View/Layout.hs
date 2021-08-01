@@ -53,7 +53,7 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 <body>
     <div class="container-fluid">
     {renderFlashMessages}
-        <div id="content">
+        <div id="content" class="welcome-page">
             {inner}
         </div>
     </div>
