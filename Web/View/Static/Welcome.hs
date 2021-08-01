@@ -18,6 +18,6 @@ instance View WelcomeView where
             <a type="button" class="btn btn-primary" href={NewSessionAction}>Login</a><br>
         </div>
         <div class="row p-3">
-            <a type="button" class="btn btn-secondary rainbow-button" href={NewUserAction}>Signup</a>
+            <a type="button" class="btn btn-secondary do-somethingrainbow" href={NewUserAction}>Signup</a>
         </div>
         |]

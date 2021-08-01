@@ -10,7 +10,6 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: var(--alabaster);
 }
 
 p {
@@ -35,9 +34,13 @@ a, a:hover, a:focus {
     background: var(--alabaster);
 }
 
-.rainbow-button {
+.do-somethingrainbow {
     background: rgb(131,58,180);
     background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+}
+
+.send-message-button {
+    width: 200px;
 }
 
 /************ Edit Form ************/
@@ -57,11 +60,13 @@ a, a:hover, a:focus {
 
 .list-group-item {
     border-color: var(--alabaster);
+    color: rgb(33, 33, 33);
 }
 
+/* Hover styles */
 .list-group-item-light.list-group-item-action:hover, .list-group-item-light.list-group-item-action:focus {
-  color: var(--dark-purple);
-  background-color: var(--steel-blue);
+  background-color: var(--manatee);
+  color: rgb(33, 33, 33);
 }
 
 /************ END Sidebar ************/

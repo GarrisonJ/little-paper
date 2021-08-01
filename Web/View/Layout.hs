@@ -28,7 +28,7 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
                 {renderFlashMessages}
                 <div id="content">
                     <div class="row justify-content-center">
-                        <div class="col-10" style="margin-top: 10px">
+                        <div class="col-md-8 col-12" style="margin-top: 10px">
                             {inner}
                          </div>
                     </div>
@@ -62,7 +62,7 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 
 sidebar :: Html
 sidebar = [hsx|
-    <div id="sidebar-wrapper" class="border-right border-dark">
+    <div id="sidebar-wrapper">
         <div class="sidebar-heading">
             <a href={FollowedPostsAction}>Daily</a>
         </div>
