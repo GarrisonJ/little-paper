@@ -17,10 +17,10 @@ instance View NewView where
                     <div class="w-100">
                         <div class="mx-auto mb-5">
                             <h1><a href="/">Daily</a></h1>
-                            <h5>Signup today! 🎉</h5>
+                            <h5>Sign up today! 🎉</h5>
                             {renderForm user}
                             <div class="text-center m-2">
-                                <a href={NewSessionAction}>Login</a>
+                                <a href={NewSessionAction}>Log in</a>
                             </div>
                         </div>
                     </div>
@@ -44,6 +44,6 @@ renderForm user = formFor user [hsx|
     </div>
     {(hiddenField #timezone)}
     <div class="d-grid mx-auto">
-        {submitButton {label="Signup", buttonClass="btn rainbow-button"}}
+        {submitButton {label="Sign up", buttonClass="btn rainbow-button"}}
     </div>
 |]

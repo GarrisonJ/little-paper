@@ -13,10 +13,12 @@ instance View (NewView User) where
                 <div class="w-100">
                     <div style="max-width: 400px" class="mx-auto mb-5">
                         <h1><a href="/">Daily</a></h1>
-                        <h5>Please login</h5>
+                        <h5>Please log in</h5>
                         {renderForm user}
                         <div class="text-center m-2">
-                            <a href={NewUserAction}>Signup</a>
+                            <a>Forgot password?</a>
+                            ·
+                            <a href={NewUserAction}>Sign up</a>
                         </div>
                     </div>
                 </div>
@@ -33,6 +35,6 @@ renderForm user = [hsx|
         <div class="form-group">
             <input name="password" type="password" class="form-control" placeholder="Password"/>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
     </form>
 |]
