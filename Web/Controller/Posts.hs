@@ -124,6 +124,7 @@ instance Controller PostsController where
 
 buildPost post = post
     |> fill @'["body"]
+    |> validateField #body (hasMaxLength 280)
 
 getUserDay :: Text -> IO (Day)
 getUserDay preferedTimezone = do
