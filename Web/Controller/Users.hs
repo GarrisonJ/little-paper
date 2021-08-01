@@ -167,7 +167,7 @@ instance Controller UsersController where
                     -- This is the only valid error message a real user might recive.
                     failedToConfirmMessage = "Sorry, we couldn't confirm your email. \
                                             \ Confirmation emails expire in 2 hours. \
-                                            \ Try signing up again"
+                                            \ Try signing up again."
 
 buildUser user = user
     |> fill @["email","passwordHash","timezone","username","pictureUrl"]
