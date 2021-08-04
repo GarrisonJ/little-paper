@@ -9,6 +9,7 @@ import Web.Controller.Sessions
 -- Controller Imports
 import Web.Controller.Profiles
 import Web.Controller.Users
+import Web.Controller.Passwords
 import Web.Controller.Posts
 import Web.Controller.Static
 
@@ -19,6 +20,7 @@ instance FrontController WebApplication where
         -- Generator Marker
         , parseRoute @ProfilesController
         , parseRoute @UsersController
+        , parseRoute @PasswordsController
         , parseRoute @PostsController
         ]
 

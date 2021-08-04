@@ -16,4 +16,4 @@ instance BuildMail ConfirmationMail where
         <br /><br />
     |]
         where
-            confirmUrl = urlTo ConfirmUserEmailAction { userId = (get #id user), confirmationKey=(get #confirmationKey user)}
+            confirmUrl = urlTo ConfirmUserEmailAction { userId = (get #id user), confirmationKey = (get #confirmationKey user)}

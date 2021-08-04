@@ -43,6 +43,13 @@ data UsersController
     | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Int) }
     deriving (Eq, Show, Data)
 
+data PasswordsController
+    = NewForgotPasswordAction
+    | CreateForgotPasswordAction
+    | NewResetPasswordAction { userId :: !(Id User), resetToken :: !(Text) }
+    | CreateResetPasswordAction
+    deriving (Eq, Show, Data)
+
 data ProfilesController
     = ShowProfileAction { username :: !(Text) }
     deriving (Eq, Show, Data)

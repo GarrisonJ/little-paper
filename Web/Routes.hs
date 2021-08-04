@@ -4,6 +4,7 @@ import Generated.Types
 import Web.Types
 
 instance AutoRoute UsersController
+instance AutoRoute PasswordsController
 
 -- Generator Marker
 instance AutoRoute StaticController

@@ -37,6 +37,14 @@ CREATE TABLE admins (
     locked_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     failed_login_attempts INT DEFAULT 0 NOT NULL
 );
+CREATE TABLE password_resets (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+    reset_token TEXT NOT NULL UNIQUE,
+    user_id UUID NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+CREATE INDEX password_resets_user_id_index ON password_resets (user_id);
+ALTER TABLE password_resets ADD CONSTRAINT password_resets_ref_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION;
 ALTER TABLE posts ADD CONSTRAINT posts_ref_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION;
 ALTER TABLE user_follows ADD CONSTRAINT user_follows_ref_followed_id FOREIGN KEY (followed_id) REFERENCES users (id) ON DELETE NO ACTION;
 ALTER TABLE user_follows ADD CONSTRAINT user_follows_ref_follower_id FOREIGN KEY (follower_id) REFERENCES users (id) ON DELETE NO ACTION;

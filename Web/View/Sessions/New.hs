@@ -16,7 +16,7 @@ instance View (NewView User) where
                         <h5>Please log in</h5>
                         {renderForm user}
                         <div class="text-center m-2">
-                            <a>Forgot password?</a>
+                            <a href={NewForgotPasswordAction}>Forgot password?</a>
                             ·
                             <a href={NewUserAction}>Sign up</a>
                         </div>
