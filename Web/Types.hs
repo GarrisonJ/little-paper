@@ -40,7 +40,7 @@ data UsersController
     | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
     | CreateFollowAction
-    | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Int) }
+    | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Text) }
     deriving (Eq, Show, Data)
 
 data PasswordsController

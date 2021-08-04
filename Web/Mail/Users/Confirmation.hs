@@ -2,7 +2,7 @@ module Web.Mail.Users.Confirmation where
 import Web.View.Prelude
 import IHP.MailPrelude
 
-data ConfirmationMail = ConfirmationMail { user :: User }
+data ConfirmationMail = ConfirmationMail { user :: User, confirmationKey :: Text }
 
 instance BuildMail ConfirmationMail where
     subject = "Confirm your Account"
@@ -16,4 +16,4 @@ instance BuildMail ConfirmationMail where
         <br /><br />
     |]
         where
-            confirmUrl = urlTo ConfirmUserEmailAction { userId = (get #id user), confirmationKey = (get #confirmationKey user)}
+            confirmUrl = urlTo ConfirmUserEmailAction { userId = (get #id user), confirmationKey = confirmationKey }

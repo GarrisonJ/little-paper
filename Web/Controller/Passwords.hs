@@ -4,10 +4,6 @@ import Web.Controller.Prelude
 import Web.View.Passwords.ForgotPassword
 import Web.View.Passwords.ResetPassword
 import Web.Mail.Passwords.Reset
-import qualified Crypto.PasswordStore
-import System.Random
-import Data.UUID (toString)
-import Data.Text
 
 instance Controller PasswordsController where
 
@@ -38,7 +34,7 @@ instance Controller PasswordsController where
                         deleteOldPasswordResets user
 
                         -- Get a random UUID and convert it to Text to use as our key
-                        resetToken <- Data.Text.pack <$> toString <$> (randomIO :: IO UUID)
+                        resetToken <- randomText
 
                         -- Hash the reset token to save in our database
                         hashedRandomToken <- hashToken resetToken
@@ -107,13 +103,3 @@ instance Controller PasswordsController where
         setSuccessMessage "Your new password has been set"
         redirectToPath "/"
 
-
-
-tokenStrength :: Int
-tokenStrength = 17
-
-verifyToken :: Text -> Text -> Bool
-verifyToken tokenHash plainText = Crypto.PasswordStore.verifyPassword (cs plainText) (cs tokenHash)
-
-hashToken :: Text -> IO Text
-hashToken plainText = cs <$> Crypto.PasswordStore.makePassword (cs plainText) tokenStrength

@@ -19,7 +19,7 @@ CREATE TABLE users (
     is_confirmed BOOLEAN DEFAULT false NOT NULL,
     picture_url TEXT DEFAULT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    confirmation_key INT NOT NULL,
+    confirmation_key TEXT,
     failed_email_confirm_attempts INT DEFAULT 0 NOT NULL
 );
 CREATE UNIQUE INDEX user_username_index ON users (LOWER(username));

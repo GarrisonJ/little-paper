@@ -76,16 +76,17 @@ instance Controller UsersController where
                         Left user -> render NewView { .. }
                         Right user -> do
                             hashed <- hashPassword (get #passwordHash user)
-                            confirmationKey <- randomRIO (1 :: Int, 999999)
+                            confirmationKey <- randomText
+                            hashedConfirmationKey <- hashToken confirmationKey
                             user <- user
                                 |> set #passwordHash hashed
-                                |> set #confirmationKey confirmationKey
+                                |> set #confirmationKey (Just hashedConfirmationKey)
                                 |> createRecord
                             setUserToFollowSelf (get #id user)
                             -- If we are in production, send an authentication email
                             -- Otherwise, just auto confirm and sign in
                             if False -- TODO: Set his up in Production
-                                then sendMail ConfirmationMail { user }
+                                then sendMail ConfirmationMail { user, confirmationKey }
                                 else user |> set #isConfirmed True
                                           |> updateRecord
                                           >>= \_ -> pure ()
@@ -150,24 +151,28 @@ instance Controller UsersController where
                                     |> modify #failedEmailConfirmAttempts (\count -> count + 1)
                                     |> updateRecord
 
-                                if get #confirmationKey user /= confirmationKey
-                                    then failConfirm
-                                    else do
-                                        user
-                                            |> set #isConfirmed True
-                                            |> updateRecord
-                                        login user
-                                        redirectToPath "/" -- TODO Redirect to page specific to new users
-                where
-                    maxConfirmAttempts = 10
-                    failConfirm = setErrorMessage failedToConfirmMessage >> redirectToPath "/"
+                                case (get #confirmationKey user) of
+                                    Nothing -> failConfirm
+                                    Just validconfirmationKeyHashed -> do
+                                        if not $ verifyToken validconfirmationKeyHashed confirmationKey
+                                            then failConfirm
+                                            else do
+                                                user
+                                                    |> set #isConfirmed True
+                                                    |> set #confirmationKey Nothing
+                                                    |> updateRecord
+                                                login user
+                                                redirectToPath "/" -- TODO Redirect to page specific to new users
+                    where
+                        maxConfirmAttempts = 10
+                        failConfirm = setErrorMessage failedToConfirmMessage >> redirectToPath "/"
 
-                    -- Let's give the likely hackers the same error message for all errors
-                    -- so they don't know how many chances they have before the timeout.
-                    -- This is the only valid error message a real user might recive.
-                    failedToConfirmMessage = "Sorry, we couldn't confirm your email. \
-                                            \ Confirmation emails expire in 2 hours. \
-                                            \ Try signing up again."
+                        -- Let's give the likely hackers the same error message for all errors
+                        -- so they don't know how many chances they have before the timeout.
+                        -- This is the only valid error message a real user might recive.
+                        failedToConfirmMessage = "Sorry, we couldn't confirm your email. \
+                                                \ Confirmation emails expire in 2 hours. \
+                                                \ Try signing up again."
 
 buildUser user = user
     |> fill @["email","passwordHash","timezone","username","pictureUrl"]
