@@ -16,9 +16,15 @@ instance Controller UsersController where
     -- List all of the users.
     action UsersAction = do
         ensureIsUser
-        users <- query @User
+
+        (userQuery, pagination) <- query @User
             |> filterWhere (#isConfirmed, True)
-            |> fetch
+            |> paginateWithOptions
+                (defaultPaginationOptions
+                    |> set #maxItems 10)
+
+        users <- userQuery |> fetch
+
         render IndexView { .. }
 
     -- The new user form
@@ -125,6 +131,7 @@ instance Controller UsersController where
         user <- fetch userId
         let username = get #username user
         redirectToPath $ "/user/" <> username
+
 
     action ConfirmUserEmailAction { userId, confirmationKey } = do
         -- Send users who are signed in home

@@ -1,7 +1,8 @@
 module Web.View.Users.Index where
 import Web.View.Prelude
 
-data IndexView = IndexView { users :: [User] }
+data IndexView = IndexView { users :: [User],
+                             pagination :: Pagination }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
@@ -15,12 +16,15 @@ instance View IndexView where
                 <tbody>{forEach users renderUser}</tbody>
             </table>
         </div>
+        {renderPagination pagination}
     |]
 
 
 renderUser :: User -> Html
 renderUser user = [hsx|
     <tr>
-        <td><a href={ShowProfileAction (get #username user)}>{get #username user}</a></td>
+        <td>
+            <a href={ShowProfileAction (get #username user)}>{get #username user}</a>
+        </td>
     </tr>
 |]
