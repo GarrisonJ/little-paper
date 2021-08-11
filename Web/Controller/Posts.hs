@@ -10,6 +10,7 @@ import Data.Time
 import Data.Time.Zones (utcToLocalTimeTZ, utcToLocalTimeTZ ,utcTZ)
 import Data.Text.Encoding (encodeUtf8)
 import Data.Text (unpack)
+import Data.Maybe (fromJust)
 
 instance Controller PostsController where
     beforeAction = ensureIsUser
@@ -21,14 +22,22 @@ instance Controller PostsController where
         day <- getUserDay $ get #timezone currentUser
         todaysPost <- getDailyPost currentUserId day
 
+        let page = Nothing
         render IndexView { .. }
 
-    action FollowedPostsAction = do
+    action FollowedPostsAction { page } = do
         -- Every user follows themself
+        let pageSize = 10
+        let skip = if isJust page
+                        then (fromJust page)*pageSize
+                        else 0
+
         posts <- query @Post
                 |> innerJoin @UserFollow (#userId, #followedId)
                 |> filterWhereJoinedTable @UserFollow (#followerId, currentUserId)
                 |> orderByDesc #createdOn
+                |> offset skip
+                |> limit pageSize
                 |> fetch
             >>= collectionFetchRelated #userId
 
@@ -43,7 +52,7 @@ instance Controller PostsController where
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
-                redirectTo FollowedPostsAction
+                redirectTo $ FollowedPostsAction Nothing
             Nothing -> do
                 let post = newRecord
                 render NewView { .. }
@@ -70,11 +79,11 @@ instance Controller PostsController where
                 case post of
                     Nothing -> do
                         setErrorMessage "Couldn't find that post"
-                        redirectTo FollowedPostsAction
+                        redirectTo $ FollowedPostsAction Nothing
                     Just post -> render ShowView { .. }
             _ -> do
                 setErrorMessage "Couldn't find that post"
-                redirectTo FollowedPostsAction
+                redirectTo $ FollowedPostsAction Nothing
         where
             parseDay = parseTimeM False defaultTimeLocale "%-Y-%-m-%d" . Data.Text.unpack
 
@@ -101,7 +110,7 @@ instance Controller PostsController where
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
-                redirectTo FollowedPostsAction
+                redirectTo $ FollowedPostsAction Nothing
             Nothing -> do
                 newRecord @Post
                     |> set #userId currentUserId
@@ -113,14 +122,14 @@ instance Controller PostsController where
                         Right post -> do
                             post <- post |> createRecord
                             setSuccessMessage "Post created"
-                            redirectTo FollowedPostsAction
+                            redirectTo $ FollowedPostsAction Nothing
 
     action DeletePostAction { postId } = do
         post <- fetch postId
         accessDeniedUnless (get #userId post == currentUserId)
         deleteRecord post
         setSuccessMessage "Post deleted"
-        redirectTo FollowedPostsAction
+        redirectTo $ FollowedPostsAction Nothing
 
 buildPost post = post
     |> fill @'["body"]

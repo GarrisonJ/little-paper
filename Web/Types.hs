@@ -11,7 +11,7 @@ data StaticController = WelcomeAction deriving (Eq, Show, Data)
 
 data PostsController
     = PostsAction
-    | FollowedPostsAction
+    | FollowedPostsAction { page :: !(Maybe Int) }
     | NewPostAction
     | ShowPostAction { postId :: !(Id Post) }
     | ShowPostForDayAction { username :: !(Text), day :: !(Text) }

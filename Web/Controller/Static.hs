@@ -6,4 +6,4 @@ instance Controller StaticController where
     action WelcomeAction = do
         case currentUserOrNothing of
             Nothing -> render WelcomeView
-            Just _ -> redirectTo FollowedPostsAction
+            Just _ -> redirectTo $ FollowedPostsAction Nothing
