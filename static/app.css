@@ -3,6 +3,14 @@
     --manatee: #9898a0ff;
     --steel-blue: #527da4ff;
     --dark-purple: #2f131eff;
+
+
+    --dark-bg: #002b36;
+    --dark-color: #eee8d5;
+    --dark-code: #93a1a1;
+    --light-bg: #fffff8;
+    --light-color: #111;
+    --light-code: #657b83;
 }
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
@@ -10,10 +18,12 @@
 
 body {
     font-family: 'Poppins', sans-serif;
+    background: var(--dark-bg);
+    color: var(--dark-color);
 }
 
 .welcome-page {
-    background: var(--alabaster);
+    background: var(--dark-bg);
 }
 
 p {
@@ -21,11 +31,10 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: var(--dark-purple);
+    color: var(--dark-color)
 }
 
 a, a:hover, a:focus {
-    color: inherit;
     text-decoration: none;
     transition: all 0.3s;
 }
@@ -35,16 +44,31 @@ a, a:hover, a:focus {
 }
 
 .post-card {
-    background: var(--alabaster);
+    background: var(--dark-bg);
 }
 
-.do-somethingrainbow {
-    background: rgb(131,58,180);
-    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+.bg-body{
+    background: var(--dark-bg) !important;
+}
+
+.post-text {
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .send-message-button {
     width: 200px;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background: linear-gradient(0deg, rgba(53,63,215,1) 0%, rgba(55,113,255,1) 100%);
+}
+
+.btn-primary:active {
+  background: rgba(53,63,215,1) !important;
+}
+
+.btn-primary {
+    border: none;
 }
 
 /************ Edit Form ************/
@@ -52,25 +76,29 @@ a, a:hover, a:focus {
     height: 150px;
 }
 
+
 /************ Sidebar ************/
 
 #sidebar-wrapper {
-    background: var(--alabaster);
+    background: var(--dark-bg);
 }
 
 .list-group-item-light {
-    background: var(--alabaster);
+    background: var(--dark-bg);
 }
 
 .list-group-item {
-    border-color: var(--alabaster);
-    color: rgb(33, 33, 33);
+    background: var(--dark-bg);
+    color: var(--dark-color)
+}
+.table {
+    color: var(--dark-color);
 }
 
 /* Hover styles */
 .list-group-item-light.list-group-item-action:hover, .list-group-item-light.list-group-item-action:focus {
-  background-color: var(--manatee);
-  color: rgb(33, 33, 33);
+    background: var(--dark-bg);
+    color: var(--dark-color)
 }
 
 /************ END Sidebar ************/

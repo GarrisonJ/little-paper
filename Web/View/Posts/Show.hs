@@ -16,7 +16,7 @@ renderPost user post = [hsx|
         <a href={ShowProfileAction username}>
             <img class="d-placeholder-img flex-shrink-0 me-2 rounded" src={picturePath} style="width:50px; height: 50px"/>
         </a>
-        <div>
+        <div class="w-100">
             <div class="dropdown float-right">
                 <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {kebabHorizontal}
@@ -37,7 +37,7 @@ renderPost user post = [hsx|
                     </a>
                 </small>
             </h5>
-            <p>
+            <p class="post-text">
                 {get #body post}
             </p>
         </div>

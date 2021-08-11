@@ -15,9 +15,9 @@ instance View IndexView where
             renderPostInput = case todaysPost of
                     Just p -> [hsx|<h3>You posted something today. Nice job!</h3>|]
                     Nothing -> [hsx|
-                                <div class="card bg-light shadow-sm">
-                                    <div class="card-header">You have't posted today!</div>
-                                    <div class="card-body">
+                                <div class="card bg-transparent border-light">
+                                    <div class="card-header border-light">You have't posted today!</div>
+                                    <div class="card-body border-light">
                                         {renderPostForm (newRecord :: Post)}
                                     </div>
                                 </div>
@@ -31,7 +31,7 @@ instance View IndexView where
 renderPostForm :: Post -> Html
 renderPostForm post = formForWithOptions post postFormOptions [hsx|
     {(textareaField #body) { disableLabel = True }}
-    {submitButton { label= "Submit", buttonClass="do-somethingrainbow rounded-pill float-right border border-white send-message-button" } }
+    {submitButton { label= "Submit", buttonClass="float-right send-message-button" } }
 |]
 
 postFormOptions :: FormContext (Post) -> FormContext (Post)
