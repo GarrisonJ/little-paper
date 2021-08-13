@@ -13,10 +13,7 @@ instance View ShowView where
 
 renderPost user post = [hsx|
     <div class="d-flex">
-        <a href={ShowProfileAction username}>
-            <img class="d-placeholder-img flex-shrink-0 me-2 rounded" src={picturePath} style="width:50px; height: 50px"/>
-        </a>
-        <div class="w-100">
+        <div class="w-100 border border-top-0">
             <div class="dropdown float-right">
                 <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {kebabHorizontal}
@@ -26,18 +23,20 @@ renderPost user post = [hsx|
                     <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
                 </div>
             </div>
-            <h5>
-                <a class="pr-2" href={ShowProfileAction username}>
-                    @{username}
+            <div class="p-2 ">
+                <a href={ShowProfileAction username}>
+                    <img class="border rounded-circle" src={picturePath} style="width:50px; height: 50px"/>
                 </a>
-
+                <a class="p-2" href={ShowProfileAction username}>
+                    {username}
+                </a>
                 <small class="text-muted">
                     <a href={ShowPostAction (get #id post)}>
                         {get #createdOnDay post}
                     </a>
                 </small>
-            </h5>
-            <p class="post-text">
+            </div>
+            <p class="p-3 post-text">
                 {get #body post}
             </p>
         </div>

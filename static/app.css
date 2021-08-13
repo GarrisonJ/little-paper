@@ -16,10 +16,18 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
 
+
 body {
+    /* TODO: Choose a font and import properly */
     font-family: 'Poppins', sans-serif;
+    font-family: et-book,Palatino,"Palatino Linotype","Palatino LT STD","Book Antiqua",Georgia,serif;
     background: var(--dark-bg);
     color: var(--dark-color);
+}
+
+#content {
+    overflow-y: scroll;
+    height: 100vh
 }
 
 .welcome-page {
@@ -52,7 +60,9 @@ a, a:hover, a:focus {
 }
 
 .post-text {
-    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-family: et-book,Palatino,"Palatino Linotype","Palatino LT STD","Book Antiqua",Georgia,serif;
 }
 
 .send-message-button {
@@ -89,10 +99,15 @@ a, a:hover, a:focus {
 
 .list-group-item {
     background: var(--dark-bg);
-    color: var(--dark-color)
+    color: var(--dark-color);
+    border: none;
 }
 .table {
     color: var(--dark-color);
+}
+
+.sidebar-heading {
+    padding-left: 10px;
 }
 
 /* Hover styles */
@@ -102,3 +117,7 @@ a, a:hover, a:focus {
 }
 
 /************ END Sidebar ************/
+
+.navbar {
+    background: var(--dark-bg);
+}

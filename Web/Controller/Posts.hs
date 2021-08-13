@@ -118,7 +118,7 @@ instance Controller PostsController where
                     |> set #userTimezoneSnapshot (get #timezone currentUser)
                     |> buildPost
                     |> ifValid \case
-                        Left post -> render NewView { .. }
+                        Left post -> redirectTo $ FollowedPostsAction Nothing
                         Right post -> do
                             post <- post |> createRecord
                             setSuccessMessage "Post created"
@@ -134,6 +134,7 @@ instance Controller PostsController where
 buildPost post = post
     |> fill @'["body"]
     |> validateField #body (hasMaxLength 280)
+    |> validateField #body (nonEmpty)
 
 getUserDay :: Text -> IO (Day)
 getUserDay preferedTimezone = do

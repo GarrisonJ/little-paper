@@ -7,27 +7,20 @@ data IndexView = IndexView { posts :: [Include "userId" Post], todaysPost :: May
 instance View IndexView where
     html IndexView { .. } = [hsx|
         {renderPostInput}
-        <div class="my-3 p-4 bg-body shadow-sm border">
+        <div class="my-3 bg-body">
             <div>{forEach posts renderPost}</div>
-
-        <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item">
-            <a class="page-link" href={FollowedPostsAction prevPage} aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
+            <a  href={FollowedPostsAction prevPage} aria-label="Previous">
+                {leftArrow}
             </a>
-            </li>
-            <li class="page-item">
-            <a class="page-link" href={FollowedPostsAction nextPage} aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
+            <a href={FollowedPostsAction nextPage} aria-label="Next">
+                {rightArrow}
             </a>
-            </li>
-        </ul>
-        </nav>
 
         </div>
     |]
         where
+            rightArrow = [hsx|<span class="display-4">→</span>|]
+            leftArrow = [hsx|<span class="display-4">←</span>|]
             nextPage = if isJust page then (fmap succ page) else Just 1
             prevPage = case page of
                         Nothing -> Nothing
@@ -46,7 +39,6 @@ instance View IndexView where
 
             renderPost post = [hsx|
                 {Web.View.Posts.Show.renderPost (get #userId post) post}
-                <hr>
             |]
 
 renderPostForm :: Post -> Html

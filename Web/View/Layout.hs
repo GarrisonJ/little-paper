@@ -9,37 +9,6 @@ import IHP.Controller.RequestContext
 import Web.Types
 import Web.Routes
 
-defaultLayout :: Html -> Html
-defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
-<head>
-    {metaTags}
-
-    {stylesheets}
-    {scripts}
-
-    <title>Daily</title>
-</head>
-<body>
-    <div class="d-flex" id="wrapper">
-        {sidebar}
-        <div id="page-content-wrapper">
-            {topnav}
-            <div class="container-fluid">
-                {renderFlashMessages}
-                <div id="content">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8 col-12" style="margin-top: 10px">
-                            {inner}
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</body>
-|]
-
 welcomePageLayout :: Html -> Html
 welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 <head>
@@ -58,6 +27,49 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
             </div>
             {inner}
         </div>
+    <footer class="footer">
+        <div class="container">
+            <small class="text-muted float-right">
+                <a class="col" title="Coming Soon">About</a>
+                <a class="col" title="Coming Soon">Contact</a>
+                <a class="col" title="Coming Soon">Help</a>
+                <a class="col" title="Coming Soon">Developers</a>
+                <a class="col" style="white-space: nowrap;" href="https://unsplash.com/photos/XXBSevpUs3Q" target="_blank">Image by Meax Prod</a>
+            </small>
+        </div>
+    </footer>
+    </div>
+</body>
+|]
+
+defaultLayout :: Html -> Html
+defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
+<head>
+    {metaTags}
+
+    {stylesheets}
+    {scripts}
+
+    <title>Daily</title>
+</head>
+<body>
+    <div id="page-content-wrapper">
+        {topnav}
+        <div class="container">
+            <div class="row">
+                {renderFlashMessages}
+                <div class="col-3 d-none d-md-block">
+                    {sidebar}
+                </div>
+                <div id="content" class="col-md-8 col-12">
+                    <div class="row justify-content-center">
+                        <div class="" style="margin-top: 10px">
+                            {inner}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 |]
@@ -66,7 +78,9 @@ sidebar :: Html
 sidebar = [hsx|
     <div id="sidebar-wrapper">
         <div class="sidebar-heading">
-            <a href={FollowedPostsAction Nothing}>Daily</a>
+            <h1>
+                <a href={FollowedPostsAction Nothing}><img style="width: 50px; padding-top: 10px;" src="./logo.png"></a>
+            </h1>
         </div>
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href={FollowedPostsAction Nothing}>Home</a>
@@ -80,7 +94,7 @@ sidebar = [hsx|
 
 topnav:: Html
 topnav = [hsx|
-    <nav class="navbar navbar-expand-lg navbar-light d-block d-md-none">
+    <nav class="navbar navbar-expand-lg navbar-dark d-block d-md-none sticky-top">
     <a class="navbar-brand" href="#">Daily</a>
     <button class="navbar-toggler"
             type="button"
@@ -93,7 +107,7 @@ topnav = [hsx|
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
+        <li class="nav-item">
             <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
         </li>
         <li class="nav-item">
@@ -117,7 +131,6 @@ stylesheets :: Html
 stylesheets = [hsx|
         <link rel="stylesheet" href="/vendor/bootstrap.min.css"/>
         <link rel="stylesheet" href="/vendor/flatpickr.min.css"/>
-        <link rel="stylesheet" href="/sidebar.css"/>
         <link rel="stylesheet" href="/app.css"/>
     |]
 
@@ -135,7 +148,6 @@ scripts = [hsx|
         <script src="/vendor/turbolinksMorphdom.js"></script>
         <script src="/helpers.js"></script>
         <script src="/ihp-auto-refresh.js"></script>
-        <script src="/sidebar.js"></script>
     |]
 
 metaTags :: Html
