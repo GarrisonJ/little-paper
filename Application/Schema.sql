@@ -6,7 +6,7 @@ CREATE TABLE posts (
     user_id UUID NOT NULL,
     created_on TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     user_timezone_snapshot TEXT NOT NULL,
-    UNIQUE(user_id, created_on)
+    UNIQUE(user_id, created_on_day)
 );
 CREATE TABLE users (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
