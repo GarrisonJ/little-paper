@@ -16,15 +16,6 @@ instance View ShowView where
 renderPost user isLiked post = [hsx|
     <div class="d-flex">
         <div class="w-100 border border-top-0">
-            <div class="dropdown float-right">
-                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {kebabHorizontal}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href={EditPostAction (get #id post)}>Edit</a>
-                    <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
-                </div>
-            </div>
             <div class="p-2 ">
                 <a href={ShowProfileAction username}>
                     <img class="border rounded-circle" src={picturePath} style="width:50px; height: 50px"/>
@@ -45,6 +36,7 @@ renderPost user isLiked post = [hsx|
                     </a>
                 </small>
             </div>
+            {renderControlDropdown user}
             <p class="p-3 post-text">
                 {get #body post}
             </p>
@@ -53,8 +45,23 @@ renderPost user isLiked post = [hsx|
 |]
     where
         username = user |> get #username
-        kebabHorizontal = [hsx|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>|]
         picturePath :: Text
         picturePath = case get #pictureUrl user of
                         Nothing -> "/space.jpeg"
                         Just url -> url
+        renderControlDropdown post =
+                    if (get #id currentUser) == get #id user
+                        then userDropdown
+                        else [hsx||]
+        userDropdown = [hsx|
+            <div class="dropdown float-right">
+                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {kebabHorizontal}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href={EditPostAction (get #id post)}>Edit</a>
+                    <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
+                </div>
+            </div>
+        |]
+        kebabHorizontal = [hsx|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>|]
