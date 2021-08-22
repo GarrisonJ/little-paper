@@ -134,10 +134,14 @@ stylesheets = [hsx|
         <link rel="stylesheet" href="/app.css"/>
     |]
 
+
+-- TODO: Make sure to load the correct jquery if CDN is down
 scripts :: Html
 scripts = [hsx|
         <script id="livereload-script" src="/livereload.js"></script>
-        <script src="/vendor/jquery-3.6.0.slim.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+                integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+                crossorigin="anonymous"></script>
         <script src="/vendor/timeago.js"></script>
         <script src="/vendor/popper.min.js"></script>
         <script src="/vendor/bootstrap.min.js"></script>
