@@ -152,6 +152,7 @@ scripts = [hsx|
         <script src="/vendor/turbolinksMorphdom.js"></script>
         <script src="/helpers.js"></script>
         <script src="/ihp-auto-refresh.js"></script>
+        <script src="/app.js"></script>
     |]
 
 metaTags :: Html

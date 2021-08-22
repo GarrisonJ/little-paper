@@ -1,17 +1,19 @@
 module Web.View.Posts.Show where
 import Web.View.Prelude
 
-data ShowView = ShowView { post :: Include "userId" Post }
+data ShowView = ShowView {
+                           post :: Include "userId" Post
+                         , isLiked :: Bool
+                         }
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <div class="my-3 p-3 bg-body rounded shadow-sm">
-        {renderPost (post |> get #userId) post}
+        {renderPost (post |> get #userId) isLiked post}
         </div>
-
     |]
 
-renderPost user post = [hsx|
+renderPost user isLiked post = [hsx|
     <div class="d-flex">
         <div class="w-100 border border-top-0">
             <div class="dropdown float-right">
@@ -30,6 +32,13 @@ renderPost user post = [hsx|
                 <a class="p-2" href={ShowProfileAction username}>
                     {username}
                 </a>
+                <div class="float-right">
+                <div class="like-button" style={if isLiked then "color:red;" :: String else ""} data-postid={tshow (get #id post)} data-url={CreateLikeAction}>
+                    <svg xmlns="http://www.w3.org`/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                    </svg>
+                </div>
+                </div>
                 <small class="text-muted">
                     <a href={ShowPostAction (get #id post)}>
                         {get #createdOnDay post}

@@ -22,3 +22,5 @@ instance CanRoute ProfilesController where
 
 instance HasPath ProfilesController where
     pathTo ShowProfileAction { username } = profilePrefix <> username
+
+instance AutoRoute LikesController

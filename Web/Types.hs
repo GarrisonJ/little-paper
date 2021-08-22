@@ -53,3 +53,7 @@ data PasswordsController
 data ProfilesController
     = ShowProfileAction { username :: !(Text) }
     deriving (Eq, Show, Data)
+
+data LikesController
+    = CreateLikeAction
+    deriving (Eq, Show, Data)

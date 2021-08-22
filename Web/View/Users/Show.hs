@@ -2,16 +2,21 @@ module Web.View.Users.Show where
 import Web.View.Prelude
 import qualified Web.View.Posts.Show (renderPost)
 
-data ShowView = ShowView { user :: Include "posts" User, followed :: Bool }
+data ShowView = ShowView {
+                          user :: Include "posts" User
+                        , followed :: Bool
+                        , likes :: [Like]
+                        }
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <h1>{get #username user} {followButton}</h1>
         <div class="my-3 p-3 bg-body rounded shadow-sm">
-            {forEach (user |> get #posts) (Web.View.Posts.Show.renderPost user)}
+            {forEach (user |> get #posts) (\post -> Web.View.Posts.Show.renderPost user (isPostLiked post likes) post)}
         </div>
     |]
         where
+            isPostLiked post likes = (get #id post) `elem` (fmap (get #postId) likes)
             followButton = if get #id user == get #id currentUser
                 then [hsx||]
                 else renderFollowButton followed user

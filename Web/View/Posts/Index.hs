@@ -2,7 +2,11 @@ module Web.View.Posts.Index where
 import Web.View.Prelude
 import Web.View.Posts.Show
 
-data IndexView = IndexView { posts :: [Include "userId" Post], todaysPost :: Maybe Post, page :: Maybe Int }
+data IndexView = IndexView { posts :: [Include "userId" Post],
+                             todaysPost :: Maybe Post,
+                             page :: Maybe Int,
+                             likes :: [Like]
+                             }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
@@ -37,8 +41,10 @@ instance View IndexView where
                                 </div>
                             |]
 
+
+            isPostLiked post likes = (get #id post) `elem` (fmap (get #postId) likes)
             renderPost post = [hsx|
-                {Web.View.Posts.Show.renderPost (get #userId post) post}
+                {Web.View.Posts.Show.renderPost (get #userId post) (isPostLiked post likes) post}
             |]
 
 renderPostForm :: Post -> Html

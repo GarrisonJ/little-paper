@@ -16,8 +16,11 @@ instance Controller ProfilesController where
                         |> filterWhere (#followedId, get #id user)
                         |> fetchOneOrNothing
 
-        let followed = case follow of
-                    Nothing -> False
-                    Just _ -> True
+        let followed = not $ null follow
+
+        likes <- query @Like
+                    |> filterWhere (#userId, currentUserId)
+                    |> filterWhereIn (#postId, ids (get #posts user))
+                    |> fetch
 
         render Web.View.Users.Show.ShowView { .. }

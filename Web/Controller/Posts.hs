@@ -16,12 +16,15 @@ instance Controller PostsController where
     beforeAction = ensureIsUser
 
     action PostsAction = do
+        -- TODO: Delete this action, or update it to work
+        -- pagination/like button
         posts <- query @Post |> fetch
             >>= collectionFetchRelated #userId
 
         day <- getUserDay $ get #timezone currentUser
         todaysPost <- getDailyPost currentUserId day
 
+        let likes = []
         let page = Nothing
         render IndexView { .. }
 
@@ -40,6 +43,11 @@ instance Controller PostsController where
                 |> limit pageSize
                 |> fetch
             >>= collectionFetchRelated #userId
+
+        likes <- query @Like
+                    |> filterWhere (#userId, currentUserId)
+                    |> filterWhereIn (#postId, ids posts)
+                    |> fetch
 
         day <- getUserDay $ get #timezone currentUser
         todaysPost <- getDailyPost currentUserId day
@@ -61,6 +69,13 @@ instance Controller PostsController where
         post <- fetch postId
             >>= fetchRelated #userId
 
+        like <- query @Like
+                    |> filterWhere (#userId, currentUserId)
+                    |> filterWhere (#postId, postId)
+                    |> fetchOneOrNothing
+
+        let isLiked = not $ null like
+
         render ShowView { .. }
 
     action ShowPostForDayAction { username, day } = do
@@ -80,7 +95,7 @@ instance Controller PostsController where
                     Nothing -> do
                         setErrorMessage "Couldn't find that post"
                         redirectTo $ FollowedPostsAction Nothing
-                    Just post -> render ShowView { .. }
+                    Just post -> redirectTo $ ShowPostAction { postId = (get #id post) }
             _ -> do
                 setErrorMessage "Couldn't find that post"
                 redirectTo $ FollowedPostsAction Nothing
