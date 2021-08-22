@@ -21,8 +21,8 @@ body {
     /* TODO: Choose a font and import properly */
     font-family: 'Poppins', sans-serif;
     font-family: et-book,Palatino,"Palatino Linotype","Palatino LT STD","Book Antiqua",Georgia,serif;
-    background: var(--dark-bg);
-    color: var(--dark-color);
+    background: var(--light-bg);
+    color: var(--light-color);
 }
 
 #content {
@@ -39,7 +39,7 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: var(--dark-color)
+    color: var(--light-color)
 }
 
 a, a:hover, a:focus {
@@ -52,11 +52,11 @@ a, a:hover, a:focus {
 }
 
 .post-card {
-    background: var(--dark-bg);
+    background: var(--light-bg);
 }
 
 .bg-body{
-    background: var(--dark-bg) !important;
+    background: var(--light-bg) !important;
 }
 
 .post-text {
@@ -90,20 +90,20 @@ a, a:hover, a:focus {
 /************ Sidebar ************/
 
 #sidebar-wrapper {
-    background: var(--dark-bg);
+    background: var(--light-bg);
 }
 
 .list-group-item-light {
-    background: var(--dark-bg);
+    background: var(--light-bg);
 }
 
 .list-group-item {
-    background: var(--dark-bg);
-    color: var(--dark-color);
+    background: var(--light-bg);
+    color: var(--light-color);
     border: none;
 }
 .table {
-    color: var(--dark-color);
+    color: var(--light-color);
 }
 
 .sidebar-heading {
@@ -112,12 +112,12 @@ a, a:hover, a:focus {
 
 /* Hover styles */
 .list-group-item-light.list-group-item-action:hover, .list-group-item-light.list-group-item-action:focus {
-    background: var(--dark-bg);
-    color: var(--dark-color)
+    background: var(--light-bg);
+    color: var(--light-color)
 }
 
 /************ END Sidebar ************/
 
 .navbar {
-    background: var(--dark-bg);
+    background: var(--light-bg);
 }
