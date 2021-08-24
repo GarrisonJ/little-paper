@@ -61,7 +61,7 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
                 <div class="col-3 d-none d-md-block">
                     {sidebar}
                 </div>
-                <div id="content" class="col-md-8 col-12">
+                <div id="content" class="col-md-8 col-12 p-4">
                     <div class="row justify-content-center">
                         <div class="" style="margin-top: 10px">
                             {inner}

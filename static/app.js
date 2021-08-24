@@ -17,9 +17,9 @@ $(document).on( "click", ".like-button", function(event){
     .done(
         function(response) {
             if(response == true) {
-                $(`*[data-postid="${postid}"]`).css("color", "red");
+                $(`*[data-postid="${postid}"]`).css("color", "#ff5e57");
             } else {
-                $(`*[data-postid="${postid}"]`).css("color", "black");
+                $(`*[data-postid="${postid}"]`).css("color", "");
             }
         }
     )

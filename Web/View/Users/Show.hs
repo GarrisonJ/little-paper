@@ -11,7 +11,7 @@ data ShowView = ShowView {
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <h1>{get #username user} {followButton}</h1>
-        <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <div class="my-3 p-3">
             {forEach (user |> get #posts) (\post -> Web.View.Posts.Show.renderPost user (isPostLiked post likes) post)}
         </div>
     |]

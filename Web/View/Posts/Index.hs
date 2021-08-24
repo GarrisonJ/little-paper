@@ -11,7 +11,7 @@ data IndexView = IndexView { posts :: [Include "userId" Post],
 instance View IndexView where
     html IndexView { .. } = [hsx|
         {renderPostInput}
-        <div class="my-3 bg-body">
+        <div class="">
             <div>{forEach posts renderPost}</div>
             <a  href={FollowedPostsAction prevPage} aria-label="Previous">
                 {leftArrow}
@@ -33,7 +33,7 @@ instance View IndexView where
             renderPostInput = case todaysPost of
                     Just p -> [hsx|<h3>You posted something today. Nice job!</h3>|]
                     Nothing -> [hsx|
-                                <div class="card bg-transparent border-light">
+                                <div class="card yosemite-window">
                                     <div class="card-header border-light">You have't posted today!</div>
                                     <div class="card-body border-light">
                                         {renderPostForm (newRecord :: Post)}
