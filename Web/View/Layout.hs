@@ -56,8 +56,8 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     <div id="page-content-wrapper">
         {topnav}
         <div class="container">
+            {renderFlashMessages}
             <div class="row">
-                {renderFlashMessages}
                 <div class="col-3 d-none d-md-block">
                     {sidebar}
                 </div>
