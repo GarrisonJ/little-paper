@@ -63,7 +63,7 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
                 </div>
                 <div id="content" class="col-md-8 col-12 p-4">
                     <div class="row justify-content-center">
-                        <div class="" style="margin-top: 10px">
+                        <div class="w-100" style="margin-top: 10px">
                             {inner}
                         </div>
                     </div>
