@@ -78,8 +78,8 @@ sidebar :: Html
 sidebar = [hsx|
     <div id="sidebar-wrapper" style="position: fixed;">
         <div class="sidebar-heading">
-            <h1>
-                <a href={FollowedPostsAction Nothing}><img style="width: 50px; padding-top: 10px;" src="./logo.png"></a>
+            <h1 class="display-4 mt-3">
+                <a href={FollowedPostsAction Nothing}>Daily</a>
             </h1>
         </div>
         <div class="list-group list-group-flush">
@@ -94,36 +94,36 @@ sidebar = [hsx|
 
 topnav:: Html
 topnav = [hsx|
-    <nav class="navbar navbar-expand-lg navbar-dark d-block d-md-none sticky-top">
-    <a class="navbar-brand" href="#">Daily</a>
-    <button class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href={UsersAction}>Find People</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
-        </li>
-        </ul>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-light d-block d-md-none sticky-top">
+        <a class="navbar-brand" href="#">Daily</a>
+        <button class="navbar-toggler float-right"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href={UsersAction}>Find People</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+            </li>
+            </ul>
+        </div>
     </nav>
 |]
 
