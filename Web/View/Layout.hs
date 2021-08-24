@@ -76,7 +76,7 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 
 sidebar :: Html
 sidebar = [hsx|
-    <div id="sidebar-wrapper">
+    <div id="sidebar-wrapper" style="position: fixed;">
         <div class="sidebar-heading">
             <h1>
                 <a href={FollowedPostsAction Nothing}><img style="width: 50px; padding-top: 10px;" src="./logo.png"></a>

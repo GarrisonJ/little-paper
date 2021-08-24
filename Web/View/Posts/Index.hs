@@ -11,7 +11,7 @@ data IndexView = IndexView { posts :: [Include "userId" Post],
 instance View IndexView where
     html IndexView { .. } = [hsx|
         {renderPostInput}
-        <div class="">
+        <div>
             <div>{forEach posts renderPost}</div>
             <a  href={FollowedPostsAction prevPage} aria-label="Previous">
                 {leftArrow}
