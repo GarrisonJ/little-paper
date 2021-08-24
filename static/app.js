@@ -24,3 +24,8 @@ $(document).on( "click", ".like-button", function(event){
         }
     )
 });
+
+// Always scroll to top when you click a link
+document.addEventListener("turbolinks:load", function() {
+    window.scrollTo(0,0)
+});
