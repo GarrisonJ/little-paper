@@ -10,7 +10,13 @@ data ShowView = ShowView {
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
-        <h1>{get #username user} {followButton}</h1>
+        <div class="yosemite-window card text-center p-3">
+            <h1>{get #username user}</h1>
+            <img class="border rounded-circle mx-auto" src={picturePath} style="width:100px; height: 100px"/>
+            <div class="float-right pt-3">
+                {followButton}
+            </div>
+        </div>
         <div class="my-3 p-3">
             {forEach (user |> get #posts) (\post -> Web.View.Posts.Show.renderPost user (isPostLiked post likes) post)}
         </div>
@@ -20,7 +26,10 @@ instance View ShowView where
             followButton = if get #id user == get #id currentUser
                 then [hsx||]
                 else renderFollowButton followed user
-
+            picturePath :: Text
+            picturePath = case get #pictureUrl user of
+                            Nothing -> "/space.jpeg"
+                            Just url -> url
 
 renderFollowButton :: Bool -> Include "posts" User -> Html
 renderFollowButton followed user = formForWithOptions user followButtonFormOptions [hsx|
