@@ -3,6 +3,9 @@
 
 set -e
 
+# Fix the issue of running out of DB connections
+ulimit -n 10048
+
 # Unless the RunDevServer binary is available, we rebuild the .envrc cache with nix-shell
 # and config cachix for using our binary cache
 command -v RunDevServer >/dev/null 2>&1 \
