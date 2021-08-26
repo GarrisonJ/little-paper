@@ -29,3 +29,16 @@ $(document).on( "click", ".like-button", function(event){
 document.addEventListener("turbolinks:load", function() {
     window.scrollTo(0,0)
 });
+
+// Fix but with bootstrap dropdowns and turbolinks
+document.addEventListener('turbolinks:load', function() {
+    var dropdown_buttons = document.querySelectorAll('[data-toggle="dropdown"]');
+
+    dropdown_buttons.forEach(function(element) {
+      element.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        toggleDropdown(this);
+      });
+    });
+  });
