@@ -142,8 +142,10 @@ instance Controller PostsController where
     action DeletePostAction { postId } = do
         post <- fetch postId
         accessDeniedUnless (get #userId post == currentUserId)
+        -- Delete all the likes from the post
+        sqlExec "DELETE FROM likes WHERE post_id = ?" (Only (get #id post))
+        -- Delete the post
         deleteRecord post
-        setSuccessMessage "Post deleted"
         redirectTo $ FollowedPostsAction Nothing
 
 buildPost post = post
