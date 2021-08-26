@@ -6,6 +6,8 @@ data ShowView = ShowView {
                           user :: Include "posts" User
                         , followed :: Bool
                         , likes :: [Like]
+                        , followerCount :: Int
+                        , postCount :: Int
                         }
 
 instance View ShowView where
@@ -13,7 +15,11 @@ instance View ShowView where
         <div class="yosemite-window card text-center p-3">
             <h1>{get #username user}</h1>
             <img class="border rounded-circle mx-auto" src={picturePath} style="width:100px; height: 100px"/>
-            <div class="float-right pt-3">
+            <div class="d-flex justify-content-center">
+                <div class="pr-2">{followerCount} <span class="text-muted pl-1">Followers</span></div>
+                <div class="">{postCount} <span class="text-muted pl-1">Posts</span></div>
+            </div>
+            <div class="pt-3">
                 {followButton}
             </div>
         </div>
