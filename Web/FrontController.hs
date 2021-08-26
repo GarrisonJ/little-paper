@@ -7,6 +7,7 @@ import IHP.LoginSupport.Middleware
 import Web.Controller.Sessions
 
 -- Controller Imports
+import Web.Controller.Comments
 import Web.Controller.Likes
 import Web.Controller.Profiles
 import Web.Controller.Users
@@ -19,6 +20,7 @@ instance FrontController WebApplication where
         [ startPage WelcomeAction
         , parseRoute @SessionsController
         -- Generator Marker
+        , parseRoute @CommentsController
         , parseRoute @LikesController
         , parseRoute @ProfilesController
         , parseRoute @UsersController

@@ -4,14 +4,77 @@ import Web.View.Prelude
 data ShowView = ShowView {
                            post :: Include "userId" Post
                          , isLiked :: Bool
+                         , comments :: [Include "userId" Comment]
+                         , commentspagination :: Pagination
                          }
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
-        <div class="p-3">
+        <div>
         {renderPost (post |> get #userId) isLiked post}
         </div>
+        <div class="m-3 p-2 d-flex yosemite-window">
+            <div class="col">
+                <div class="">
+                    {renderFormComment newComment}
+                </div>
+                {forEach comments (\c -> renderComment (c |> get #userId) c)}
+                {renderPagination commentspagination}
+            </div>
+        </div>
     |]
+        where
+            newComment = newRecord @Comment
+                            |> set #postId (get #id post)
+
+renderFormComment :: Comment -> Html
+renderFormComment comment = formFor comment [hsx|
+    {(hiddenField #postId)}
+    {(textField #body) {disableLabel = True}}
+    {submitButton {buttonClass="float-right", label="Reply"}}
+|]
+
+renderComment user comment = [hsx|
+    <div class="w-100 row">
+        <div class="p-2 w-100">
+            <a href={ShowProfileAction username}>
+                <img class="border rounded-circle" src={picturePath} style="width:50px; height: 50px"/>
+            </a>
+            <a class="p-2" href={ShowProfileAction username}>
+                {username}
+            </a>
+            {timeAgo (get #createdAt comment)}
+            <div class="float-right">
+                {renderControlDropdown user}
+            </div>
+        </div>
+        <p class="p-3 post-text w-100">
+            {get #body comment}
+        </p>
+    </div>
+    <hr>
+|]
+    where
+        username = user |> get #username
+        picturePath :: Text
+        picturePath = case get #pictureUrl user of
+                        Nothing -> "/space.jpeg"
+                        Just url -> url
+        renderControlDropdown post =
+                if (get #id currentUser) == get #id user
+                    then userDropdown
+                    else [hsx||]
+        userDropdown = [hsx|
+            <div class="dropdown float-right">
+                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {kebabHorizontal}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item js-delete text-muted" href={DeleteCommentAction (get #id comment)}>Delete</a>
+                </div>
+            </div>
+        |]
+        kebabHorizontal = [hsx|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>|]
 
 renderPost user isLiked post = [hsx|
     <div class="d-flex yosemite-window">

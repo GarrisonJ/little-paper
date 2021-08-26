@@ -57,3 +57,9 @@ data ProfilesController
 data LikesController
     = CreateLikeAction
     deriving (Eq, Show, Data)
+
+data CommentsController
+    = CreateCommentAction
+    | UpdateCommentAction { commentId :: !(Id Comment) }
+    | DeleteCommentAction { commentId :: !(Id Comment) }
+    deriving (Eq, Show, Data)

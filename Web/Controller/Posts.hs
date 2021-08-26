@@ -69,6 +69,17 @@ instance Controller PostsController where
         post <- fetch postId
             >>= fetchRelated #userId
 
+        (commentsQuery, commentspagination) <- query @Comment
+                        |> filterWhere (#postId, postId)
+                        |> orderByDesc (#createdAt)
+                        |> paginateWithOptions
+                            (defaultPaginationOptions
+                                |> set #maxItems 10)
+
+        comments <- commentsQuery
+                        |> fetch
+                        >>= collectionFetchRelated #userId
+
         like <- query @Like
                     |> filterWhere (#userId, currentUserId)
                     |> filterWhere (#postId, postId)
@@ -144,6 +155,8 @@ instance Controller PostsController where
         accessDeniedUnless (get #userId post == currentUserId)
         -- Delete all the likes from the post
         sqlExec "DELETE FROM likes WHERE post_id = ?" (Only (get #id post))
+        -- Delete all the comments from the post
+        sqlExec "DELETE FROM comments WHERE post_id = ?" (Only (get #id post))
         -- Delete the post
         deleteRecord post
         redirectTo $ FollowedPostsAction Nothing

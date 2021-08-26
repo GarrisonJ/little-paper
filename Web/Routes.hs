@@ -24,3 +24,5 @@ instance HasPath ProfilesController where
     pathTo ShowProfileAction { username } = profilePrefix <> username
 
 instance AutoRoute LikesController
+instance AutoRoute CommentsController
+
