@@ -13,6 +13,7 @@ let
             hlint
             p.ihp
             tz
+            string-interpolate
         ];
         otherDeps = p: with p; [
             imagemagick
