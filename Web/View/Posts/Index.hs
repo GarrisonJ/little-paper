@@ -49,7 +49,7 @@ instance View IndexView where
                                 Just user -> user
                                 Nothing -> error "There was a post without a user"
             renderPost post = [hsx|
-                {Web.View.Posts.Show.renderPost (getAuthor post) (isPostLiked post likes) (get #commentsCount post) post}
+                {Web.View.Posts.Show.renderPost (getAuthor post) (isPostLiked post likes) (get #commentsCount post) (get #likesCount post) post}
             |]
 
 renderPostForm :: Post -> Html

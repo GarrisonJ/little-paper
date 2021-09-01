@@ -5,6 +5,7 @@ data ShowView = ShowView {
                            post :: Include "userId" Post
                          , isLiked :: Bool
                          , comments :: [Include "userId" Comment]
+                         , likesCount :: Int
                          , commentspagination :: Pagination
                          }
 
@@ -12,7 +13,7 @@ data ShowView = ShowView {
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <div>
-        {renderPost (post |> get #userId) isLiked (length comments) post}
+        {renderPost (post |> get #userId) isLiked (length comments) likesCount post}
         </div>
         <div class="m-3 p-2 d-flex yosemite-window">
             <div class="col">
@@ -76,7 +77,7 @@ renderComment user comment = [hsx|
             </div>
         |]
 
-renderPost user isLiked numberOfComments post = [hsx|
+renderPost user isLiked numberOfComments numberOfLikes post = [hsx|
     <div class="d-flex yosemite-window">
         <div class="w-100">
             <div class="p-2 ">
@@ -88,6 +89,9 @@ renderPost user isLiked numberOfComments post = [hsx|
                 </a>
                 <div class="float-right">
                 <div class="like-button" style={if isLiked then "color:#ff5e57;" :: String else ""} data-postid={tshow (get #id post)} data-url={CreateLikeAction}>
+                    <span class="likes-counter">
+                        {show $ numberOfLikes}
+                    </span>
                     {heartIcon}
                 </div>
                 </div>
@@ -103,7 +107,7 @@ renderPost user isLiked numberOfComments post = [hsx|
             </p>
             <div class="pl-3 pb-2">
             <a href={ShowPostAction (get #id post)} class="">
-             {chatIcon} {show $ numberOfComments}
+             {chatIcon} {numberOfComments}
             </a>
             </div>
         </div>

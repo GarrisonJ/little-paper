@@ -85,6 +85,10 @@ instance Controller PostsController where
                     |> filterWhere (#postId, postId)
                     |> fetchOneOrNothing
 
+        likesCount <- query @Like
+                    |> filterWhere (#postId, postId)
+                    |> fetchCount
+
         let isLiked = not $ null like
 
         render ShowView { .. }

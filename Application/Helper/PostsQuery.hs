@@ -18,6 +18,7 @@ data PostWithMeta = PostWithMeta
     , userTimezoneSnapshot :: Text
     , username :: Text
     , commentsCount :: Int
+    , likesCount :: Int
     }
     deriving (Eq, Show)
 
@@ -25,6 +26,7 @@ instance FromRow PostWithMeta where
     fromRow =
         PostWithMeta
             <$> field
+            <*> field
             <*> field
             <*> field
             <*> field
@@ -45,7 +47,10 @@ fetchPostsWithMetaForProfle userId = do
 
 bigPostQuery :: Int -> Int -> Id User -> Query
 bigPostQuery pageSize skip userId = [i|
-    SELECT posts.*, users.username, (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comments_count 
+    SELECT posts.*, 
+           users.username, 
+           (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comments_count, 
+           (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) AS likes_count
     FROM posts 
     INNER JOIN user_follows 
         ON posts.user_id = user_follows.followed_id 
@@ -59,7 +64,10 @@ bigPostQuery pageSize skip userId = [i|
 
 profileQuery :: Id User -> Query
 profileQuery userId = [i|
-    SELECT posts.*, users.username, (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comments_count 
+    SELECT posts.*, 
+           users.username, 
+           (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comments_count, 
+           (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) AS likes_count
     FROM posts INNER JOIN users ON posts.user_id = users.id 
     WHERE posts.user_id = '#{userId}'
     ORDER BY created_on DESC 

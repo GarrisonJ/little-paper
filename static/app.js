@@ -18,8 +18,10 @@ $(document).on( "click", ".like-button", function(event){
         function(response) {
             if(response == true) {
                 $(`*[data-postid="${postid}"]`).css("color", "#ff5e57");
+                $(`*[data-postid="${postid}"] > .likes-counter`).html(function(i, val) { return +val+1 });
             } else {
                 $(`*[data-postid="${postid}"]`).css("color", "");
+                $(`*[data-postid="${postid}"] > .likes-counter`).html(function(i, val) { return +val-1 });
             }
         }
     )
