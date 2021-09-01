@@ -1,6 +1,6 @@
-module Application.Helper.Controller (verifyToken, hashToken, randomText) where
+module Application.Helper.Controller (
+      module Application.Helper.Crypto
+) where
 
 import IHP.ControllerPrelude
-
--- Here you can add functions which are available in all your controllers
-import Application.Helper.Crypto (verifyToken, hashToken, randomText)
+import Application.Helper.Crypto
