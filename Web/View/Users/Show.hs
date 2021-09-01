@@ -1,9 +1,11 @@
 module Web.View.Users.Show where
 import Web.View.Prelude
+import Application.Helper.PostsQuery
 import qualified Web.View.Posts.Show (renderPost)
 
 data ShowView = ShowView {
-                          user :: Include "posts" User
+                          user :: User
+                        , posts :: [PostWithMeta]
                         , followed :: Bool
                         , likes :: [Like]
                         , followerCount :: Int
@@ -24,7 +26,7 @@ instance View ShowView where
             </div>
         </div>
         <div class="my-3 p-3">
-            {forEach (user |> get #posts) (\post -> Web.View.Posts.Show.renderPost user (isPostLiked post likes) post)}
+            {forEach (posts) (\post -> Web.View.Posts.Show.renderPost user (isPostLiked post likes) (get #commentsCount post) post)}
         </div>
     |]
         where
@@ -37,13 +39,13 @@ instance View ShowView where
                             Nothing -> "/space.jpeg"
                             Just url -> url
 
-renderFollowButton :: Bool -> Include "posts" User -> Html
+renderFollowButton :: Bool -> User -> Html
 renderFollowButton followed user = formForWithOptions user followButtonFormOptions [hsx|
     {(hiddenField #id)}
     {submitButton { label= if followed then "Unfollow" else "Follow" }}
 |]
 
-followButtonFormOptions :: FormContext (Include "posts" User) -> FormContext (Include "posts" User)
+followButtonFormOptions :: FormContext User -> FormContext User
 followButtonFormOptions formContext =
     formContext
     |> set #formAction (pathTo CreateFollowAction)

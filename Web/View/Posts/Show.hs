@@ -8,10 +8,11 @@ data ShowView = ShowView {
                          , commentspagination :: Pagination
                          }
 
+
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <div>
-        {renderPost (post |> get #userId) isLiked post}
+        {renderPost (post |> get #userId) isLiked (length comments) post}
         </div>
         <div class="m-3 p-2 d-flex yosemite-window">
             <div class="col">
@@ -74,9 +75,8 @@ renderComment user comment = [hsx|
                 </div>
             </div>
         |]
-        kebabHorizontal = [hsx|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>|]
 
-renderPost user isLiked post = [hsx|
+renderPost user isLiked numberOfComments post = [hsx|
     <div class="d-flex yosemite-window">
         <div class="w-100">
             <div class="p-2 ">
@@ -88,9 +88,7 @@ renderPost user isLiked post = [hsx|
                 </a>
                 <div class="float-right">
                 <div class="like-button" style={if isLiked then "color:#ff5e57;" :: String else ""} data-postid={tshow (get #id post)} data-url={CreateLikeAction}>
-                    <svg xmlns="http://www.w3.org`/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                    </svg>
+                    {heartIcon}
                 </div>
                 </div>
                 <small class="text-muted">
@@ -100,9 +98,14 @@ renderPost user isLiked post = [hsx|
                 </small>
             </div>
             {renderControlDropdown user}
-            <p class="p-3 post-text">
+            <p class="pl-3 post-text">
                 {get #body post}
             </p>
+            <div class="pl-3 pb-2">
+            <a href={ShowPostAction (get #id post)} class="">
+             {chatIcon} {show $ numberOfComments}
+            </a>
+            </div>
         </div>
     </div>
 |]
@@ -127,4 +130,22 @@ renderPost user isLiked post = [hsx|
                 </div>
             </div>
         |]
-        kebabHorizontal = [hsx|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>|]
+
+
+
+kebabHorizontal = [hsx|
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+</svg>|]
+
+chatIcon = [hsx|
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
+  <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+</svg>
+|]
+
+heartIcon = [hsx|
+<svg xmlns="http://www.w3.org`/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+</svg>
+|]

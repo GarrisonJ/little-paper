@@ -11,6 +11,7 @@ import Data.Time.Zones (utcToLocalTimeTZ, utcToLocalTimeTZ ,utcTZ)
 import Data.Text.Encoding (encodeUtf8)
 import Data.Text (unpack)
 import Data.Maybe (fromJust)
+import Application.Helper.PostsQuery
 
 instance Controller PostsController where
     beforeAction = ensureIsUser
@@ -18,11 +19,13 @@ instance Controller PostsController where
     action PostsAction = do
         -- TODO: Delete this action, or update it to work
         -- pagination/like button
-        posts <- query @Post |> fetch
-            >>= collectionFetchRelated #userId
+        --posts <- query @Post |> fetch
+        --    >>= collectionFetchRelated #userId
 
+        posts :: [PostWithMeta] <- fetchPostsWithMeta currentUserId 0 10
         day <- getUserDay $ get #timezone currentUser
         todaysPost <- getDailyPost currentUserId day
+        let users = []
 
         let likes = []
         let page = Nothing
@@ -35,14 +38,11 @@ instance Controller PostsController where
                         then (fromJust page)*pageSize
                         else 0
 
-        posts <- query @Post
-                |> innerJoin @UserFollow (#userId, #followedId)
-                |> filterWhereJoinedTable @UserFollow (#followerId, currentUserId)
-                |> orderByDesc #createdOn
-                |> offset skip
-                |> limit pageSize
-                |> fetch
-            >>= collectionFetchRelated #userId
+        posts :: [PostWithMeta] <- fetchPostsWithMeta currentUserId skip pageSize
+
+        users <-  query @User
+                    |> filterWhereIn (#id, (map (get #userId) posts))
+                    |> fetch
 
         likes <- query @Like
                     |> filterWhere (#userId, currentUserId)

@@ -2,6 +2,7 @@ module Web.Controller.Profiles where
 
 import Web.Controller.Prelude
 import Web.View.Users.Show
+import Application.Helper.PostsQuery
 
 instance Controller ProfilesController where
     action ShowProfileAction { username } = do
@@ -10,7 +11,8 @@ instance Controller ProfilesController where
                     |> filterWhere (#isConfirmed, True)
                     |> filterWhere (#username, username)
                     |> fetchOne
-                    >>= fetchRelated #posts
+
+        posts :: [PostWithMeta] <- fetchPostsWithMetaForProfle (get #id user)
 
         -- Is the current user following this user?
         follow <- query @UserFollow
@@ -22,7 +24,7 @@ instance Controller ProfilesController where
         -- Has the current user followed any of this users posts?
         likes <- query @Like
                     |> filterWhere (#userId, currentUserId)
-                    |> filterWhereIn (#postId, ids (get #posts user))
+                    |> filterWhereIn (#postId, ids posts)
                     |> fetch
 
         -- How many followers does this user have?
