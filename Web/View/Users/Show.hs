@@ -26,7 +26,7 @@ instance View ShowView where
             </div>
         </div>
         <div class="my-3 p-3">
-            {forEach (posts) (\post -> Web.View.Posts.Show.renderPost user (isPostLiked post likes) (get #commentsCount post) (get #likesCount post) post)}
+            {forEach (posts) (\post -> Web.View.Posts.Show.renderPost (isPostLiked post likes) post)}
         </div>
     |]
         where

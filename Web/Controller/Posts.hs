@@ -39,10 +39,6 @@ instance Controller PostsController where
 
         posts :: [PostWithMeta] <- fetchPostsWithMeta currentUserId skip pageSize
 
-        users <-  query @User
-                    |> filterWhereIn (#id, (map (get #userId) posts))
-                    |> fetch
-
         likes <- query @Like
                     |> filterWhere (#userId, currentUserId)
                     |> filterWhereIn (#postId, ids posts)
@@ -65,32 +61,29 @@ instance Controller PostsController where
                 render NewView { .. }
 
     action ShowPostAction { postId } = do
-        post <- fetch postId
-            >>= fetchRelated #userId
+        post <- fetchSinglePostWithMeta postId
+        case post of
+            [] -> redirectTo $ FollowedPostsAction Nothing
+            (post:_) -> do
+                (commentsQuery, commentspagination) <- query @Comment
+                                |> filterWhere (#postId, postId)
+                                |> orderByDesc (#createdAt)
+                                |> paginateWithOptions
+                                    (defaultPaginationOptions
+                                        |> set #maxItems 10)
 
-        (commentsQuery, commentspagination) <- query @Comment
-                        |> filterWhere (#postId, postId)
-                        |> orderByDesc (#createdAt)
-                        |> paginateWithOptions
-                            (defaultPaginationOptions
-                                |> set #maxItems 10)
+                comments <- commentsQuery
+                                |> fetch
+                                >>= collectionFetchRelated #userId
 
-        comments <- commentsQuery
-                        |> fetch
-                        >>= collectionFetchRelated #userId
+                like <- query @Like
+                            |> filterWhere (#userId, currentUserId)
+                            |> filterWhere (#postId, postId)
+                            |> fetchOneOrNothing
 
-        like <- query @Like
-                    |> filterWhere (#userId, currentUserId)
-                    |> filterWhere (#postId, postId)
-                    |> fetchOneOrNothing
+                let isLiked = not $ null like
 
-        likesCount <- query @Like
-                    |> filterWhere (#postId, postId)
-                    |> fetchCount
-
-        let isLiked = not $ null like
-
-        render ShowView { .. }
+                render ShowView { .. }
 
     action ShowPostForDayAction { username, day } = do
         user <- (query @User |> filterWhere (#username, username) |> fetchOneOrNothing)

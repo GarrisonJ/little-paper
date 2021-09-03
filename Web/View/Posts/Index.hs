@@ -4,7 +4,6 @@ import Web.View.Posts.Show
 import Application.Helper.PostsQuery
 
 data IndexView = IndexView { posts :: [PostWithMeta],
-                             users :: [User],
                              todaysPost :: Maybe Post,
                              page :: Maybe Int,
                              likes :: [Like]
@@ -56,11 +55,8 @@ instance View IndexView where
 
 
             isPostLiked post likes = (get #id post) `elem` (fmap (get #postId) likes)
-            getAuthor post = case find (\user -> get #userId post == get #id user) users of
-                                Just user -> user
-                                Nothing -> error "There was a post without a user"
             renderPost post = [hsx|
-                {Web.View.Posts.Show.renderPost (getAuthor post) (isPostLiked post likes) (get #commentsCount post) (get #likesCount post) post}
+                {Web.View.Posts.Show.renderPost (isPostLiked post likes) post}
             |]
 
 renderPostForm :: Post -> Html

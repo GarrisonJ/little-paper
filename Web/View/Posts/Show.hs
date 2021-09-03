@@ -1,11 +1,11 @@
 module Web.View.Posts.Show where
 import Web.View.Prelude
+import Application.Helper.PostsQuery
 
 data ShowView = ShowView {
-                           post :: Include "userId" Post
+                           post :: PostWithMeta
                          , isLiked :: Bool
                          , comments :: [Include "userId" Comment]
-                         , likesCount :: Int
                          , commentspagination :: Pagination
                          }
 
@@ -13,7 +13,7 @@ data ShowView = ShowView {
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <div>
-        {renderPost (post |> get #userId) isLiked (length comments) likesCount post}
+            {renderPost isLiked post}
         </div>
         <div class="m-3 p-2 d-flex yosemite-window">
             <div class="col">
@@ -77,7 +77,7 @@ renderComment user comment = [hsx|
             </div>
         |]
 
-renderPost user isLiked numberOfComments numberOfLikes post = [hsx|
+renderPost isLiked post = [hsx|
     <div class="d-flex yosemite-window">
         <div class="w-100">
             <div class="p-2 ">
@@ -90,7 +90,7 @@ renderPost user isLiked numberOfComments numberOfLikes post = [hsx|
                 <div class="float-right">
                 <div class="like-button" style={if isLiked then "color:#ff5e57;" :: String else ""} data-postid={tshow (get #id post)} data-url={CreateLikeAction}>
                     <span class="likes-counter">
-                        {show $ numberOfLikes}
+                        {get #likesCount post}
                     </span>
                     {heartIcon}
                 </div>
@@ -101,26 +101,26 @@ renderPost user isLiked numberOfComments numberOfLikes post = [hsx|
                     </a>
                 </small>
             </div>
-            {renderControlDropdown user}
+            {renderControlDropdown}
             <p class="pl-3 post-text">
                 {get #body post}
             </p>
             <div class="pl-3 pb-2">
             <a href={ShowPostAction (get #id post)} class="">
-             {chatIcon} {numberOfComments}
+             {chatIcon} {get #commentsCount post}
             </a>
             </div>
         </div>
     </div>
 |]
     where
-        username = user |> get #username
+        username = get #username post
         picturePath :: Text
-        picturePath = case get #pictureUrl user of
+        picturePath = case get #pictureUrl post of
                         Nothing -> "/space.jpeg"
                         Just url -> url
-        renderControlDropdown post =
-                    if (get #id currentUser) == get #id user
+        renderControlDropdown =
+                    if (get #id currentUser) == get #userId post
                         then userDropdown
                         else [hsx||]
         userDropdown = [hsx|
