@@ -32,7 +32,6 @@ instance Controller PostsController where
         render IndexView { .. }
 
     action FollowedPostsAction { page } = do
-        -- Every user follows themself
         let pageSize = 10
         let skip = if isJust page
                         then (fromJust page)*pageSize

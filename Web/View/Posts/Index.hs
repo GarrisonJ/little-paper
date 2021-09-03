@@ -15,16 +15,27 @@ instance View IndexView where
         {renderPostInput}
         <div>
             <div>{forEach posts renderPost}</div>
-            <a  href={FollowedPostsAction prevPage} aria-label="Previous">
-                {leftArrow}
-            </a>
-            <a href={FollowedPostsAction nextPage} aria-label="Next">
-                {rightArrow}
-            </a>
-
+            {renderPreviousArrow}
+            {renderNextArrow}
         </div>
     |]
         where
+            renderPreviousArrow = case page of
+                                        Nothing -> [hsx||]
+                                        Just 0 -> [hsx||]
+                                        _ -> [hsx|
+                                            <a href={FollowedPostsAction prevPage} class="" aria-label="Previous">
+                                                {leftArrow}
+                                            </a>
+                                        |]
+            renderNextArrow = if length posts <= 0
+                                then [hsx||]
+                                else [hsx|
+                                    <a href={FollowedPostsAction nextPage} class="float-right" aria-label="Next">
+                                        {rightArrow}
+                                    </a>
+                                    |]
+
             rightArrow = [hsx|<span class="display-4">→</span>|]
             leftArrow = [hsx|<span class="display-4">←</span>|]
             nextPage = if isJust page then (fmap succ page) else Just 1
