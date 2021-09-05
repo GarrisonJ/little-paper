@@ -46,7 +46,7 @@ instance View IndexView where
                     Just p -> [hsx|<h3>You posted something today. Nice job!</h3>|]
                     Nothing -> [hsx|
                                 <div class="card yosemite-window">
-                                    <div class="card-header border-light">You have't posted today!</div>
+                                    <div class="card-header border-light">You haven't posted today!</div>
                                     <div class="card-body border-light">
                                         {renderPostForm (newRecord :: Post)}
                                     </div>
