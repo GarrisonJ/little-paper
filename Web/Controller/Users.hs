@@ -120,6 +120,9 @@ instance Controller UsersController where
     action CreateFollowAction = do
         let userId = param @(Id User) "id"
 
+        -- Users cannot unfollow themselves
+        accessDeniedUnless (userId /= currentUserId)
+
         follow <- query @UserFollow
             |> filterWhere (#followerId, currentUserId)
             |> filterWhere (#followedId, userId)

@@ -31,11 +31,7 @@ renderUser follows user = [hsx|
             <span>{get #bio user}</span>
         </td>
         <td>
-            <button class={"btn follow-button "  ++ followButtonTextClass}
-                    data-userid={tshow (get #id user)} 
-                    data-url={CreateFollowAction}>
-                    {followButtonText}
-            </button>
+            {followButton}
         </td>
     </tr>
 |]
@@ -46,6 +42,18 @@ renderUser follows user = [hsx|
                         Just url -> url
 
         followed = not $ null $ find (\uf -> uf == (get #id user)) follows
+
+        followButton = if get #id user == get #id currentUser
+                        then [hsx||]
+                        else [hsx|
+                            <button class={"btn follow-button " ++ followButtonTextClass}
+                                    data-userid={tshow (get #id user)} 
+                                    data-url={CreateFollowAction}>
+                                    {followButtonText}
+                            </button>
+                        |]
+
+
         followButtonText :: Text
         followButtonText = if followed then "Unfollow" else "Follow"
         followButtonTextClass :: Text
