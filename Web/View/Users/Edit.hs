@@ -34,6 +34,7 @@ instance View EditView where
                 </div>
 
                 {(textField #email)}
+                {(textareaField #bio)}
                 {(selectField #timezone allTimezones) { fieldLabel = "Prefered Timezone"}}
                 {submitButton}
             |]

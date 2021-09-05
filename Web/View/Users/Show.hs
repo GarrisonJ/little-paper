@@ -24,6 +24,9 @@ instance View ShowView where
             <div class="pt-3">
                 {followButton}
             </div>
+            <div class="pt-3">
+                {get #bio user}
+            </div>
         </div>
         <div class="my-3 p-3">
             {forEach (posts) (\post -> Web.View.Posts.Show.renderPost (isPostLiked post likes) post)}

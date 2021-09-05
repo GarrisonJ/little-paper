@@ -52,7 +52,8 @@ instance Controller UsersController where
                 , imageMagickOptions = "-resize '1024x1024^' -gravity north -extent 1024x1024 -quality 85% -strip"
                 }
         user
-            |> buildUser
+            |> fill @["email","passwordHash","timezone","username","bio","pictureUrl"]
+            |> validateField #bio (hasMaxLength 280)
             |> uploadImageWithOptions profilePictureOptions #pictureUrl
             >>= ifValid \case
                 Left user -> render EditView { .. }
@@ -180,6 +181,3 @@ instance Controller UsersController where
                         failedToConfirmMessage = "Sorry, we couldn't confirm your email. \
                                                 \ Confirmation emails expire in 2 hours. \
                                                 \ Try signing up again."
-
-buildUser user = user
-    |> fill @["email","passwordHash","timezone","username","pictureUrl"]
