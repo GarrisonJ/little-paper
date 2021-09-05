@@ -119,19 +119,17 @@ instance Controller UsersController where
             |> fetchOneOrNothing
 
         case follow of
-            Just f -> deleteRecord f
+            Just f -> do
+                deleteRecord f
+                renderJson False
             Nothing -> newRecord @UserFollow
                 |> set #followerId currentUserId
                 |> set #followedId userId
                 |> ifValid \case
-                    Left _ -> setSuccessMessage "Something happened"
+                    Left _ -> renderJson False
                     Right follow -> do
                         follow |> createRecord
-                        pure ()
-
-        user <- fetch userId
-        let username = get #username user
-        redirectToPath $ "/user/" <> username
+                        renderJson True
 
 
     action ConfirmUserEmailAction { userId, confirmationKey } = do

@@ -27,6 +27,35 @@ $(document).on( "click", ".like-button", function(event){
     )
 });
 
+// The follow button
+$(document).on( "click", ".follow-button", function(event){
+    let userid = $(this).data('userid');
+    let url = $(this).data('url');
+
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: { id: userid }
+    })
+    .done(
+        function(response) {
+            if(response == true) {
+                $(`.follower-count`).html(function(i, val) { return +val+1 });
+                $(`*[data-userid="${userid}"].follow-button`).text('Unfollow').button("refresh");;
+            } else {
+                $(`.follower-count`).html(function(i, val) { return +val-1 });
+                $(`*[data-userid="${userid}"].follow-button`).text('Follow').button("refresh");;
+            }
+        }
+    )
+});
+
+// When you click a row on the pofile list page, go to the profile
+$(document).on( "click", ".profile-list-row", function(event){
+    let profileUrl = $(this).data('profile-url');
+    Turbolinks.visit(profileUrl)
+});
+
 // Always scroll to top when you click a link
 document.addEventListener("turbolinks:load", function() {
     window.scrollTo(0,0)

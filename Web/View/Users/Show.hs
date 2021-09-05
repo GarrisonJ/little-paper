@@ -18,11 +18,15 @@ instance View ShowView where
             <h1>{get #username user}</h1>
             <img class="border rounded-circle mx-auto" src={picturePath} style="width:100px; height: 100px"/>
             <div class="d-flex justify-content-center">
-                <div class="pr-2">{followerCount} <span class="text-muted pl-1">Followers</span></div>
+                <div class="pr-2"><span class="follower-count">{followerCount}</span> <span class="text-muted pl-1">Followers</span></div>
                 <div class="">{postCount} <span class="text-muted pl-1">Posts</span></div>
             </div>
             <div class="pt-3">
-                {followButton}
+                <button class="btn btn-primary follow-button" 
+                        data-userid={tshow (get #id user)} 
+                        data-url={CreateFollowAction}>
+                        {followButtonText}
+                </button>
             </div>
             <div class="pt-3">
                 {get #bio user}
@@ -34,19 +38,12 @@ instance View ShowView where
     |]
         where
             isPostLiked post likes = (get #id post) `elem` (fmap (get #postId) likes)
-            followButton = if get #id user == get #id currentUser
-                then [hsx||]
-                else renderFollowButton followed user
             picturePath :: Text
             picturePath = case get #pictureUrl user of
                             Nothing -> "/space.jpeg"
                             Just url -> url
-
-renderFollowButton :: Bool -> User -> Html
-renderFollowButton followed user = formForWithOptions user followButtonFormOptions [hsx|
-    {(hiddenField #id)}
-    {submitButton { label= if followed then "Unfollow" else "Follow" }}
-|]
+            followButtonText :: Text
+            followButtonText = if followed then "Unfollow" else "Follow"
 
 followButtonFormOptions :: FormContext User -> FormContext User
 followButtonFormOptions formContext =
