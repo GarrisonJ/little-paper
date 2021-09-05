@@ -28,6 +28,6 @@ placeNextToWelcomeImage right = [hsx|
     where
         welcomeImage = [hsx|
                 <div class="d-flex justify-content-md-center align-items-center vh-100">
-                    <img class="img-fluid rounded-circle" src="/buddhawavepixels.gif" alt="/ihp-welcome-icon">
+                    <img class="img-fluid rounded-circle" src="/buddha.jpeg" alt="/ihp-welcome-icon">
                 </div>
         |]
