@@ -53,7 +53,7 @@ instance Controller UsersController where
                 }
         user
             |> fill @["email","passwordHash","timezone","username","bio","pictureUrl"]
-            |> validateField #bio (hasMaxLength 280)
+            |> validateField #bio (hasMaxLength 160)
             |> uploadImageWithOptions profilePictureOptions #pictureUrl
             >>= ifValid \case
                 Left user -> render EditView { .. }
