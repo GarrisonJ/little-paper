@@ -27,6 +27,12 @@ $(document).on( "click", ".like-button", function(event){
     )
 });
 
+// When you click a row on the profile list page, go to the profile
+$(document).on( "click", ".profile-list-row .profile-link", function(event){
+    let profileUrl = $(this).parent().data('profile-url');
+    Turbolinks.visit(profileUrl)
+});
+
 // The follow button
 $(document).on( "click", ".follow-button", function(event){
     let userid = $(this).data('userid');
@@ -39,21 +45,22 @@ $(document).on( "click", ".follow-button", function(event){
     })
     .done(
         function(response) {
+            Turbolinks.clearCache();
             if(response == true) {
                 $(`.follower-count`).html(function(i, val) { return +val+1 });
                 $(`*[data-userid="${userid}"].follow-button`).text('Unfollow').button("refresh");;
+
+                $(`*[data-userid="${userid}"].follow-button`).removeClass('btn-primary');
+                $(`*[data-userid="${userid}"].follow-button`).addClass('btn-light');
             } else {
                 $(`.follower-count`).html(function(i, val) { return +val-1 });
                 $(`*[data-userid="${userid}"].follow-button`).text('Follow').button("refresh");;
+
+                $(`*[data-userid="${userid}"].follow-button`).removeClass('btn-light');
+                $(`*[data-userid="${userid}"].follow-button`).addClass('btn-primary');
             }
         }
     )
-});
-
-// When you click a row on the pofile list page, go to the profile
-$(document).on( "click", ".profile-list-row", function(event){
-    let profileUrl = $(this).data('profile-url');
-    Turbolinks.visit(profileUrl)
 });
 
 // Always scroll to top when you click a link

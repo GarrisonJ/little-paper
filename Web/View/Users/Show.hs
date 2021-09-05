@@ -22,7 +22,7 @@ instance View ShowView where
                 <div class="">{postCount} <span class="text-muted pl-1">Posts</span></div>
             </div>
             <div class="pt-3">
-                <button class="btn btn-primary follow-button" 
+                <button class={"btn follow-button " ++ followButtonTextClass}
                         data-userid={tshow (get #id user)} 
                         data-url={CreateFollowAction}>
                         {followButtonText}
@@ -42,6 +42,10 @@ instance View ShowView where
             picturePath = case get #pictureUrl user of
                             Nothing -> "/space.jpeg"
                             Just url -> url
+
+            followButtonTextClass :: Text
+            followButtonTextClass = if followed then "btn-light" else "btn-primary"
+            
             followButtonText :: Text
             followButtonText = if followed then "Unfollow" else "Follow"
 

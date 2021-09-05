@@ -25,6 +25,13 @@ instance Controller UsersController where
 
         users <- userQuery |> fetch
 
+        follows' <- query @UserFollow
+            |> filterWhere (#followerId, currentUserId)
+            |> filterWhereIn (#followedId, ids users)
+            |> fetch
+
+        let follows = map (get #followedId) follows'
+
         render IndexView { .. }
 
     -- The new user form

@@ -2,6 +2,7 @@ module Web.View.Users.Index where
 import Web.View.Prelude
 
 data IndexView = IndexView { users :: [User],
+                             follows :: [Id User],
                              pagination :: Pagination }
 
 instance View IndexView where
@@ -10,24 +11,31 @@ instance View IndexView where
             <table class="table table-hover">
                 <thead>
                 </thead>
-                <tbody>{forEach users renderUser}</tbody>
+                <tbody>{forEach users (renderUser follows)}</tbody>
             </table>
         </div>
         {renderPagination pagination}
     |]
 
 
-renderUser :: User -> Html
-renderUser user = [hsx|
+renderUser :: [Id User] -> User -> Html
+renderUser follows user = [hsx|
     <tr data-profile-url={ShowProfileAction (get #username user)} class="profile-list-row">
-        <td>
+        <td class="profile-link">
             <img class="border rounded-circle mx-auto" src={picturePath} style="width:50px; height: 50px"/>
         </td>
-        <td>
+        <td class="profile-link">
             <a href={ShowProfileAction (get #username user)}>{get #username user}</a>
         </td>
-        <td>
+        <td class="profile-link">
             <span>{get #bio user}</span>
+        </td>
+        <td>
+            <button class={"btn follow-button "  ++ followButtonTextClass}
+                    data-userid={tshow (get #id user)} 
+                    data-url={CreateFollowAction}>
+                    {followButtonText}
+            </button>
         </td>
     </tr>
 |]
@@ -36,3 +44,9 @@ renderUser user = [hsx|
         picturePath = case get #pictureUrl user of
                         Nothing -> "/space.jpeg"
                         Just url -> url
+
+        followed = not $ null $ find (\uf -> uf == (get #id user)) follows
+        followButtonText :: Text
+        followButtonText = if followed then "Unfollow" else "Follow"
+        followButtonTextClass :: Text
+        followButtonTextClass = if followed then "btn-light" else "btn-primary"
