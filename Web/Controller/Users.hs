@@ -19,6 +19,7 @@ instance Controller UsersController where
 
         (userQuery, pagination) <- query @User
             |> filterWhere (#isConfirmed, True)
+            |> filterWhereNot (#id, currentUserId)
             |> paginateWithOptions
                 (defaultPaginationOptions
                     |> set #maxItems 10)
