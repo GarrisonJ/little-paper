@@ -46,6 +46,8 @@ a, a:hover, a:focus {
 }
 
 .follow-button {
+    width: 6em;
+    height: 2.4em;
     display: inline-table;
 }
 
