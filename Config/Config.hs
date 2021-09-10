@@ -8,8 +8,11 @@ import System.Environment
 
 config :: ConfigBuilder
 config = do
+    option Development
+    option (AppHostname "localhost")
     -- other options here, then add:
 
+  {-
     awsSesAccessKey <- liftIO $ fromString <$> System.Environment.getEnv "IHP_AWS_SES_ACCESS_KEY"
     awsSesSecretKey <- liftIO $ fromString <$> System.Environment.getEnv "IHP_AWS_SES_SECRET_KEY"
     option $ SES
@@ -17,3 +20,4 @@ config = do
         , secretKey = awsSesSecretKey
         , region = "us-west-2" -- YOUR REGION
         }
+  -}
