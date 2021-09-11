@@ -37,6 +37,15 @@ instance FromRow PostWithMeta where
             <*> field
             <*> field
 
+data PostCreatedOn = PostCreatedOn
+    { createdOnDay :: Data.Time.Calendar.Day }
+    deriving (Eq, Show)
+
+instance FromRow PostCreatedOn where
+    fromRow =
+        PostCreatedOn
+            <$> field
+
 fetchPostsWithMeta :: (?modelContext :: ModelContext) => Id User -> Int -> Int -> IO [PostWithMeta]
 fetchPostsWithMeta currentUserId skip pageSize = do
     trackTableRead "posts" -- This is needed when using auto refresh, so auto refresh knows that your action is accessing the posts table
@@ -51,6 +60,13 @@ fetchPostsWithMetaForProfle :: (?modelContext :: ModelContext) => Id User -> IO 
 fetchPostsWithMetaForProfle profileUserId = do
     trackTableRead "posts" -- This is needed when using auto refresh, so auto refresh knows that your action is accessing the posts table
     sqlQuery (profileQuery profileUserId) ()
+
+fetchLast30DaysPostsWithMetaForProfle :: (?modelContext :: ModelContext) => Id User -> IO [PostCreatedOn]
+fetchLast30DaysPostsWithMetaForProfle profileUserId = do
+    trackTableRead "posts" -- This is needed when using auto refresh, so auto refresh knows that your action is accessing the posts table
+    now <- getCurrentTime
+    let nowMinus30DaysAgo = addDays (-30) (utctDay now)
+    sqlQuery (profileLast30DaysQuery profileUserId nowMinus30DaysAgo) ()
 
 
 singlePostQuery :: Query
@@ -95,5 +111,14 @@ profileQuery userId = [i|
            (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) AS likes_count
     FROM posts INNER JOIN users ON posts.user_id = users.id 
     WHERE posts.user_id = '#{userId}'
+    ORDER BY created_on DESC 
+|]
+
+profileLast30DaysQuery :: Id User -> Day -> Query
+profileLast30DaysQuery userId nowMinus30DaysAgo = [i|
+    SELECT created_on_day
+    FROM posts INNER JOIN users ON posts.user_id = users.id 
+    WHERE posts.user_id = '#{userId}'
+    AND posts.created_on >= '#{nowMinus30DaysAgo}'
     ORDER BY created_on DESC 
 |]

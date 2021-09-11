@@ -10,6 +10,8 @@ data ShowView = ShowView {
                         , likes :: [Like]
                         , followerCount :: Int
                         , postCount :: Int
+                        , last30DaysPosts :: [Day]
+                        , last30DaysRange :: [Day]
                         }
 
 instance View ShowView where
@@ -27,9 +29,14 @@ instance View ShowView where
             <div class="pt-3">
                 {get #bio user}
             </div>
+            <div class="float-center">
+                <div class="contributions justify-content-center">
+                    {forEach last30DaysRange (createBlock last30DaysPosts)}
+                </div>
+            </div>
         </div>
         <div class="my-3 p-3">
-            {forEach (posts) (\post -> Web.View.Posts.Show.renderPost (isPostLiked post likes) post)}
+            {forEach (posts) (\post -> (Web.View.Posts.Show.renderPost (isPostLiked post likes) post))}
         </div>
     |]
         where
@@ -60,10 +67,11 @@ followButtonFormOptions formContext =
     |> set #formAction (pathTo CreateFollowAction)
     |> modify #formClass (\classes -> classes <> " form-inline follow-button")
 
-renderPost :: Post -> Html
-renderPost post = [hsx|
-    <tr>
-        <td>{get #body post}</td>
-        <td>{get #createdOnDay post}</td>
-    </tr>
+
+createBlock last30DaysPosts aday = [hsx|
+    <div style={"background: " ++ (chooseBlockColor last30DaysPosts aday) ++";"} class="block"></div>
 |]
+
+chooseBlockColor last30DaysPosts aday = if aday `elem` last30DaysPosts
+                                    then "#007bff" :: Text
+                                    else "#D6EAFF"

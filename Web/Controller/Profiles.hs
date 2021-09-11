@@ -39,4 +39,15 @@ instance Controller ProfilesController where
             |> filterWhere (#userId, get #id user)
             |> fetchCount
 
+        last30DaysPosts <- (map (get #createdOnDay)) <$> (fetchLast30DaysPostsWithMetaForProfle (get #id user))
+        last30DaysRange <- getLast30DaysRange
+
         render Web.View.Users.Show.ShowView { .. }
+
+
+getLast30DaysRange :: IO [Day]
+getLast30DaysRange = do
+    currentTime <- getCurrentTime
+    let now = utctDay currentTime
+    let thirtyDaysAgo = addDays (-29) now
+    pure $ reverse $ enumFromTo thirtyDaysAgo now
