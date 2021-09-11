@@ -85,6 +85,10 @@ a, a:hover, a:focus {
     border: none;
 }
 
+.bio {
+    white-space:pre-wrap;
+}
+
 /************ Edit Form ************/
 .form-control.edit-text-area {
     height: 150px;

@@ -26,7 +26,7 @@ instance View ShowView where
             <div class="pt-3">
                 {followButton}
             </div>
-            <div class="pt-3">
+            <div class="bio pt-3">
                 {get #bio user}
             </div>
             <div class="float-center">
