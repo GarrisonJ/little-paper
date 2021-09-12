@@ -61,13 +61,13 @@ fetchPostsWithMetaForProfle profileUserId = do
     trackTableRead "posts" -- This is needed when using auto refresh, so auto refresh knows that your action is accessing the posts table
     sqlQuery (profileQuery profileUserId) ()
 
-fetchLast30DaysPostsWithMetaForProfle :: (?modelContext :: ModelContext) => Id User -> IO [PostCreatedOn]
-fetchLast30DaysPostsWithMetaForProfle profileUserId = do
+fetchLast30DaysPostsWithMetaForProfle :: (?modelContext :: ModelContext) => User -> IO [PostCreatedOn]
+fetchLast30DaysPostsWithMetaForProfle user = do
     trackTableRead "posts" -- This is needed when using auto refresh, so auto refresh knows that your action is accessing the posts table
-    now <- getCurrentTime
-    let nowMinus30DaysAgo = addDays (-30) (utctDay now)
+    let profileUserId = get #id user
+    now <- getUserDay (get #timezone user)
+    let nowMinus30DaysAgo = addDays (-30) now
     sqlQuery (profileLast30DaysQuery profileUserId nowMinus30DaysAgo) ()
-
 
 singlePostQuery :: Query
 singlePostQuery = [i|

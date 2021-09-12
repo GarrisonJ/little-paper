@@ -162,12 +162,6 @@ buildPost post = post
     |> validateField #body (hasMaxLength 280)
     |> validateField #body (nonEmpty)
 
-getUserDay :: Text -> IO (Day)
-getUserDay preferedTimezone = do
-    let preferedTimezoneParsed = fromMaybe utcTZ $ tzByName $ encodeUtf8 preferedTimezone
-    currentLocalTime <- (utcToLocalTimeTZ preferedTimezoneParsed) <$> getCurrentTime
-    return $ localDay currentLocalTime
-
 getDailyPost :: (?modelContext :: ModelContext) => Id User -> Day -> IO (Maybe Post)
 getDailyPost userId day = query @Post
             |> filterWhere (#userId, userId)
