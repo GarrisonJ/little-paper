@@ -14,9 +14,8 @@ import Data.Maybe (fromJust)
 import Application.Helper.PostsQuery
 
 instance Controller PostsController where
-    beforeAction = ensureIsUser
-
     action PostsAction = do
+        ensureIsUser
         -- TODO: Delete this action, or update it to work
         -- pagination/like button
         --posts <- query @Post |> fetch
@@ -32,6 +31,7 @@ instance Controller PostsController where
         render IndexView { .. }
 
     action FollowedPostsAction { page } = do
+        ensureIsUser
         let pageSize = 10
         let skip = if isJust page
                         then (fromJust page)*pageSize
@@ -50,6 +50,7 @@ instance Controller PostsController where
         render IndexView { .. }
 
     action NewPostAction = do
+        ensureIsUser
         day <- getUserDay $ get #timezone currentUser
         dailyPost <- getDailyPost currentUserId day
         case dailyPost of
@@ -67,7 +68,7 @@ instance Controller PostsController where
             (post:_) -> do
                 (commentsQuery, commentspagination) <- query @Comment
                                 |> filterWhere (#postId, postId)
-                                |> orderByDesc (#createdAt)
+                                |> orderByDesc #createdAt
                                 |> paginateWithOptions
                                     (defaultPaginationOptions
                                         |> set #maxItems 10)
@@ -76,7 +77,9 @@ instance Controller PostsController where
                                 |> fetch
                                 >>= collectionFetchRelated #userId
 
-                like <- query @Like
+                like <- case currentUserOrNothing of
+                    Nothing -> pure Nothing -- there is no current user
+                    Just _  -> query @Like
                             |> filterWhere (#userId, currentUserId)
                             |> filterWhere (#postId, postId)
                             |> fetchOneOrNothing
@@ -86,7 +89,8 @@ instance Controller PostsController where
                 render ShowView { .. }
 
     action ShowPostForDayAction { username, day } = do
-        user <- (query @User |> filterWhere (#username, username) |> fetchOneOrNothing)
+        ensureIsUser
+        user <- query @User |> filterWhere (#username, username) |> fetchOneOrNothing
         case (user, parseDay day) of
             (Just user, Just dayParsed) -> do
                 post <- query @Post
@@ -95,7 +99,7 @@ instance Controller PostsController where
                     |> fetchOneOrNothing
                     -- TODO: This statement should be simplifed some how
                     >>= \case
-                        Just post -> fmap pure $ fetchRelated #userId post
+                        Just post -> pure <$> fetchRelated #userId post
                         Nothing -> pure Nothing
 
                 case post of
@@ -110,11 +114,13 @@ instance Controller PostsController where
             parseDay = parseTimeM False defaultTimeLocale "%-Y-%-m-%d" . Data.Text.unpack
 
     action EditPostAction { postId } = do
+        ensureIsUser
         post <- fetch postId
         accessDeniedUnless (get #userId post == currentUserId)
         render EditView { .. }
 
     action UpdatePostAction { postId } = do
+        ensureIsUser
         post <- fetch postId
         accessDeniedUnless (get #userId post == currentUserId)
         post
@@ -127,6 +133,7 @@ instance Controller PostsController where
                     redirectTo EditPostAction { .. }
 
     action CreatePostAction = do
+        ensureIsUser
         day <- getUserDay $ get #timezone currentUser
         dailyPost <- getDailyPost currentUserId day
         case dailyPost of
@@ -147,6 +154,7 @@ instance Controller PostsController where
                             redirectTo $ FollowedPostsAction Nothing
 
     action DeletePostAction { postId } = do
+        ensureIsUser
         post <- fetch postId
         accessDeniedUnless (get #userId post == currentUserId)
         -- Delete all the likes from the post

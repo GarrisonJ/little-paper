@@ -15,19 +15,35 @@ instance View ShowView where
         <div>
             {renderPost isLiked post}
         </div>
-        <div class="m-3 p-2 d-flex yosemite-window">
-            <div class="col">
-                <div class="">
-                    {renderFormComment newComment}
-                </div>
-                {forEach comments (\c -> renderComment (c |> get #userId) c)}
-                {renderPagination commentspagination}
-            </div>
-        </div>
+        {renderComments}
     |]
         where
+            renderComments = if null comments && not isUserLoggedIn
+                                then [hsx||]
+                                else [hsx|
+                                    <div class="m-3 p-2 d-flex yosemite-window">
+                                        <div class="col">
+                                            <div class="">
+                                                {renderCommentInput}
+                                            </div>
+                                            {forEach comments (\c -> renderComment (c |> get #userId) c)}
+                                            {renderCommentPagination}
+                                        </div>
+                                    </div>
+                                |]
+            isUserLoggedIn = case currentUserOrNothing of
+                                Nothing -> False
+                                Just _ -> True
+
             newComment = newRecord @Comment
                             |> set #postId (get #id post)
+            renderCommentPagination = case currentUserOrNothing of
+                                Nothing -> [hsx||]
+                                Just _ -> renderPagination commentspagination
+
+            renderCommentInput = case currentUserOrNothing of
+                                Nothing -> [hsx||]
+                                Just _ -> renderFormComment newComment
 
 renderFormComment :: Comment -> Html
 renderFormComment comment = formFor comment [hsx|
@@ -54,7 +70,6 @@ renderComment user comment = [hsx|
             {get #body comment}
         </p>
     </div>
-    <hr>
 |]
     where
         username = user |> get #username
