@@ -9,6 +9,7 @@ import Web.Controller.Sessions
 -- Controller Imports
 import Web.Controller.Comments
 import Web.Controller.Likes
+import Web.Controller.Follows
 import Web.Controller.Profiles
 import Web.Controller.Users
 import Web.Controller.Passwords
@@ -22,6 +23,7 @@ instance FrontController WebApplication where
         -- Generator Marker
         , parseRoute @CommentsController
         , parseRoute @LikesController
+        , parseRoute @FollowsController
         , parseRoute @ProfilesController
         , parseRoute @UsersController
         , parseRoute @PasswordsController

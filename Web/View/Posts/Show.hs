@@ -58,14 +58,13 @@ renderComment user comment = [hsx|
 |]
     where
         username = user |> get #username
-        picturePath :: Text
-        picturePath = case get #pictureUrl user of
-                        Nothing -> "/space.jpeg"
-                        Just url -> url
+        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
         renderControlDropdown post =
-                if (get #id currentUser) == get #id user
-                    then userDropdown
-                    else [hsx||]
+                case currentUserOrNothing of
+                        Nothing -> [hsx||]
+                        Just currentUser' -> if get #id currentUser' == get #id user
+                                                then userDropdown
+                                                else [hsx||]
         userDropdown = [hsx|
             <div class="dropdown float-right">
                 <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -115,14 +114,13 @@ renderPost isLiked post = [hsx|
 |]
     where
         username = get #username post
-        picturePath :: Text
-        picturePath = case get #pictureUrl post of
-                        Nothing -> "/space.jpeg"
-                        Just url -> url
+        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl post)
         renderControlDropdown =
-                    if (get #id currentUser) == get #userId post
-                        then userDropdown
-                        else [hsx||]
+                case currentUserOrNothing of
+                        Nothing -> [hsx||]
+                        Just currentUser' -> if get #id currentUser' == get #userId post
+                                                then userDropdown
+                                                else [hsx||]
         userDropdown = [hsx|
             <div class="dropdown float-right">
                 <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

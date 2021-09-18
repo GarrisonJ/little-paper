@@ -15,14 +15,18 @@ instance Controller ProfilesController where
         posts :: [PostWithMeta] <- fetchPostsWithMetaForProfle (get #id user)
 
         -- Is the current user following this user?
-        follow <- query @UserFollow
-                        |> filterWhere (#followerId, currentUserId)
-                        |> filterWhere (#followedId, get #id user)
-                        |> fetchOneOrNothing
+        follow <- case currentUserOrNothing of
+            Nothing -> pure Nothing -- there is no current user
+            Just _  -> query @UserFollow
+                            |> filterWhere (#followerId, currentUserId)
+                            |> filterWhere (#followedId, get #id user)
+                            |> fetchOneOrNothing
         let followed = not $ null follow
 
         -- Has the current user followed any of this users posts?
-        likes <- query @Like
+        likes <- case currentUserOrNothing of
+            Nothing -> pure [] -- there is no current user
+            Just _  -> query @Like
                     |> filterWhere (#userId, currentUserId)
                     |> filterWhereIn (#postId, ids posts)
                     |> fetch
@@ -32,14 +36,14 @@ instance Controller ProfilesController where
             |> filterWhere (#followedId, get #id user)
             |> fetchCount
             -- A user always follows themselves, so we subtract one
-            |> (fmap pred)
+            |> fmap pred
 
         -- How many posts has this user made?
         postCount :: Int <- query @Post
             |> filterWhere (#userId, get #id user)
             |> fetchCount
 
-        last30DaysPosts <- (map (get #createdOnDay)) <$> (fetchLast30DaysPostsWithMetaForProfle user)
+        last30DaysPosts <- map (get #createdOnDay) <$> fetchLast30DaysPostsWithMetaForProfle user
         last30DaysRange <- getLast30DaysRange user
 
         render Web.View.Users.Show.ShowView { .. }

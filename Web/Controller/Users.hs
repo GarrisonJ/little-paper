@@ -118,31 +118,6 @@ instance Controller UsersController where
                     isUsernameChars text | text =~ ("([A-Za-z0-9\\_]+)" :: Text) = Success
                     isUsernameChars text = Failure "Your username can only contain letters, numbers and '_'"
 
-    action CreateFollowAction = do
-        let userId = param @(Id User) "id"
-
-        -- Users cannot unfollow themselves
-        accessDeniedUnless (userId /= currentUserId)
-
-        follow <- query @UserFollow
-            |> filterWhere (#followerId, currentUserId)
-            |> filterWhere (#followedId, userId)
-            |> fetchOneOrNothing
-
-        case follow of
-            Just f -> do
-                deleteRecord f
-                renderJson False
-            Nothing -> newRecord @UserFollow
-                |> set #followerId currentUserId
-                |> set #followedId userId
-                |> ifValid \case
-                    Left _ -> renderJson False
-                    Right follow -> do
-                        follow |> createRecord
-                        renderJson True
-
-
     action ConfirmUserEmailAction { userId, confirmationKey } = do
         -- Send users who are signed in home
         case currentUserOrNothing of

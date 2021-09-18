@@ -16,12 +16,16 @@ $(document).on( "click", ".like-button", function(event){
     })
     .done(
         function(response) {
-            if(response == true) {
+            if(response === "FailedToProcess") {
+                window.location = "/";
+            } else if(response === "Liked" ) {
                 $(`*[data-postid="${postid}"]`).css("color", "#ff5e57");
                 $(`*[data-postid="${postid}"] > .likes-counter`).html(function(i, val) { return +val+1 });
-            } else {
+            } else if(response === "Unliked") {
                 $(`*[data-postid="${postid}"]`).css("color", "");
                 $(`*[data-postid="${postid}"] > .likes-counter`).html(function(i, val) { return +val-1 });
+            } else {
+                console.log("There was some issue when attempting to like", response)
             }
         }
     )
@@ -46,18 +50,23 @@ $(document).on( "click", ".follow-button", function(event){
     .done(
         function(response) {
             Turbolinks.clearCache();
-            if(response == true) {
+            if(response === "FailedToProcess") {
+                window.location = "/";
+            } else if(response === "Followed") {
                 $(`.follower-count`).html(function(i, val) { return +val+1 });
-                $(`*[data-userid="${userid}"].follow-button`).text('Unfollow').button("refresh");;
+                $(`*[data-userid="${userid}"].follow-button`).text('Unfollow').button("refresh");
 
                 $(`*[data-userid="${userid}"].follow-button`).removeClass('btn-primary');
                 $(`*[data-userid="${userid}"].follow-button`).addClass('btn-light');
-            } else {
+            } else if(response === "UnFollowed") {
                 $(`.follower-count`).html(function(i, val) { return +val-1 });
                 $(`*[data-userid="${userid}"].follow-button`).text('Follow').button("refresh");;
 
                 $(`*[data-userid="${userid}"].follow-button`).removeClass('btn-light');
                 $(`*[data-userid="${userid}"].follow-button`).addClass('btn-primary');
+            }
+            else {
+                console.log("There was some issue when attempting to follow", response);
             }
         }
     )

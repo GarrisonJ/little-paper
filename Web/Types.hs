@@ -39,7 +39,6 @@ data UsersController
     | CreateUserAction
     | EditCurrentUserAction
     | UpdateUserAction { userId :: !(Id User) }
-    | CreateFollowAction
     | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Text) }
     deriving (Eq, Show, Data)
 
@@ -56,6 +55,10 @@ data ProfilesController
 
 data LikesController
     = CreateLikeAction
+    deriving (Eq, Show, Data)
+
+data FollowsController
+    = CreateFollowAction
     deriving (Eq, Show, Data)
 
 data CommentsController

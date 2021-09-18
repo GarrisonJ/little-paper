@@ -40,21 +40,22 @@ instance View ShowView where
         </div>
     |]
         where
-            isPostLiked post likes = (get #id post) `elem` (fmap (get #postId) likes)
+            isPostLiked post likes = get #id post `elem` fmap (get #postId) likes
             picturePath :: Text
-            picturePath = case get #pictureUrl user of
-                            Nothing -> "/space.jpeg"
-                            Just url -> url
-            followButton = if get #id user == get #id currentUser
-                            then [hsx||]
-                            else [hsx|
+            picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
+            followButton =
+                case currentUserOrNothing of
+                        Nothing -> followButtonHtml
+                        Just currentUser' -> if get #id user == get #id currentUser'
+                                                then [hsx||]
+                                                else followButtonHtml
+            followButtonHtml = [hsx|
                                 <button class={"btn follow-button " ++ followButtonTextClass}
                                         data-userid={tshow (get #id user)} 
                                         data-url={CreateFollowAction}>
                                         {followButtonText}
                                 </button>
-                            |]
-
+                                |]
             followButtonTextClass :: Text
             followButtonTextClass = if followed then "btn-light" else "btn-primary"
 
@@ -65,7 +66,7 @@ followButtonFormOptions :: FormContext User -> FormContext User
 followButtonFormOptions formContext =
     formContext
     |> set #formAction (pathTo CreateFollowAction)
-    |> modify #formClass (\classes -> classes <> " form-inline follow-button")
+    |> modify #formClass (<> " form-inline follow-button")
 
 
 createBlock last30DaysPosts aday = [hsx|

@@ -57,10 +57,8 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
         {topnav}
         <div class="container">
             {renderFlashMessages}
-            <div class="row">
-                <div class="col-3 d-none d-md-block">
-                    {sidebar}
-                </div>
+            <div class="row justify-content-center">
+                {sidebar}
                 <div id="content" class="col-md-8 col-12 p-4">
                     <div class="row justify-content-center">
                         <div class="w-100" style="margin-top: 10px">
@@ -75,27 +73,37 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 |]
 
 sidebar :: Html
-sidebar = [hsx|
-    <div id="sidebar-wrapper" style="position: fixed;">
-        <div class="sidebar-heading">
-            <h1 class="display-4 mt-3">
-                <a href={FollowedPostsAction Nothing}>Daily</a>
-            </h1>
-        </div>
-        <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={FollowedPostsAction Nothing}>Home</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={ShowProfileAction (get #username currentUser)}>Profile</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={UsersAction}>Find People</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href={EditCurrentUserAction}>Settings</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3 js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+sidebar = case currentUserOrNothing of
+    Nothing -> [hsx||]
+    Just _ -> [hsx|
+    <div class="col-3 d-none d-md-block">
+        <div id="sidebar-wrapper" style="position: fixed;">
+            <div class="sidebar-heading">
+                <h1 class="display-4 mt-3">
+                    <a href={FollowedPostsAction Nothing}>Daily</a>
+                </h1>
+            </div>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={FollowedPostsAction Nothing}>Home</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={UsersAction}>Find People</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={EditCurrentUserAction}>Settings</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3 js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+            </div>
         </div>
     </div>
 |]
 
 topnav:: Html
-topnav = [hsx|
+topnav = case currentUserOrNothing of
+    Nothing -> [hsx|
+    <nav class="navbar navbar-light d-block sticky-top">
+        <a class="navbar-brand" href="/">Daily</a>
+    </nav>
+    |]
+    Just _ -> [hsx|
     <nav class="navbar navbar-expand-lg navbar-light d-block d-md-none sticky-top">
-        <a class="navbar-brand" href="#">Daily</a>
+        <a class="navbar-brand" href="/">Daily</a>
         <button class="navbar-toggler float-right"
                 type="button"
                 data-toggle="collapse"
