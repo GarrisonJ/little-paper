@@ -2,6 +2,8 @@ module Web.Routes where
 import IHP.RouterPrelude
 import Generated.Types
 import Web.Types
+import IHP.OAuth.Google.Types
+
 
 instance AutoRoute UsersController
 instance AutoRoute PasswordsController
@@ -26,4 +28,5 @@ instance HasPath ProfilesController where
 instance AutoRoute LikesController
 instance AutoRoute FollowsController
 instance AutoRoute CommentsController
+instance AutoRoute GoogleOAuthController
 

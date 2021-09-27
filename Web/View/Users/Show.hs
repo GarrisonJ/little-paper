@@ -62,13 +62,6 @@ instance View ShowView where
             followButtonText :: Text
             followButtonText = if followed then "Unfollow" else "Follow"
 
-followButtonFormOptions :: FormContext User -> FormContext User
-followButtonFormOptions formContext =
-    formContext
-    |> set #formAction (pathTo CreateFollowAction)
-    |> modify #formClass (<> " form-inline follow-button")
-
-
 createBlock last30DaysPosts aday = [hsx|
     <div style={"background: " ++ (chooseBlockColor last30DaysPosts aday) ++";"} class="block"></div>
 |]

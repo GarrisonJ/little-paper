@@ -1,8 +1,23 @@
 $(document).on('ready turbolinks:load', function () {
     // This is called on the first page load *and* also when the page is changed by turbolinks
-
-
 });
+
+function initGoogleLogin() {
+    gapi.load('auth2', function() {
+        var element = document.getElementById('continue-with-google');
+        var clientId = element.dataset.clientId;
+        auth2 = gapi.auth2.init({ client_id: clientId, scope: 'profile' });
+        
+        auth2.attachClickHandler(element, {},
+            function(googleUser) {
+                var form = document.getElementById('new-session-with-google-form');
+                form.querySelector('input[name="jwt"]').value = googleUser.getAuthResponse().id_token;
+                form.submit();
+            }, function(error) {
+                alert(JSON.stringify(error, undefined, 2));
+            });
+    });
+}
 
 // The post like button
 $(document).on( "click", ".like-button", function(event){
@@ -73,12 +88,12 @@ $(document).on( "click", ".follow-button", function(event){
 });
 
 // Always scroll to top when you click a link
-document.addEventListener("turbolinks:load", function() {
+document.addEventListener("ready turbolinks:load", function() {
     window.scrollTo(0,0)
 });
 
 // Fix but with bootstrap dropdowns and turbolinks
-document.addEventListener('turbolinks:load', function() {
+document.addEventListener('ready turbolinks:load', function() {
     var dropdown_buttons = document.querySelectorAll('[data-toggle="dropdown"]');
 
     dropdown_buttons.forEach(function(element) {

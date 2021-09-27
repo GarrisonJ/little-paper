@@ -81,7 +81,9 @@ singlePostQuery = [i|
         ON posts.user_id = user_follows.followed_id 
     INNER JOIN users
         ON posts.user_id = users.id 
-    WHERE posts.id = ?
+    WHERE users.is_confirmed = true 
+        AND users.is_setup = true
+        AND posts.id = ? 
 |]
 
 bigPostQuery :: Int -> Int -> Id User -> Query
@@ -96,7 +98,9 @@ bigPostQuery pageSize skip userId = [i|
         ON posts.user_id = user_follows.followed_id 
     INNER JOIN users
         ON posts.user_id = users.id 
-    WHERE user_follows.follower_id = '#{userId}'
+    WHERE users.is_confirmed = true 
+        AND users.is_setup = true 
+        AND user_follows.follower_id = '#{userId}'
     ORDER BY created_on DESC 
     LIMIT #{pageSize} 
     OFFSET #{skip} 
@@ -109,8 +113,12 @@ profileQuery userId = [i|
            users.picture_url, 
            (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comments_count, 
            (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) AS likes_count
-    FROM posts INNER JOIN users ON posts.user_id = users.id 
-    WHERE posts.user_id = '#{userId}'
+    FROM posts 
+    INNER JOIN users 
+    ON posts.user_id = users.id 
+    WHERE users.is_confirmed = true 
+        AND users.is_setup = true 
+        AND posts.user_id = '#{userId}'
     ORDER BY created_on DESC 
 |]
 
@@ -119,6 +127,8 @@ profileLast30DaysQuery userId nowMinus30DaysAgo = [i|
     SELECT created_on_day
     FROM posts INNER JOIN users ON posts.user_id = users.id 
     WHERE posts.user_id = '#{userId}'
+    AND users.is_confirmed = true 
+    AND users.is_setup = true
     AND posts.created_on >= '#{nowMinus30DaysAgo}'
     ORDER BY created_on DESC 
 |]

@@ -16,5 +16,7 @@ direnv allow
 eval "$(direnv hook bash)"
 eval "$(direnv export bash)"
 
+export OAUTH_GOOGLE_CLIENT_ID="320597488038-48jb9rncvt1mcal20fp559tm8775p63j.apps.googleusercontent.com"
+
 # Finally start the dev server
 RunDevServer

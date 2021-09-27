@@ -21,7 +21,9 @@ CREATE TABLE users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     confirmation_key TEXT,
     failed_email_confirm_attempts INT DEFAULT 0 NOT NULL,
-    bio TEXT DEFAULT '' NOT NULL
+    bio TEXT DEFAULT '' NOT NULL,
+    google_user_id TEXT,
+    is_setup BOOLEAN DEFAULT false NOT NULL
 );
 CREATE UNIQUE INDEX user_username_index ON users (LOWER(username));
 CREATE INDEX posts_user_id_index ON posts (user_id);

@@ -11,9 +11,7 @@ instance View EditView where
     |]
         where
             picturePath :: Text
-            picturePath = case get #pictureUrl user of
-                            Nothing -> "/space.jpeg"
-                            Just url -> url
+            picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
 
             renderForm :: User -> Html
             renderForm user = formFor user [hsx|

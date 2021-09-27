@@ -38,6 +38,8 @@ data UsersController
     | NewUserAction
     | CreateUserAction
     | EditCurrentUserAction
+    | FinishUserSetupAction
+    | UpdateUserSetupAction
     | UpdateUserAction { userId :: !(Id User) }
     | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Text) }
     deriving (Eq, Show, Data)

@@ -17,10 +17,31 @@ instance View WelcomeView where
                 Join Now! 🎉
                 </p>
         </div>
-        <div class="row p-3">
+        <div class="row p-2">
             <a type="button" class="btn btn-primary" href={NewUserAction}>Signup</a><br>
         </div>
-        <div class="row p-3">
+        <div class="row p-2">
+             {loginWithGoogle}
+        </div>
+        <div class="row p-2">
             <a type="button" class="btn btn-outline-secondary" href={NewSessionAction}>Login</a>
         </div>
         |]
+
+
+loginWithGoogle :: Html
+loginWithGoogle = [hsx|
+    <div class="row">
+        <div class="col-md-12">
+            <a data-client-id="320597488038-48jb9rncvt1mcal20fp559tm8775p63j.apps.googleusercontent.com" id="continue-with-google" class="btn btn-outline-light border border-dark" role="button" style="text-transform:none">
+                <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                Login with Google
+            </a>
+        </div>
+    </div>
+    <form method="POST" action={GoogleConnectCallbackAction} id="new-session-with-google-form">
+        <input type="hidden" name="jwt" value=""/>
+    </form>
+    <script src="/google-login.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=initGoogleLogin"></script>
+|]

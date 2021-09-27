@@ -37,11 +37,9 @@ renderUser follows user = [hsx|
 |]
     where
         picturePath :: Text
-        picturePath = case get #pictureUrl user of
-                        Nothing -> "/space.jpeg"
-                        Just url -> url
+        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
 
-        followed = not $ null $ find (\uf -> uf == (get #id user)) follows
+        followed = not $ null $ find (== get #id user) follows
 
         followButton = if get #id user == get #id currentUser
                         then [hsx||]

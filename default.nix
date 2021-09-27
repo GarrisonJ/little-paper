@@ -1,7 +1,7 @@
 let
-    ihp = builtins.fetchGit {
-        url = "https://github.com/digitallyinduced/ihp.git";
-        ref = "refs/tags/v0.13.1";
+    ihp = builtins.fetchTarball {
+        url = "https://ihp.digitallyinduced.com/BuildTarball?userId=f0a92fe8-8d53-4e8d-9aba-c96e37ce6573&token=okrAbQRohprwDJtzwdrogtOMVvyielRT&version=6030d9b5bffb6fed6312be436affc174ce812980";
+        sha256 = "10gfhbzsd01474a2dpwnycdrdaxwr3gfy76qh8cpbl2865y27j15";
     };
     haskellEnv = import "${ihp}/NixSupport/default.nix" {
         ihp = ihp;
@@ -14,6 +14,7 @@ let
             p.ihp
             tz
             string-interpolate
+            ihp-oauth-google
         ];
         otherDeps = p: with p; [
             imagemagick

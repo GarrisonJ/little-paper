@@ -15,6 +15,8 @@ import Web.Controller.Users
 import Web.Controller.Passwords
 import Web.Controller.Posts
 import Web.Controller.Static
+import IHP.OAuth.Google.Types
+import Web.Controller.GoogleOAuth
 
 instance FrontController WebApplication where
     controllers = 
@@ -28,6 +30,8 @@ instance FrontController WebApplication where
         , parseRoute @UsersController
         , parseRoute @PasswordsController
         , parseRoute @PostsController
+        , parseRoute @GoogleOAuthController
+
         ]
 
 instance InitControllerContext WebApplication where
