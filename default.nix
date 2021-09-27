@@ -15,6 +15,7 @@ let
             tz
             string-interpolate
             ihp-oauth-google
+            ihp-sentry
         ];
         otherDeps = p: with p; [
             imagemagick

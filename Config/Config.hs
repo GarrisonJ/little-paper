@@ -6,6 +6,8 @@ import IHP.FrameworkConfig
 import IHP.Mail
 import System.Environment
 import IHP.OAuth.Google.Config ( initGoogleOAuth )
+import IHP.Sentry
+
 
 import qualified IHP.Log as Log
 import IHP.Log.Types
@@ -20,6 +22,7 @@ config = do
     option Development
     option (AppHostname "localhost")
 
+    initSentry "https://6d6350e9bbb949cc93e1c4c12589db87@o1014737.ingest.sentry.io/5979975"
 
     logger <- liftIO $ newLogger def {
       level = Debug,
