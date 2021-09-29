@@ -10,7 +10,7 @@ function initGoogleLogin() {
                 form.querySelector('input[name="jwt"]').value = googleUser.getAuthResponse().id_token;
                 form.submit();
             }, function(error) {
-                alert(JSON.stringify(error, undefined, 2));
+                console.log("Error with google oauth" , JSON.stringify(error, undefined, 2))
             });
     });
 }
