@@ -45,10 +45,7 @@ instance View IndexView where
             renderPostInput = case todaysPost of
                     Just p -> [hsx|
                         <div class="card yosemite-window">
-                            <div class="card-header border-dark">You posted something today. Nice job!</div>
-                                    <div class="card-body border-light">
-                            {get #body p}
-                            </div>
+                            <div class="card-body">You posted something today. 🎉</div>
                         </div>
                     |]
                     Nothing -> [hsx|
