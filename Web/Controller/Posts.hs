@@ -3,7 +3,6 @@ module Web.Controller.Posts where
 import Web.Controller.Prelude
 import Web.View.Posts.Index
 import Web.View.Posts.New
-import Web.View.Posts.Edit
 import Web.View.Posts.Show
 import Data.Time.Zones.All
 import Data.Time
@@ -106,30 +105,12 @@ instance Controller PostsController where
                     Nothing -> do
                         setErrorMessage "Couldn't find that post"
                         redirectTo $ FollowedPostsAction Nothing
-                    Just post -> redirectTo $ ShowPostAction { postId = (get #id post) }
+                    Just post -> redirectTo ShowPostAction { postId = get #id post }
             _ -> do
                 setErrorMessage "Couldn't find that post"
                 redirectTo $ FollowedPostsAction Nothing
         where
             parseDay = parseTimeM False defaultTimeLocale "%-Y-%-m-%d" . Data.Text.unpack
-
-    action EditPostAction { postId } = do
-        ensureIsUser
-        post <- fetch postId
-        accessDeniedUnless (get #userId post == currentUserId)
-        render EditView { .. }
-
-    action UpdatePostAction { postId } = do
-        ensureIsUser
-        post <- fetch postId
-        accessDeniedUnless (get #userId post == currentUserId)
-        post
-            |> buildPost
-            |> ifValid \case
-                Left post -> render EditView { .. }
-                Right post -> do
-                    post <- post |> updateRecord
-                    redirectTo EditPostAction { .. }
 
     action CreatePostAction = do
         ensureIsUser

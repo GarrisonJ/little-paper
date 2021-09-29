@@ -142,7 +142,6 @@ renderPost isLiked post = [hsx|
                     {kebabHorizontal}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href={EditPostAction (get #id post)}>Edit</a>
                     <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
                 </div>
             </div>
