@@ -34,7 +34,7 @@ instance Controller PostsController where
         ensureIsUser
         let pageSize = 10
         let skip = if isJust page
-                        then (fromJust page)*pageSize
+                        then fromJust page*pageSize
                         else 0
 
         posts :: [PostWithMeta] <- fetchPostsWithMeta currentUserId skip pageSize
@@ -129,7 +129,6 @@ instance Controller PostsController where
                 Left post -> render EditView { .. }
                 Right post -> do
                     post <- post |> updateRecord
-                    setSuccessMessage "Post updated"
                     redirectTo EditPostAction { .. }
 
     action CreatePostAction = do
@@ -150,7 +149,6 @@ instance Controller PostsController where
                         Left post -> redirectTo $ FollowedPostsAction Nothing
                         Right post -> do
                             post <- post |> createRecord
-                            setSuccessMessage "Post created"
                             redirectTo $ FollowedPostsAction Nothing
 
     action DeletePostAction { postId } = do
@@ -168,7 +166,7 @@ instance Controller PostsController where
 buildPost post = post
     |> fill @'["body"]
     |> validateField #body (hasMaxLength 280)
-    |> validateField #body (nonEmpty)
+    |> validateField #body nonEmpty
 
 getDailyPost :: (?modelContext :: ModelContext) => Id User -> Day -> IO (Maybe Post)
 getDailyPost userId day = query @Post

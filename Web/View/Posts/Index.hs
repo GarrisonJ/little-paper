@@ -27,7 +27,7 @@ instance View IndexView where
                                                 {leftArrow}
                                             </a>
                                         |]
-            renderNextArrow = if length posts <= 0
+            renderNextArrow = if null posts
                                 then [hsx||]
                                 else [hsx|
                                     <a href={FollowedPostsAction nextPage} class="float-right" aria-label="Next">
@@ -37,13 +37,20 @@ instance View IndexView where
 
             rightArrow = [hsx|<span class="display-4">→</span>|]
             leftArrow = [hsx|<span class="display-4">←</span>|]
-            nextPage = if isJust page then (fmap succ page) else Just 1
+            nextPage = if isJust page then fmap succ page else Just 1
             prevPage = case page of
                         Nothing -> Nothing
                         Just 0  -> Just 0
                         _       -> fmap pred page
             renderPostInput = case todaysPost of
-                    Just p -> [hsx|<h3>You posted something today. Nice job!</h3>|]
+                    Just p -> [hsx|
+                        <div class="card yosemite-window">
+                            <div class="card-header border-dark">You posted something today. Nice job!</div>
+                                    <div class="card-body border-light">
+                            {get #body p}
+                            </div>
+                        </div>
+                    |]
                     Nothing -> [hsx|
                                 <div class="card yosemite-window">
                                     <div class="card-header border-light">You haven't posted today!</div>
@@ -53,8 +60,7 @@ instance View IndexView where
                                 </div>
                             |]
 
-
-            isPostLiked post likes = (get #id post) `elem` (fmap (get #postId) likes)
+            isPostLiked post likes = get #id post `elem` fmap (get #postId) likes
             renderPost post = [hsx|
                 {Web.View.Posts.Show.renderPost (isPostLiked post likes) post}
             |]
@@ -65,7 +71,7 @@ renderPostForm post = formForWithOptions post postFormOptions [hsx|
     {submitButton { label= "Submit", buttonClass="float-right send-message-button" } }
 |]
 
-postFormOptions :: FormContext (Post) -> FormContext (Post)
+postFormOptions :: FormContext Post -> FormContext Post
 postFormOptions formContext =
     formContext
     |> set #formAction (pathTo CreatePostAction)
