@@ -132,7 +132,7 @@ instance Controller UsersController where
                 , imageMagickOptions = "-resize '1024x1024^' -gravity north -extent 1024x1024 -quality 85% -strip"
                 }
         user
-            |> fill @["email","passwordHash","timezone","username","bio","pictureUrl"]
+            |> fill @["timezone","bio","pictureUrl"]
             |> validateField #bio (hasMaxLength 160)
             |> validateField #username (hasMaxLength usernameMaxLength |> withCustomErrorMessage "Your username must be shorter than 15 characters.")
             |> validateField #username (hasMinLength usernameMinLength |> withCustomErrorMessage "Your username must be atleast than 3 characters.")
