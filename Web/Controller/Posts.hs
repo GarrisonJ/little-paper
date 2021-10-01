@@ -60,32 +60,7 @@ instance Controller PostsController where
                 let post = newRecord
                 render NewView { .. }
 
-    action ShowPostAction { postId } = do
-        post <- fetchSinglePostWithMeta postId
-        case post of
-            [] -> redirectTo $ FollowedPostsAction Nothing
-            (post:_) -> do
-                (commentsQuery, commentspagination) <- query @Comment
-                                |> filterWhere (#postId, postId)
-                                |> orderByDesc #createdAt
-                                |> paginateWithOptions
-                                    (defaultPaginationOptions
-                                        |> set #maxItems 10)
-
-                comments <- commentsQuery
-                                |> fetch
-                                >>= collectionFetchRelated #userId
-
-                like <- case currentUserOrNothing of
-                    Nothing -> pure Nothing -- there is no current user
-                    Just _  -> query @Like
-                            |> filterWhere (#userId, currentUserId)
-                            |> filterWhere (#postId, postId)
-                            |> fetchOneOrNothing
-
-                let isLiked = not $ null like
-
-                render ShowView { .. }
+    action ShowPostAction { postId } = showPost postId (newRecord @Comment |> set #postId postId)
 
     action ShowPostForDayAction { username, day } = do
         ensureIsUser
@@ -154,3 +129,34 @@ getDailyPost userId day = query @Post
             |> filterWhere (#userId, userId)
             |> filterWhere (#createdOnDay, day)
             |> fetchOneOrNothing
+
+showPost :: (?context::ControllerContext, ?modelContext::ModelContext, ?theAction::controller) 
+    => Id Post -- ^ The id of the post you want to show
+    -> Comment -- ^ The potential new comment. We pass it in because it may have validation errors.
+    -> IO ()
+showPost postId newComment = do
+    post <- fetchSinglePostWithMeta postId
+    case post of
+        [] -> redirectTo $ FollowedPostsAction Nothing
+        (post:_) -> do
+            (commentsQuery, commentspagination) <- query @Comment
+                            |> filterWhere (#postId, postId)
+                            |> orderByDesc #createdAt
+                            |> paginateWithOptions
+                                (defaultPaginationOptions
+                                    |> set #maxItems 10)
+
+            comments <- commentsQuery
+                            |> fetch
+                            >>= collectionFetchRelated #userId
+
+            like <- case currentUserOrNothing of
+                Nothing -> pure Nothing -- there is no current user
+                Just _  -> query @Like
+                        |> filterWhere (#userId, currentUserId)
+                        |> filterWhere (#postId, postId)
+                        |> fetchOneOrNothing
+
+            let isLiked = not $ null like
+
+            render ShowView { .. }

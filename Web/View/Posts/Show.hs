@@ -6,6 +6,7 @@ data ShowView = ShowView {
                            post :: PostWithMeta
                          , isLiked :: Bool
                          , comments :: [Include "userId" Comment]
+                         , newComment :: Comment
                          , commentspagination :: Pagination
                          }
 
@@ -21,12 +22,16 @@ instance View ShowView where
             renderComments = if null comments && not isUserLoggedIn
                                 then [hsx||]
                                 else [hsx|
-                                    <div class="m-3 p-2 d-flex yosemite-window">
+                                    <div class="m-3 p-3 d-flex yosemite-window">
                                         <div class="col">
                                             <div class="">
                                                 {renderCommentInput}
                                             </div>
                                             {forEach comments (\c -> renderComment (c |> get #userId) c)}
+                                        </div>
+                                    </div>
+                                    <div class="m-3 p-2 pt-3 d-flex yosemite-window">
+                                        <div class="col">
                                             {renderCommentPagination}
                                         </div>
                                     </div>
@@ -35,8 +40,6 @@ instance View ShowView where
                                 Nothing -> False
                                 Just _ -> True
 
-            newComment = newRecord @Comment
-                            |> set #postId (get #id post)
             renderCommentPagination = case currentUserOrNothing of
                                 Nothing -> [hsx||]
                                 Just _ -> renderPagination commentspagination
