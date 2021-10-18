@@ -175,13 +175,18 @@ button:focus {
     }
 
     textarea {
-       background-color: var(--light-bg) !important;
-       color: var(--light-color) !important;
+        background-color: inherit !important;;
+        color: inherit !important;;
     }
 
     input {
-       background-color: var(--light-bg) !important;
-       color: var(--light-color) !important;
+        background-color: inherit !important;;
+        color: inherit !important;;
+    }
+
+    select {
+        background-color: inherit !important;;
+        color: inherit !important;;
     }
 
     .nav-link {
