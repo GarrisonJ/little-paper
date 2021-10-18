@@ -19,24 +19,28 @@ instance View ShowView where
         {renderComments}
     |]
         where
-            renderComments = if null comments
+            renderComments = if null comments && not isUserLoggedIn
+                then [hsx||]
+                else [hsx|
+                    <div class="m-3 p-3 d-flex yosemite-window">
+                        <div class="col">
+                            {renderCommentInput}
+                            {forEach comments (\c -> renderComment (c |> get #userId) c)}
+                        </div>
+                    </div>
+                    {renderCommentsPagination}
+                |]
+
+            isUserLoggedIn = case currentUserOrNothing of
+                                Nothing -> False
+                                Just _ -> True
+            renderCommentsPagination = if null comments
                                 then [hsx||]
                                 else [hsx|
-                                    <div class="m-3 p-3 d-flex yosemite-window">
-                                        <div class="col">
-                                            <div class="">
-                                                {renderCommentInput}
-                                            </div>
-                                            {forEach comments (\c -> renderComment (c |> get #userId) c)}
-                                        </div>
-                                    </div>
-                                    <div class="m-3 p-2 pt-3 d-flex yosemite-window">
-                                        <div class="col">
-                                            {renderPagination commentspagination}
-                                        </div>
+                                    <div class="m-3 justify-content-center p-2 pt-3 d-flex yosemite-window">
+                                        {renderPagination commentspagination}
                                     </div>
                                 |]
-
             renderCommentInput = case currentUserOrNothing of
                                 Nothing -> [hsx||]
                                 Just _ -> renderFormComment newComment
