@@ -110,6 +110,7 @@ instance Controller UsersController where
                 Right user -> do
                     user <- user
                         |> set #isConfirmed True
+                        |> set #isSetup True
                         |> updateRecord
                     setUserToFollowSelf (get #id user)
                     redirectToPath "/"
