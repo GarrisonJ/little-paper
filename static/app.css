@@ -67,6 +67,7 @@ a, a:hover, a:focus {
 .post-text {
     font-size: 1.4rem;
     line-height: 2rem;
+    word-break: break-word;
 }
 
 .send-message-button {
@@ -87,6 +88,15 @@ a, a:hover, a:focus {
 
 .bio {
     white-space:pre-wrap;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: none;
+}
+.btn:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 /************ Edit Form ************/
@@ -130,6 +140,10 @@ a, a:hover, a:focus {
     background: var(--light-bg);
 }
 
+.navbar-toggler-icon {
+    width: 50px;
+}
+
 
 /************ Profile graph ************/
 .contributions {
@@ -143,5 +157,44 @@ a, a:hover, a:focus {
     grid-template-columns: repeat(10, 20px);
     grid-auto-flow: dense;
     grid-gap: 2px;
-  }
-  
+}
+
+
+/************ Dark mode ************/
+@media (prefers-color-scheme: dark) {
+    /* rename these colors so they aren't light/dark */
+    :root {
+        --light-bg: #002b36;
+        --light-color: #eee8d5;
+        --light-code: #93a1a1;
+    }
+
+    #continue-with-google {
+        background-color: var(--light-bg);
+
+    }
+
+    textarea {
+       background-color: var(--light-bg) !important;
+       color: var(--light-color) !important;
+    }
+
+    input {
+       background-color: var(--light-bg) !important;
+       color: var(--light-color) !important;
+    }
+
+    .nav-link {
+        color: var(--light-color) !important;
+    }
+
+    .navbar-toggler-icon {
+        color: var(--light-color) !important;
+    }
+
+    .yosemite-window {
+        background: #004252;
+        border: none;
+        box-shadow: none;
+    }
+}

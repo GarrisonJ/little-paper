@@ -19,7 +19,7 @@ instance View ShowView where
         {renderComments}
     |]
         where
-            renderComments = if null comments && not isUserLoggedIn
+            renderComments = if null comments
                                 then [hsx||]
                                 else [hsx|
                                     <div class="m-3 p-3 d-flex yosemite-window">
@@ -32,17 +32,10 @@ instance View ShowView where
                                     </div>
                                     <div class="m-3 p-2 pt-3 d-flex yosemite-window">
                                         <div class="col">
-                                            {renderCommentPagination}
+                                            {renderPagination commentspagination}
                                         </div>
                                     </div>
                                 |]
-            isUserLoggedIn = case currentUserOrNothing of
-                                Nothing -> False
-                                Just _ -> True
-
-            renderCommentPagination = case currentUserOrNothing of
-                                Nothing -> [hsx||]
-                                Just _ -> renderPagination commentspagination
 
             renderCommentInput = case currentUserOrNothing of
                                 Nothing -> [hsx||]
@@ -153,7 +146,7 @@ renderPost isLiked post = [hsx|
 
 
 kebabHorizontal = [hsx|
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
   <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
 </svg>|]
 

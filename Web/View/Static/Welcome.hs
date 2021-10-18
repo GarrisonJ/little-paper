@@ -33,7 +33,7 @@ loginWithGoogle :: Html
 loginWithGoogle = [hsx|
     <div class="row">
         <div class="col-md-12">
-            <a data-client-id="320597488038-48jb9rncvt1mcal20fp559tm8775p63j.apps.googleusercontent.com" id="continue-with-google" class="btn btn-outline-light border border-dark" role="button" style="text-transform:none">
+            <a data-client-id="320597488038-48jb9rncvt1mcal20fp559tm8775p63j.apps.googleusercontent.com" id="continue-with-google" class="btn btn-outline-secondary" role="button" style="text-transform:none">
                 <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
                 Login with Google
             </a>

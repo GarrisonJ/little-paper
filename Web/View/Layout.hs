@@ -97,12 +97,12 @@ sidebar = case currentUserOrNothing of
 topnav:: Html
 topnav = case currentUserOrNothing of
     Nothing -> [hsx|
-    <nav class="navbar navbar-light d-block sticky-top">
+    <nav class="navbar d-block sticky-top">
         <a class="navbar-brand" href="/">Daily</a>
     </nav>
     |]
     Just _ -> [hsx|
-    <nav class="navbar navbar-expand-lg navbar-light d-block d-md-none sticky-top">
+    <nav class="navbar navbar-expand-lg  d-block d-md-none sticky-top">
         <a class="navbar-brand" href="/">Daily</a>
         <button class="navbar-toggler float-right"
                 type="button"
@@ -111,7 +111,7 @@ topnav = case currentUserOrNothing of
                 aria-controls="navbarSupportedContent"
                 aria-expanded="false"
                 aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon">menu</span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">

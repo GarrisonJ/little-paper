@@ -16,7 +16,7 @@ data ShowView = ShowView {
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
-        <div class="yosemite-window card text-center p-3">
+        <div class="yosemite-window text-center p-3">
             <h1>{get #username user}</h1>
             <img class="border rounded-circle mx-auto" src={picturePath} style="width:100px; height: 100px"/>
             <div class="d-flex justify-content-center">
