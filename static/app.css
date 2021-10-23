@@ -123,6 +123,9 @@ button:focus {
 .table {
     color: var(--light-color);
 }
+.table-hover tbody tr:hover {
+    color: var(--light-color);
+}
 
 .sidebar-heading {
     padding-left: 10px;
