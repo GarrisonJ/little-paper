@@ -7,6 +7,7 @@ import IHP.Mail
 import System.Environment
 import IHP.OAuth.Google.Config ( initGoogleOAuth )
 import IHP.Sentry
+import IHP.FileStorage.Config
 
 
 import qualified IHP.Log as Log
@@ -31,6 +32,9 @@ config = do
     option logger
 
     initGoogleOAuth
+
+    initS3Storage "us-west-2" "little-paper-dev"
+
     -- other options here, then add:
 
   {-

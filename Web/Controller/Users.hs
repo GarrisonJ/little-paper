@@ -139,7 +139,7 @@ instance Controller UsersController where
             |> validateField #username (hasMinLength usernameMinLength |> withCustomErrorMessage "Your username must be atleast than 3 characters.")
             |> validateField #username isUsernameChars
             |> validateField #timezone (isInList allTimezones)
-            |> uploadImageWithOptions profilePictureOptions #pictureUrl
+            |> uploadToStorage #pictureUrl
             >>= validateIsUnique #email
             >>= validateIsUnique #username
             >>= ifValid \case
