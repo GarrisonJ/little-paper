@@ -8,13 +8,13 @@ data IndexView = IndexView { users :: [User],
 instance View IndexView where
     html IndexView { .. } = [hsx|
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                </thead>
+            <table class="table table-sm table-hover">
                 <tbody>{forEach users (renderUser follows)}</tbody>
             </table>
         </div>
-        {renderPagination pagination}
+        <div class="m-3 justify-content-center p-2 pt-3 d-flex">
+            {renderPagination pagination}
+        </div>
     |]
 
 
