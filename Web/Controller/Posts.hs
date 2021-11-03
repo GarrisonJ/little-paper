@@ -27,38 +27,17 @@ instance Controller PostsController where
 
         let likes = []
         let page = Nothing
+        let newPost = newRecord
         render IndexView { .. }
 
-    action FollowedPostsAction { page } = do
-        ensureIsUser
-        let pageSize = 10
-        let skip = if isJust page
-                        then fromJust page*pageSize
-                        else 0
-
-        posts :: [PostWithMeta] <- fetchPostsWithMeta currentUserId skip pageSize
-
-        likes <- query @Like
-                    |> filterWhere (#userId, currentUserId)
-                    |> filterWhereIn (#postId, ids posts)
-                    |> fetch
-
-        day <- getUserDay $ get #timezone currentUser
-        todaysPost <- getDailyPost currentUserId day
-
-        render IndexView { .. }
+    action FollowedPostsAction { page } = showPostIndex page newRecord
 
     action NewPostAction = do
         ensureIsUser
         day <- getUserDay $ get #timezone currentUser
         dailyPost <- getDailyPost currentUserId day
-        case dailyPost of
-            Just _ -> do
-                setErrorMessage "You already created a post today"
-                redirectTo $ FollowedPostsAction Nothing
-            Nothing -> do
-                let post = newRecord
-                render NewView { .. }
+        let post = newRecord
+        render NewView { .. }
 
     action ShowPostAction { postId } = showPost postId (newRecord @Comment |> set #postId postId)
 
@@ -94,7 +73,7 @@ instance Controller PostsController where
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
-                redirectTo $ FollowedPostsAction Nothing
+                redirectBack
             Nothing -> do
                 newRecord @Post
                     |> set #userId currentUserId
@@ -102,10 +81,11 @@ instance Controller PostsController where
                     |> set #userTimezoneSnapshot (get #timezone currentUser)
                     |> buildPost
                     |> ifValid \case
-                        Left post -> redirectTo $ FollowedPostsAction Nothing
+                        Left post -> do
+                            showPostIndex Nothing post
                         Right post -> do
                             post <- post |> createRecord
-                            redirectTo $ FollowedPostsAction Nothing
+                            redirectBack
 
     action DeletePostAction { postId } = do
         ensureIsUser
@@ -121,7 +101,8 @@ instance Controller PostsController where
 
 buildPost post = post
     |> fill @'["body"]
-    |> validateField #body (hasMaxLength 280)
+    |> validateField #body (hasMaxLength 280
+        |> withCustomErrorMessage "Post must be less than 280 characters")
     |> validateField #body nonEmpty
 
 getDailyPost :: (?modelContext :: ModelContext) => Id User -> Day -> IO (Maybe Post)
@@ -130,7 +111,31 @@ getDailyPost userId day = query @Post
             |> filterWhere (#createdOnDay, day)
             |> fetchOneOrNothing
 
-showPost :: (?context::ControllerContext, ?modelContext::ModelContext, ?theAction::controller) 
+showPostIndex :: (?context::ControllerContext, ?modelContext::ModelContext, ?theAction::controller)
+    => Maybe Int -- ^ Page number
+    -> Post      -- ^ The potential new post. We pass it in because it may have validation errors. 
+    -> IO ()
+showPostIndex page newPost = do
+    ensureIsUser
+    let pageSize = 10
+    let skip = if isJust page
+                    then fromJust page*pageSize
+                    else 0
+
+    posts :: [PostWithMeta] <- fetchPostsWithMeta currentUserId skip pageSize
+
+    likes <- query @Like
+                |> filterWhere (#userId, currentUserId)
+                |> filterWhereIn (#postId, ids posts)
+                |> fetch
+
+    day <- getUserDay $ get #timezone currentUser
+    todaysPost <- getDailyPost currentUserId day
+
+    render IndexView { .. }
+
+
+showPost :: (?context::ControllerContext, ?modelContext::ModelContext, ?theAction::controller)
     => Id Post -- ^ The id of the post you want to show
     -> Comment -- ^ The potential new comment. We pass it in because it may have validation errors.
     -> IO ()

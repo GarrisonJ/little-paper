@@ -6,7 +6,8 @@ import Application.Helper.PostsQuery
 data IndexView = IndexView { posts :: [PostWithMeta],
                              todaysPost :: Maybe Post,
                              page :: Maybe Int,
-                             likes :: [Like]
+                             likes :: [Like],
+                             newPost :: Post
                              }
 
 instance View IndexView where
@@ -52,7 +53,7 @@ instance View IndexView where
                                 <div class="card yosemite-window">
                                     <div class="card-header border-light">You haven't posted today!</div>
                                     <div class="card-body border-light">
-                                        {renderPostForm (newRecord :: Post)}
+                                        {renderPostForm newPost}
                                     </div>
                                 </div>
                             |]
