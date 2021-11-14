@@ -18,7 +18,7 @@ CREATE TABLE users (
     locked_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     failed_login_attempts INT DEFAULT 0 NOT NULL,
     timezone TEXT NOT NULL,
-    username TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL,
     is_confirmed BOOLEAN DEFAULT false NOT NULL,
     picture_url TEXT DEFAULT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
