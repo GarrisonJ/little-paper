@@ -204,6 +204,10 @@ button:focus {
         color: var(--light-color) !important;
     }
 
+    .dropdown-menu {
+        background: #004252;
+    }
+
     .yosemite-window {
         background: #004252;
         border: none;
