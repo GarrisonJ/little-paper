@@ -16,6 +16,7 @@ data PostsController
     | ShowPostAction { postId :: !(Id Post) }
     | ShowPostForDayAction { username :: !(Text), day :: !(Text) }
     | CreatePostAction
+    | CreateBigPostAction
     | DeletePostAction { postId :: !(Id Post) }
     deriving (Eq, Show, Data)
 

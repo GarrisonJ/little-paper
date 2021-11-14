@@ -11,6 +11,12 @@ import Data.Text.Encoding (encodeUtf8)
 import Data.Text (unpack)
 import Data.Maybe (fromJust)
 import Application.Helper.PostsQuery
+import Admin.Controller.Prelude (Post'(bigPostTitle))
+import IHP.Controller.Redirect (redirectBack)
+import Text.HTML.SanitizeXSS (sanitizeBalance)
+import Protolude (isJust)
+import Data.Time.Calendar.WeekDate
+import IHP.ControllerPrelude (validateField)
 
 instance Controller PostsController where
     action PostsAction = do
@@ -28,6 +34,7 @@ instance Controller PostsController where
         let likes = []
         let page = Nothing
         let newPost = newRecord
+        let showBigPostLink = False
         render IndexView { .. }
 
     action FollowedPostsAction { page } = showPostIndex page newRecord
@@ -87,6 +94,57 @@ instance Controller PostsController where
                             post <- post |> createRecord
                             redirectBack
 
+    action CreateBigPostAction = do
+        ensureIsUser
+        day <- getUserDay $ get #timezone currentUser
+        dailyPost <- getDailyPost currentUserId day
+
+        -- Check if today is Friday, Saturday, or Sunday
+        let isFridayOrWeekend = checkIfFridayOrWeekend day
+
+        -- Sanitize the post content
+        let bigPostBody' :: Maybe Text = paramOrNothing "bigPostBody"
+        let bigPostBody = fmap sanitizeBalance bigPostBody'
+
+        -- Only allow the user to create one big post a weekend
+        bigPostThisWeekend <- didTheCurrentUserPostAWeekendBigPost day
+
+        when (isFridayOrWeekend && bigPostThisWeekend) $ do
+            setErrorMessage "You can only create one big post a weekend"
+            redirectBack
+
+        newRecord @Post
+            |> set #userId currentUserId
+            |> set #createdOnDay day
+            |> set #userTimezoneSnapshot (get #timezone currentUser)
+            |> set #isBigPost True
+            |> set #bigPostBody bigPostBody
+            |> fill @'["body", "bigPostTitle"]
+            |> validateField #body (hasMaxLength 280
+                |> withCustomErrorMessage "Sub titles must be less than 280 characters")
+            |> validateField #bigPostTitle nonEmptyAndNotNothing
+            |> validateField #bigPostTitle (hasMaxLength 100 . fromMaybe ""
+                |> withCustomErrorMessage "Titles must be less than 100 characters")
+            |> validateField #body nonEmpty
+            |> validateField #bigPostBody nonEmptyAndNotNothing
+            |> ifValid \case
+                Left post -> do
+                    render NewView { .. }
+                Right post -> do
+                    unless (isNothing dailyPost) $ do
+                        setErrorMessage "You already created a post today"
+                        render NewView { .. }
+                    unless isFridayOrWeekend $ do
+                        setErrorMessage "You can only create a big post on Friday, Saturday or Sunday"
+                        render NewView { .. }
+                    post <- post |> createRecord
+                    redirectTo $ FollowedPostsAction Nothing
+        where
+            nonEmptyAndNotNothing :: Maybe Text -> ValidatorResult
+            nonEmptyAndNotNothing (Just "") = Failure "This field cannot be empty"
+            nonEmptyAndNotNothing Nothing = Failure "This field cannot be empty"
+            nonEmptyAndNotNothing _ = Success
+
     action DeletePostAction { postId } = do
         ensureIsUser
         post <- fetch postId
@@ -132,6 +190,9 @@ showPostIndex page newPost = do
     day <- getUserDay $ get #timezone currentUser
     todaysPost <- getDailyPost currentUserId day
 
+    let isFridayOrWeekend = checkIfFridayOrWeekend day
+    showBigPostLink <- (&& isFridayOrWeekend) . not <$> didTheCurrentUserPostAWeekendBigPost day
+
     render IndexView { .. }
 
 
@@ -164,4 +225,46 @@ showPost postId newComment = do
 
             let isLiked = not $ null like
 
+            user <- fetch (get #userId post)
+
+            -- Is the current user following this user?
+            follow <- case currentUserOrNothing of
+                Nothing -> pure Nothing -- there is no current user
+                Just _  -> query @UserFollow
+                                |> filterWhere (#followerId, currentUserId)
+                                |> filterWhere (#followedId, get #id user)
+                                |> fetchOneOrNothing
+            let followed = not $ null follow
+
+            -- How many followers does this user have?
+            followerCount :: Int <- query @UserFollow
+                |> filterWhere (#followedId, get #id user)
+                |> fetchCount
+                -- A user always follows themselves, so we subtract one
+                |> fmap pred
+
             render ShowView { .. }
+
+
+checkIfFridayOrWeekend :: Day -> Bool
+checkIfFridayOrWeekend day =
+    let (year, week, dayOfWeek) = toWeekDate day
+    in dayOfWeek == 5 || dayOfWeek == 6 || dayOfWeek == 7
+
+
+didTheCurrentUserPostAWeekendBigPost day = do
+        bigPostThisWeekendCount :: Int <- query @Post
+            |> filterWhere (#isBigPost, True)
+            |> queryOr
+              (queryOr
+                (filterWhere (#createdOnDay, addDays 1 day))     -- If the user created a post tomorrow
+                                                                 -- we have to check tomorrow because the 
+                                                                 -- user could have changed his/her timezone
+                (filterWhere (#createdOnDay, addDays (-1) day))) -- If the user created a post yesterday
+              (queryOr
+                (filterWhere (#createdOnDay, addDays (-2) day))   -- If the user created a post two days ago
+                (filterWhere (#createdOnDay, addDays (-3) day)))  -- If the user created a post three days ago
+            |> filterWhere (#userId, currentUserId)
+            |> fetchCount
+
+        return $ bigPostThisWeekendCount > 0

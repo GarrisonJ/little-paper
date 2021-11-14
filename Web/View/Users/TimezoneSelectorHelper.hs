@@ -11,4 +11,4 @@ instance CanSelect TimezoneText where
     selectValue x = x
 
 allTimezones :: [TimezoneText]
-allTimezones = map decodeUtf8 $ map toTZName $ enumFrom minBound
+allTimezones = map (decodeUtf8 . toTZName) (enumFrom minBound)

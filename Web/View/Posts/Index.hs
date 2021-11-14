@@ -3,12 +3,13 @@ import Web.View.Prelude
 import Web.View.Posts.Show
 import Application.Helper.PostsQuery
 
-data IndexView = IndexView { posts :: [PostWithMeta],
-                             todaysPost :: Maybe Post,
-                             page :: Maybe Int,
-                             likes :: [Like],
-                             newPost :: Post
-                             }
+data IndexView = IndexView { posts :: [PostWithMeta]
+                            , todaysPost :: Maybe Post
+                            , page :: Maybe Int
+                            , likes :: [Like]
+                            , newPost :: Post
+                            , showBigPostLink :: Bool
+                            }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
@@ -53,7 +54,7 @@ instance View IndexView where
                                 <div class="card yosemite-window">
                                     <div class="card-header border-light">You haven't posted today!</div>
                                     <div class="card-body border-light">
-                                        {renderPostForm newPost}
+                                        {renderPostForm showBigPostLink newPost}
                                     </div>
                                 </div>
                             |]
@@ -63,11 +64,21 @@ instance View IndexView where
                 {Web.View.Posts.Show.renderPost (isPostLiked post likes) post}
             |]
 
-renderPostForm :: Post -> Html
-renderPostForm post = formForWithOptions post postFormOptions [hsx|
+renderPostForm :: Bool -> Post -> Html
+renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [hsx|
     {(textareaField #body) { disableLabel = True }}
     {submitButton { label= "Submit", buttonClass="float-right send-message-button" } }
+    {renderGoToNewPostLink}
 |]
+    where
+        -- render go to new post if today is Friday, Saturday, or Sunday
+        renderGoToNewPostLink = if showBigPostLink
+                                    then [hsx|
+                                        <a href={NewPostAction} class=" float-left">
+                                            Post something more this weeked! 🎉 
+                                        </a>
+                                        |]
+                                    else [hsx||]
 
 postFormOptions :: FormContext Post -> FormContext Post
 postFormOptions formContext =

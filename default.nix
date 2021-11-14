@@ -11,6 +11,7 @@ let
             wai
             text
             hlint
+            xss-sanitize
             p.ihp
             tz
             string-interpolate

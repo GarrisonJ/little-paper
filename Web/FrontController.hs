@@ -39,3 +39,4 @@ instance InitControllerContext WebApplication where
         setLayout defaultLayout
         initAutoRefresh
         initAuthentication @User
+        setTitle "Daily"

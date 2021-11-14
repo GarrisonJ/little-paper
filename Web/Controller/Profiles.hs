@@ -12,6 +12,7 @@ instance Controller ProfilesController where
                     , isUsernameChars ]
                 of
                     Failure _ -> redirectToPath "/"
+                    FailureHtml _ -> redirectToPath "/"
                     Success -> do
                         -- The user we are looking at
                         user <- query @User

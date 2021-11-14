@@ -87,13 +87,8 @@ $(document).on( "click", ".follow-button", function(event){
     )
 });
 
-// Always scroll to top when you click a link
-document.addEventListener("ready turbolinks:load", function() {
-    window.scrollTo(0,0)
-});
-
 // Fix but with bootstrap dropdowns and turbolinks
-document.addEventListener('ready turbolinks:load', function() {
+document.addEventListener('ihp:load', function() {
     var dropdown_buttons = document.querySelectorAll('[data-toggle="dropdown"]');
 
     dropdown_buttons.forEach(function(element) {

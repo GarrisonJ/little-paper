@@ -6,6 +6,9 @@ CREATE TABLE posts (
     user_id UUID NOT NULL,
     created_on TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     user_timezone_snapshot TEXT NOT NULL,
+    is_big_post BOOLEAN DEFAULT false NOT NULL,
+    big_post_body TEXT,
+    big_post_title TEXT DEFAULT NULL,
     UNIQUE(user_id, created_on_day)
 );
 CREATE TABLE users (

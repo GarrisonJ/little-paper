@@ -147,6 +147,10 @@ button:focus {
     width: 50px;
 }
 
+.navbar-brand {
+    color: var(--light-color) !important;
+}
+
 
 /************ Profile graph ************/
 .contributions {
@@ -205,4 +209,40 @@ button:focus {
         border: none;
         box-shadow: none;
     }
+
+    /* This sets the background of the dropdown on the text editor  */
+    .ql-picker-options {
+        background-color: var(--light-bg) !important;
+    }
 }
+
+.ql-toolbar .ql-stroke {
+    fill: none;
+    stroke: var(--light-color);
+}
+
+.ql-toolbar .ql-fill {
+    fill: var(--light-color);
+    stroke: none;
+}
+
+
+.ql-toolbar .ql-picker {
+    color: var(--light-color);
+}
+
+.ql-editor.ql-blank::before {
+    color: var(--manatee);
+}
+
+
+.ql-editor {
+    resize: vertical;
+    overflow-y: scroll;
+  }
+  
+.ql-container {
+    resize: vertical;
+    overflow-y: scroll;
+  }
+  

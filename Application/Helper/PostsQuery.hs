@@ -7,7 +7,6 @@ import qualified Data.Time.Calendar
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.FromRow
 import "string-interpolate" Data.String.Interpolate (i)
-import Database.PostgreSQL.Simple (Query)
 
 data PostWithMeta = PostWithMeta
     { id :: Id Post
@@ -16,6 +15,9 @@ data PostWithMeta = PostWithMeta
     , userId :: Id User
     , createdOn :: UTCTime
     , userTimezoneSnapshot :: Text
+    , isBigPost :: Bool
+    , bigPostBody :: Maybe Text
+    , bigPostTitle :: Maybe Text
     , username :: Text
     , pictureUrl :: Maybe Text
     , commentsCount :: Int
@@ -27,6 +29,9 @@ instance FromRow PostWithMeta where
     fromRow =
         PostWithMeta
             <$> field
+            <*> field
+            <*> field
+            <*> field
             <*> field
             <*> field
             <*> field

@@ -1,4 +1,4 @@
-module Web.View.Layout (defaultLayout, welcomePageLayout, Html) where
+module Web.View.Layout (defaultLayout, wideLayout, welcomePageLayout, Html) where
 
 import IHP.ViewPrelude
 import IHP.Environment
@@ -17,7 +17,7 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     {stylesheets}
     {scripts}
 
-    <title>Daily</title>
+    <title>{pageTitle}</title>
 </head>
 <body>
     <div class="container-fluid welcome-page">
@@ -43,14 +43,20 @@ welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 |]
 
 defaultLayout :: Html -> Html
-defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
+defaultLayout = layout False
+
+wideLayout :: Html -> Html
+wideLayout = layout True
+
+layout :: Bool -> Html -> Html
+layout wide inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 <head>
     {metaTags}
 
     {stylesheets}
     {scripts}
 
-    <title>Daily</title>
+    <title>{pageTitle}</title>
 </head>
 <body>
     <div id="page-content-wrapper">
@@ -58,10 +64,9 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
         <div class="container">
             {renderFlashMessages}
             <div class="row justify-content-center">
-                {sidebar}
-                <div id="content" class="col-md-8 col-12 p-4">
+                <div id="content" class={contentClasses}>
                     <div class="row justify-content-center">
-                        <div class="w-100" style="margin-top: 10px">
+                        <div class="w-100">
                             {inner}
                         </div>
                     </div>
@@ -71,28 +76,8 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     </div>
 </body>
 |]
-
-sidebar :: Html
-sidebar = case currentUserOrNothing of
-    Nothing -> [hsx||]
-    Just _ -> [hsx|
-    <div class="col-3 d-none d-md-block">
-        <div id="sidebar-wrapper" style="position: fixed;">
-            <div class="sidebar-heading">
-                <h1 class="display-4 mt-3">
-                    <a href={FollowedPostsAction Nothing}>Daily</a>
-                </h1>
-            </div>
-            <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={FollowedPostsAction Nothing}>Home</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={ShowProfileAction (get #username currentUser)}>Profile</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={UsersAction}>Find People</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href={EditCurrentUserAction}>Settings</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3 js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
-            </div>
-        </div>
-    </div>
-|]
+    where
+        contentClasses = (if wide then "col-12" else "col-12 col-md-8") ++ (" p-4" :: Text)
 
 topnav:: Html
 topnav = case currentUserOrNothing of
@@ -102,46 +87,36 @@ topnav = case currentUserOrNothing of
     </nav>
     |]
     Just _ -> [hsx|
-    <nav class="navbar navbar-expand-lg  d-block d-md-none sticky-top">
+        <nav class="py-0 navbar navbar-expand navbar-light sticky-top">
         <a class="navbar-brand" href="/">Daily</a>
-        <button class="navbar-toggler float-right"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon">menu</span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href={UsersAction}>Find People</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <div class="btn-group dropleft">
+                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Menu
+                </a>
+                <div class="dropdown-menu">
+                    <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
+                    <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+                    <a class="nav-link" href={UsersAction}>Find People</a>
+                    <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
+                    <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+                </div>
+                </div>
             </li>
             </ul>
         </div>
-    </nav>
+        </nav>
 |]
 
 stylesheets :: Html
 stylesheets = [hsx|
         <link rel="stylesheet" href="/vendor/bootstrap.min.css"/>
         <link rel="stylesheet" href="/vendor/flatpickr.min.css"/>
+        <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <link rel="stylesheet" href="/app.css"/>
     |]
-
 
 -- TODO: Make sure to load the correct jquery if CDN is down
 scripts :: Html
@@ -150,6 +125,9 @@ scripts = [hsx|
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"
                 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
                 crossorigin="anonymous"></script>
+        <!-- Start Editor libraries -->
+        <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+        <!-- End Editor libraries -->
         <script src="/vendor/timeago.js"></script>
         <script src="/vendor/popper.min.js"></script>
         <script src="/vendor/bootstrap.min.js"></script>
@@ -160,6 +138,7 @@ scripts = [hsx|
         <script src="/vendor/turbolinksMorphdom.js"></script>
         <script src="/helpers.js"></script>
         <script src="/ihp-auto-refresh.js"></script>
+        <script src="/newPost.js"></script>
         <script src="/app.js"></script>
     |]
 
