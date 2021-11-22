@@ -80,7 +80,7 @@ instance Controller PostsController where
         case dailyPost of
             Just _ -> do
                 setErrorMessage "You already created a post today"
-                redirectBack
+                redirectTo $ FollowedPostsAction Nothing
             Nothing -> do
                 newRecord @Post
                     |> set #userId currentUserId
@@ -92,7 +92,7 @@ instance Controller PostsController where
                             showPostIndex Nothing post
                         Right post -> do
                             post <- post |> createRecord
-                            redirectBack
+                            redirectTo $ FollowedPostsAction Nothing
 
     action CreateBigPostAction = do
         ensureIsUser
