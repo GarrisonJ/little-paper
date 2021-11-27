@@ -5,7 +5,6 @@ import Text.XML.Unresolved (renderBuilder)
 import qualified Admin.Controller.Prelude as Data.Maybe
 import Generated.Types (Post'(bigPostTitle))
 import Web.View.Layout (wideLayout)
-import Application.Helper.PostsQuery (PostWithMeta(isBigPost))
 
 data ShowView = ShowView {
                            post :: PostWithMeta
