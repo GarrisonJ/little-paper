@@ -216,6 +216,11 @@ showPost postId newComment = do
                             |> fetch
                             >>= collectionFetchRelated #userId
 
+            likes <- query @Like
+                        |> filterWhere (#postId, postId)
+                        |> fetch
+                        >>= collectionFetchRelated #userId
+
             like <- case currentUserOrNothing of
                 Nothing -> pure Nothing -- there is no current user
                 Just _  -> query @Like

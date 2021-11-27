@@ -12,6 +12,7 @@ data ShowView = ShowView {
                          , comments :: [Include "userId" Comment]
                          , newComment :: Comment
                          , commentspagination :: Pagination
+                         , likes :: [Include "userId" Like]
                          , user :: User
                          , followed :: Bool
                          , followerCount :: Int
@@ -29,7 +30,7 @@ instance View ShowView where
             {renderIfSmallPost post}
             {renderBigPostHeader}
             {renderBigPostBody}
-            {renderComments comments commentspagination newComment}
+            {renderActivity likes comments commentspagination newComment}
         </div>
     |]
         where
@@ -120,14 +121,66 @@ instance View ShowView where
             followButtonText = if followed then "Unfollow" else "Follow"
 
 
-renderComments comments commentspagination newComment = if null comments && not isUserLoggedIn
+renderLikes likes = [hsx|
+    <div class="pl-4 pt-3">
+        {forEach likes renderLike}
+    </div>
+|]
+
+renderLike like = [hsx|
+    <div class="mb-2">
+        <a class="text-reset d-flex align-items-center" href={ShowProfileAction username}>
+            <div class="image">
+                <img class="border rounded-circle" src={picturePath} style="width:60px; height: 60px">
+            </div>
+            <div class="ml-2">
+                <span class="m-2">{username}</span><br/>
+                <span class="m-2">{bio}</span>
+            </div>
+        </a>
+    </div>
+|]
+    where
+        picturePath = fromMaybe "/space.jpeg" (get #userId like |> get #pictureUrl)
+        username = get #userId like |> get #username
+        bio = get #userId like |> get #bio
+
+
+renderActivity likes comments commentspagination newComment = if null comments && not isUserLoggedIn
     then [hsx||]
     else [hsx|
         <div class="justify-content-center">
             <div class="p-3 d-flex yosemite-window col-11 col-md-10">
                 <div class="col">
-                    {renderCommentInput}
-                    {forEach comments (\c -> renderComment (c |> get #userId) c)}
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active"
+                            id="comments-tab"
+                            data-toggle="tab"
+                            href="#comments"
+                            role="tab"
+                            aria-controls="comments"
+                            aria-selected="true">Comments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                            id="likes-tab"
+                            data-toggle="tab"
+                            href="#likes"
+                            role="tab"
+                            aria-controls="likes"
+                            aria-selected="false">{heartIcon} Liked By</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+                            {renderCommentInput}
+                            {forEach comments (\c -> renderComment (c |> get #userId) c)}
+                        </div>
+                        <div class="tab-pane fade" id="likes" role="tabpanel" aria-labelledby="likes-tab">
+                            {renderLikes likes}
+                        </div>
+                    </div>
                 </div>
             </div>
             {renderCommentsPagination}
