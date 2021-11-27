@@ -77,22 +77,22 @@ instance Controller PostsController where
         ensureIsUser
         day <- getUserDay $ get #timezone currentUser
         dailyPost <- getDailyPost currentUserId day
-        case dailyPost of
-            Just _ -> do
-                setErrorMessage "You already created a post today"
-                redirectTo $ FollowedPostsAction Nothing
-            Nothing -> do
-                newRecord @Post
-                    |> set #userId currentUserId
-                    |> set #createdOnDay day
-                    |> set #userTimezoneSnapshot (get #timezone currentUser)
-                    |> buildPost
-                    |> ifValid \case
-                        Left post -> do
-                            showPostIndex Nothing post
-                        Right post -> do
-                            post <- post |> createRecord
-                            redirectTo $ FollowedPostsAction Nothing
+
+        when (isJust dailyPost) $ do
+            setErrorMessage "You can only have one post per day"
+            redirectTo $ FollowedPostsAction Nothing
+
+        newRecord @Post
+            |> set #userId currentUserId
+            |> set #createdOnDay day
+            |> set #userTimezoneSnapshot (get #timezone currentUser)
+            |> buildPost
+            |> ifValid \case
+                Left post -> do
+                    showPostIndex Nothing post
+                Right post -> do
+                    post <- post |> createRecord
+                    redirectTo $ FollowedPostsAction Nothing
 
     action CreateBigPostAction = do
         ensureIsUser
