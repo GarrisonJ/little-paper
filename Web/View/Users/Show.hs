@@ -35,7 +35,7 @@ instance View ShowView where
                 </div>
             </div>
         </div>
-        <div class="my-3 p-3">
+        <div class="my-3 p-md-3">
             {forEach (posts) (\post -> (Web.View.Posts.Show.renderPost (isPostLiked post likes) post))}
         </div>
     |]
