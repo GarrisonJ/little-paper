@@ -5,4 +5,4 @@
 -- Use http://localhost:8001/NewMigration or `new-migration` to generate a new migration.
 --
 -- Learn more about migrations: https://ihp.digitallyinduced.com/Guide/database-migrations.html
-ALTER TABLE users ADD COLUMN Pro BOOLEAN DEFAULT false NOT NULL;
+ALTER TABLE users ADD COLUMN is_pro BOOLEAN DEFAULT false NOT NULL;
