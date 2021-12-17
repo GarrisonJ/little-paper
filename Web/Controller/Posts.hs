@@ -191,7 +191,7 @@ showPostIndex page newPost = do
     todaysPost <- getDailyPost currentUserId day
 
     let isFridayOrWeekend = checkIfFridayOrWeekend day
-    showBigPostLink <- (&& isFridayOrWeekend) . not <$> didTheCurrentUserPostAWeekendBigPost day
+    showBigPostLink <- (&& isPro currentUser) . (&& isFridayOrWeekend) . not <$> didTheCurrentUserPostAWeekendBigPost day
 
     render IndexView { .. }
 
