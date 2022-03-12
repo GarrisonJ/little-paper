@@ -1,5 +1,6 @@
 module Web.View.Static.Welcome where
 import Web.View.Prelude
+import Application.Script.Prelude (Controller)
 
 data WelcomeView = WelcomeView
 
@@ -11,11 +12,9 @@ instance View WelcomeView where
         [hsx|
         <div class="row p-3 d-flex">
             <h1 class="display-1">Daily</h1>
-                <p class="w-100">
-                A site where you can share <br/> 
-                something everyday.<br/>
-                Join Now! 🎉
-                </p>
+            <p class="w-100">
+                A tiny social network where you post once a day
+            </p>
         </div>
         <div class="row p-2">
             <a type="button" class="btn btn-primary" href={NewUserAction}>Signup</a><br>
