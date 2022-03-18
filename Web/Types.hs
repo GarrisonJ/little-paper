@@ -9,12 +9,14 @@ data WebApplication = WebApplication deriving (Eq, Show)
 
 data StaticController = WelcomeAction deriving (Eq, Show, Data)
 
+newtype NotficationCount = NotficationCount Int
+
 data PostsController
     = PostsAction
     | FollowedPostsAction { page :: !(Maybe Int) }
     | NewPostAction
     | ShowPostAction { postId :: !(Id Post) }
-    | ShowPostForDayAction { username :: !(Text), day :: !(Text) }
+    | ShowPostForDayAction { username :: !Text, day :: !Text }
     | CreatePostAction
     | CreateBigPostAction
     | DeletePostAction { postId :: !(Id Post) }
@@ -40,18 +42,18 @@ data UsersController
     | FinishUserSetupAction
     | UpdateUserSetupAction
     | UpdateUserAction { userId :: !(Id User) }
-    | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !(Text) }
+    | ConfirmUserEmailAction { userId :: !(Id User), confirmationKey :: !Text }
     deriving (Eq, Show, Data)
 
 data PasswordsController
     = NewForgotPasswordAction
     | CreateForgotPasswordAction
-    | NewResetPasswordAction { userId :: !(Id User), resetToken :: !(Text) }
+    | NewResetPasswordAction { userId :: !(Id User), resetToken :: !Text }
     | CreateResetPasswordAction
     deriving (Eq, Show, Data)
 
 data ProfilesController
-    = ShowProfileAction { username :: !(Text) }
+    = ShowProfileAction { username :: !Text }
     deriving (Eq, Show, Data)
 
 data LikesController
@@ -66,3 +68,8 @@ data CommentsController
     = CreateCommentAction
     | DeleteCommentAction { commentId :: !(Id Comment) }
     deriving (Eq, Show, Data)
+
+data NotificationController
+    = NotificationsAction
+    deriving (Eq, Show, Data)
+

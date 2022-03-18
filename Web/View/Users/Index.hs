@@ -8,6 +8,7 @@ data IndexView = IndexView { users :: [User],
 instance View IndexView where
     html IndexView { .. } = [hsx|
         <div class="table-responsive">
+            <h2>Find People</h2>
             <table class="table table-sm table-hover">
                 <tbody>{forEach users (renderUser follows)}</tbody>
             </table>

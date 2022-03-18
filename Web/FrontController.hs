@@ -7,6 +7,7 @@ import IHP.LoginSupport.Middleware
 import Web.Controller.Sessions
 
 -- Controller Imports
+import Web.Controller.Notification
 import Web.Controller.Comments
 import Web.Controller.Likes
 import Web.Controller.Follows
@@ -19,10 +20,11 @@ import IHP.OAuth.Google.Types
 import Web.Controller.GoogleOAuth
 
 instance FrontController WebApplication where
-    controllers = 
+    controllers =
         [ startPage WelcomeAction
         , parseRoute @SessionsController
         -- Generator Marker
+        , parseRoute @NotificationController
         , parseRoute @CommentsController
         , parseRoute @LikesController
         , parseRoute @FollowsController
@@ -40,3 +42,16 @@ instance InitControllerContext WebApplication where
         initAutoRefresh
         initAuthentication @User
         setTitle "Daily"
+        initNotficationContext
+
+-- Get notfication count for current user
+initNotficationContext :: (?context :: ControllerContext, ?modelContext :: ModelContext) => IO ()
+initNotficationContext = case currentUserOrNothing of
+        Just currentUser -> do
+            notificationCount <- query @Notification
+                                    |> filterWhere (#userToNotify, currentUserId)
+                                    |> filterWhere (#viewedAt, Nothing)
+                                    |> fetchCount
+
+            putContext (NotficationCount notificationCount)
+        Nothing -> pure ()

@@ -157,6 +157,10 @@ button:focus {
     box-shadow: none;
 }
 
+.icon {
+    color: var(--alabaster);
+}
+
 /************ Edit Form ************/
 .form-control.edit-text-area {
     height: 150px;

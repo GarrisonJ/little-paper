@@ -4,7 +4,6 @@ import Generated.Types
 import Web.Types
 import IHP.OAuth.Google.Types
 
-
 instance AutoRoute UsersController
 instance AutoRoute PasswordsController
 
@@ -12,7 +11,6 @@ instance AutoRoute PasswordsController
 instance AutoRoute StaticController
 instance AutoRoute PostsController
 instance AutoRoute SessionsController
-
 
 profilePrefix = "/user/"
 instance CanRoute ProfilesController where
@@ -29,4 +27,4 @@ instance AutoRoute LikesController
 instance AutoRoute FollowsController
 instance AutoRoute CommentsController
 instance AutoRoute GoogleOAuthController
-
+instance AutoRoute NotificationController

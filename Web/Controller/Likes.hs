@@ -2,6 +2,7 @@ module Web.Controller.Likes where
 
 import Web.Controller.Prelude
 import qualified Basement.Compat.Base as GHC.Generics
+import Data.Maybe (fromJust)
 
 data LikedResult = Liked
                 | Unliked
@@ -10,7 +11,7 @@ data LikedResult = Liked
 
 instance Controller LikesController where
     action CreateLikeAction = do
-        case currentUserOrNothing of 
+        case currentUserOrNothing of
             Nothing -> renderJson $ show FailedToProcess
             Just _ -> do
                 -- Create the new like record
@@ -28,6 +29,14 @@ instance Controller LikesController where
                     -- If the old like record exists, delete it and send
                     -- False because the user unliked the post
                     (Just l) -> do
+                        -- Find old notification record if it exists
+                        oldNotification <- query @Notification
+                                            |> filterWhere (#userWhoFiredNotification, get #userId l)
+                                            |> filterWhere (#postId, Just $ get #postId l)
+                                            |> fetchOneOrNothing
+                        unless (isNothing oldNotification) $ do
+                            deleteRecord $ fromJust oldNotification
+
                         deleteRecord l
                         renderJson $ show Unliked
                     -- If we didn't find the old like, then create the new like
@@ -39,6 +48,23 @@ instance Controller LikesController where
                                     -- and continue like nothing happened.
                                     renderJson $ show FailedToProcess
                                 Right _ -> do
+                                    -- Create the notification record
+                                    userToNotify <- query @User
+                                                        |> filterWhereNot (#id, currentUserId)
+                                                        |> innerJoin @Post (#id, #userId)
+                                                        |> filterWhereJoinedTable @Post (#id, get #postId newLike)
+                                                        |> fetchOneOrNothing
+
+                                    unless (isNothing userToNotify) $ do
+                                        let userToNotifyId = get #id $ fromJust userToNotify
+                                        newRecord @Notification
+                                            |> set #userWhoFiredNotification currentUserId
+                                            |> set #postId (Just $ get #postId newLike)
+                                            |> set #notificationType UserLikedPost
+                                            |> set #userToNotify userToNotifyId
+                                            |> createRecord
+                                        pure ()
+
                                     newLike
                                         |> createRecord
                                     renderJson $ show Liked

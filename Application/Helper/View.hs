@@ -4,7 +4,6 @@ import IHP.ViewPrelude
 
 -- Here you can add functions which are available in all your views
 
-
 placeNextToWelcomeImage right = [hsx|
     <div class="row">
         <div class="col-md-8 offset-md-2">
