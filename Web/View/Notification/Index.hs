@@ -27,8 +27,8 @@ renderNotification :: Include "commentId"
                      (Include "userWhoFiredNotification"
                       Notification )) -> Html
 renderNotification notification = [hsx|
-    <tr style={notficationOpacity notification}>
-        <td>{notficationIcon notification}</td>
+    <tr class="" style={notficationOpacity notification}>
+        <td class="align-middle text-center">{notficationIcon notification}</td>
          <td class="profile-link">
             <img class="border rounded-circle mx-auto" src={picturePath $ get #userWhoFiredNotification notification} style="width:50px; height: 50px"/>
         </td>
@@ -52,6 +52,7 @@ getPostLink notfication = case get #postId notfication of
 notficationIcon notification = case get #notificationType notification of
     UserLikedPost -> heartIcon
     UserCommentedOnPost -> chatIcon
+    UserFollowed -> personIcon
 
 notficationTypeText :: Include "commentId"
                       (Include "postId"
@@ -65,6 +66,9 @@ notficationTypeText notification = case notificationType of
     UserCommentedOnPost -> [hsx|
         <span><a href={ShowProfileAction usernameOfTriggerer}>{usernameOfTriggerer}</a> commented on your <a href={link}>post</a></span>
         <a href={link}><span class="d-block text-muted">{commentBody}</span></a>
+    |]
+    UserFollowed -> [hsx|
+        <span><a href={ShowProfileAction usernameOfTriggerer}>{usernameOfTriggerer}</a> followed you</span>
     |]
     where
         postBody = fromMaybe "" $ get #postId notification |> fmap (get #body)
@@ -87,4 +91,11 @@ chatIcon = [hsx|
     <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
     </svg>
 </span>
+|]
+
+personIcon = [hsx|
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+  <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+  <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+</svg>
 |]

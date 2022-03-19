@@ -42,6 +42,7 @@ instance Controller CommentsController where
         notification <- query @Notification
             |> filterWhere (#userWhoFiredNotification, currentUserId)
             |> filterWhere (#commentId, Just (get #id comment))
+            |> filterWhere (#notificationType, UserCommentedOnPost)
             |> fetchOneOrNothing
 
         unless (isNothing notification) $ deleteRecord $ fromJust notification

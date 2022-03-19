@@ -1,6 +1,8 @@
 module Web.Controller.Follows where
 
 import Web.Controller.Prelude
+import Web.Controller.Prelude (Notification'(userToNotify))
+import Data.Maybe (fromJust)
 
 data LikedResult = Followed
                 | UnFollowed
@@ -9,28 +11,50 @@ data LikedResult = Followed
 
 instance Controller FollowsController where
     action CreateFollowAction = do
-        case currentUserOrNothing of 
-            Nothing -> renderJson $ show FailedToProcess
-            Just _ -> do
-                let userId = param @(Id User) "id"
+        when (isNothing currentUserOrNothing) $ do
+            renderJson $ show FailedToProcess
 
-                -- Users cannot unfollow themselves
-                accessDeniedUnless (userId /= currentUserId)
+        let userId = param @(Id User) "id"
 
-                follow <- query @UserFollow
-                    |> filterWhere (#followerId, currentUserId)
-                    |> filterWhere (#followedId, userId)
-                    |> fetchOneOrNothing
+        -- Users cannot unfollow themselves
+        accessDeniedUnless (userId /= currentUserId)
 
-                case follow of
-                    Just f -> do
-                        deleteRecord f
-                        renderJson $ show UnFollowed
-                    Nothing -> newRecord @UserFollow
-                        |> set #followerId currentUserId
-                        |> set #followedId userId
-                        |> ifValid \case
-                            Left _ -> renderJson $ show FailedToProcess
-                            Right follow -> do
-                                follow |> createRecord
-                                renderJson $ show Followed
+        follow <- query @UserFollow
+            |> filterWhere (#followerId, currentUserId)
+            |> filterWhere (#followedId, userId)
+            |> fetchOneOrNothing
+
+        case follow of
+            Just f -> do
+                deleteRecord f
+                deleteNotfication currentUserId userId
+                renderJson $ show UnFollowed
+            Nothing -> newRecord @UserFollow
+                |> set #followerId currentUserId
+                |> set #followedId userId
+                |> ifValid \case
+                    Left _ -> renderJson $ show FailedToProcess
+                    Right follow -> do
+                        follow |> createRecord
+                        createNotification currentUserId userId
+                        renderJson $ show Followed
+
+createNotification :: (?modelContext::ModelContext) => Id User -> Id User -> IO ()
+createNotification follower followed = do
+    newRecord @Notification
+        |> set #userWhoFiredNotification follower
+        |> set #userToNotify followed
+        |> set #notificationType UserFollowed
+        |> createRecord
+    pure ()
+
+deleteNotfication :: (?modelContext::ModelContext) => Id User -> Id User -> IO ()
+deleteNotfication follower followed = do
+    recordToDelete <- query @Notification
+        |> filterWhere (#userWhoFiredNotification, follower)
+        |> filterWhere (#userToNotify, followed)
+        |> filterWhere (#notificationType, UserFollowed)
+        |> fetchOneOrNothing
+
+    unless (isNothing recordToDelete) do
+        deleteRecord $ fromJust recordToDelete

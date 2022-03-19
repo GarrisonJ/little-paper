@@ -33,6 +33,7 @@ instance Controller LikesController where
                         oldNotification <- query @Notification
                                             |> filterWhere (#userWhoFiredNotification, get #userId l)
                                             |> filterWhere (#postId, Just $ get #postId l)
+                                            |> filterWhere (#notificationType, UserLikedPost)
                                             |> fetchOneOrNothing
                         unless (isNothing oldNotification) $ do
                             deleteRecord $ fromJust oldNotification
