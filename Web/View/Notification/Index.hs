@@ -30,7 +30,9 @@ renderNotification notification = [hsx|
     <tr class="" style={notficationOpacity notification}>
         <td class="align-middle text-center">{notficationIcon notification}</td>
          <td class="profile-link">
-            <img class="border rounded-circle mx-auto" src={picturePath $ get #userWhoFiredNotification notification} style="width:50px; height: 50px"/>
+            <img class="border rounded-circle mx-auto" 
+                 src={picturePath $ (get #pictureUrl $ get #userWhoFiredNotification notification)}
+                 style="width:50px; height: 50px"/>
         </td>
         <td>{notficationTypeText notification}</td>
     </tr>
@@ -43,7 +45,6 @@ notficationOpacity notification = if hasPostBeenViewed notification then "opacit
 
 hasPostBeenViewed notification = isJust $ get #viewedAt notification
 
-picturePath user = fromMaybe "/space.jpeg" (get #pictureUrl user)
 
 getPostLink notfication = case get #postId notfication of
     Just post -> pathTo $ ShowPostAction $ get #id post

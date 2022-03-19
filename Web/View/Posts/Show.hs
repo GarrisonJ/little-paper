@@ -73,7 +73,7 @@ instance View ShowView where
                             <div class="d-flex align-items-center">
                                 <a href={ShowProfileAction $ get #username user}>
                                     <div class="image">
-                                        <img class="border rounded-circle" src={picturePath} style="width:60px; height: 60px">
+                                        <img class="border rounded-circle" src={picturePath (get #pictureUrl user)} style="width:60px; height: 60px">
                                     </div>
                                 </a>
                                 <div class="ml-3 w-100">
@@ -97,9 +97,6 @@ instance View ShowView where
                                 </div>
                             </div>
                         |]
-
-            picturePath :: Text
-            picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
 
             followButton =
                 case currentUserOrNothing of
@@ -131,7 +128,9 @@ renderLike like = [hsx|
     <div class="mb-2">
         <a class="text-reset d-flex align-items-center" href={ShowProfileAction username}>
             <div class="image">
-                <img class="border rounded-circle" src={picturePath} style="width:60px; height: 60px">
+                <img class="border rounded-circle" 
+                     src={picturePath (get #userId like |> get #pictureUrl)} 
+                     style="width:60px; height: 60px">
             </div>
             <div class="ml-2">
                 <span class="m-2">{username}</span><br/>
@@ -141,7 +140,6 @@ renderLike like = [hsx|
     </div>
 |]
     where
-        picturePath = fromMaybe "/space.jpeg" (get #userId like |> get #pictureUrl)
         username = get #userId like |> get #username
         bio = get #userId like |> get #bio
 
@@ -213,7 +211,7 @@ renderComment user comment = [hsx|
     <div class="w-100 row">
         <div class="p-2 w-100">
             <a href={ShowProfileAction username}>
-                <img class="border rounded-circle" src={picturePath} style="width:50px; height: 50px"/>
+                <img class="border rounded-circle" src={picturePath (get #pictureUrl user)} style="width:50px; height: 50px"/>
             </a>
             <a class="p-2" href={ShowProfileAction username}>
                 {username}
@@ -230,7 +228,6 @@ renderComment user comment = [hsx|
 |]
     where
         username = user |> get #username
-        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
         renderControlDropdown post =
                 case currentUserOrNothing of
                         Nothing -> [hsx||]
@@ -257,7 +254,7 @@ renderBigPost isLiked post = [hsx|
         <div class="w-100">
             <div class="p-2 ">
                 <a href={ShowProfileAction username}>
-                    <img class="border rounded-circle" src={picturePath} style="width:50px; height: 50px"/>
+                    <img class="border rounded-circle" src={picturePath (get #pictureUrl post)} style="width:50px; height: 50px"/>
                 </a>
                 <a class="p-2" href={ShowProfileAction username}>
                     {username} 
@@ -298,7 +295,6 @@ renderBigPost isLiked post = [hsx|
         bigPostTitle = Data.Maybe.fromMaybe "No Title" (get #bigPostTitle post)
 
         username = get #username post
-        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl post)
         renderControlDropdown =
                 case currentUserOrNothing of
                         Nothing -> [hsx||]
@@ -321,7 +317,7 @@ renderSmallPost isLiked post = [hsx|
         <div class="w-100">
             <div class="p-2 ">
                 <a href={ShowProfileAction username}>
-                    <img class="border rounded-circle" src={picturePath} style="width:50px; height: 50px"/>
+                    <img class="border rounded-circle" src={picturePath (get #pictureUrl post)} style="width:50px; height: 50px"/>
                 </a>
                 <a class="p-2" href={ShowProfileAction username}>
                     {username}
@@ -356,7 +352,6 @@ renderSmallPost isLiked post = [hsx|
 |]
     where
         username = get #username post
-        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl post)
         renderControlDropdown =
                 case currentUserOrNothing of
                         Nothing -> [hsx||]

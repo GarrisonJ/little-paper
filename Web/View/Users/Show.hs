@@ -18,7 +18,7 @@ instance View ShowView where
     html ShowView { .. } = [hsx|
         <div class="yosemite-window text-center p-3">
             <h1>{get #username user}</h1>
-            <img class="border rounded-circle mx-auto" src={picturePath} style="width:100px; height: 100px"/>
+            <img class="border rounded-circle mx-auto" src={picturePath (get #pictureUrl user)} style="width:100px; height: 100px"/>
             <div class="d-flex justify-content-center">
                 <div class="pr-2"><span class="follower-count">{followerCount}</span> <span class="text-muted pl-1">Followers</span></div>
                 <div class="">{postCount} <span class="text-muted pl-1">Posts</span></div>
@@ -41,8 +41,6 @@ instance View ShowView where
     |]
         where
             isPostLiked post likes = get #id post `elem` fmap (get #postId) likes
-            picturePath :: Text
-            picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
             followButton =
                 case currentUserOrNothing of
                         Nothing -> followButtonHtml

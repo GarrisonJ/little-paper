@@ -23,7 +23,7 @@ renderUser :: [Id User] -> User -> Html
 renderUser follows user = [hsx|
     <tr data-profile-url={ShowProfileAction (get #username user)} class="profile-list-row">
         <td class="profile-link">
-            <img class="border rounded-circle mx-auto" src={picturePath} style="width:50px; height: 50px"/>
+            <img class="border rounded-circle mx-auto" src={picturePath (get #pictureUrl user)} style="width:50px; height: 50px"/>
         </td>
         <td class="profile-link">
             <a href={ShowProfileAction (get #username user)}>{get #username user}</a>
@@ -37,9 +37,6 @@ renderUser follows user = [hsx|
     </tr>
 |]
     where
-        picturePath :: Text
-        picturePath = fromMaybe "/space.jpeg" (get #pictureUrl user)
-
         followed = not $ null $ find (== get #id user) follows
 
         followButton = if get #id user == get #id currentUser

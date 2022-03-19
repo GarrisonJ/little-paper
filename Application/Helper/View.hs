@@ -31,6 +31,8 @@ placeNextToWelcomeImage right = [hsx|
                 </div>
         |]
 
+picturePath = fromMaybe ("/space.jpeg" :: Text)
+
 -- Icons
 heartIconLarge = [hsx|
 <span style="color:#ff5e57;">
