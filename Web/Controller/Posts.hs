@@ -153,6 +153,9 @@ instance Controller PostsController where
         sqlExec "DELETE FROM likes WHERE post_id = ?" (Only (get #id post))
         -- Delete all the comments from the post
         sqlExec "DELETE FROM comments WHERE post_id = ?" (Only (get #id post))
+        -- Delete all the notifications about the post
+        -- TODO: Don't delete the notfictions, just mark them as deleted somehow
+        sqlExec "DELETE FROM notifications WHERE post_id = ?" (Only (get #id post))
         -- Delete the post
         deleteRecord post
         redirectTo $ FollowedPostsAction Nothing
