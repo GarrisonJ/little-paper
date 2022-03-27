@@ -8,10 +8,8 @@ instance Controller SessionsController where
     action NewSessionAction = Sessions.newSessionAction @User
     action CreateSessionAction = Sessions.createSessionAction @User
     action DeleteSessionAction = do
-                        case currentUserOrNothing of
-                            Just user -> logout user
-                            Nothing -> pure ()
-                        redirectToPath "/"
+                        unless (isNothing currentUserOrNothing) $ logout currentUser
+                        redirectTo NewSessionAction
 
 instance Sessions.SessionsControllerConfig User where
     beforeLogin user = do

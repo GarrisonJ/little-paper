@@ -16,11 +16,28 @@ instance View IndexView where
         {renderPostInput}
         <div>
             <div>{forEach posts renderPost}</div>
+            {followMorePeople}
             {renderPreviousArrow}
             {renderNextArrow}
         </div>
     |]
         where
+            followMorePeople = if length posts <= 1
+                then [hsx|
+                    <div class="d-flex p-3 text-center justify-content-center yosemite-window">
+                        <div class="w-100">
+                            <span class="p-2">
+                                You should follow more people!
+                            </span>
+                            <div class="p-2">
+                                <a href={UsersAction}>
+                                    Find People
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                |]
+                else [hsx||]
             renderPreviousArrow = case page of
                                         Nothing -> [hsx||]
                                         Just 0 -> [hsx||]

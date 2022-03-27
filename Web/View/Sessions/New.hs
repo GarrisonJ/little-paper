@@ -1,6 +1,7 @@
 module Web.View.Sessions.New where
 import Web.View.Prelude
 import IHP.AuthSupport.View.Sessions.New
+import Web.Controller.Prelude (StaticController(WelcomeAction))
 
 instance View (NewView User) where
     beforeRender view = do
@@ -19,6 +20,8 @@ instance View (NewView User) where
                             <a href={NewForgotPasswordAction}>Forgot password?</a>
                             ·
                             <a href={NewUserAction}>Sign up</a>
+                            ·
+                            <a href="/">Login with Google</a>
                         </div>
                     </div>
                 </div>
