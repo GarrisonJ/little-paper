@@ -30,7 +30,6 @@ CREATE TABLE users (
     is_setup BOOLEAN DEFAULT false NOT NULL,
     is_pro BOOLEAN DEFAULT false NOT NULL
 );
-CREATE UNIQUE INDEX user_username_index ON users (LOWER(username));
 CREATE INDEX posts_user_id_index ON posts (user_id);
 CREATE TABLE user_follows (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
@@ -81,6 +80,11 @@ CREATE TABLE notifications (
 );
 CREATE INDEX notifications_post_id_index ON notifications (post_id);
 CREATE INDEX notifications_comment_id_index ON notifications (comment_id);
+CREATE TABLE login_state (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+    max_users INT DEFAULT 1000 NOT NULL,
+    is_user_creation_locked BOOLEAN DEFAULT false NOT NULL
+);
 ALTER TABLE comments ADD CONSTRAINT comments_ref_post_id FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE NO ACTION;
 ALTER TABLE comments ADD CONSTRAINT comments_ref_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION;
 ALTER TABLE likes ADD CONSTRAINT likes_ref_post_id FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE NO ACTION;

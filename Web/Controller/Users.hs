@@ -12,6 +12,7 @@ import Text.Regex.TDFA ( (=~) )
 import Web.Mail.Users.Confirmation
 import System.Random
 import qualified IHP.Log as Log
+import Web.View.Users.New (NewView(lockUserCreation))
 
 
 instance Controller UsersController where
@@ -47,6 +48,7 @@ instance Controller UsersController where
             Just _ -> redirectToPath "/"
             Nothing -> do
                 let user = newRecord
+                lockUserCreation <- lockUserCreation_
                 render NewView { .. }
 
     -- If a user signs up with Google OAuth, we still need to finish setting them up.
@@ -54,47 +56,7 @@ instance Controller UsersController where
     -- use that account instead of creating a new one. 
     -- It's important to check if the user has confirm their email before allow them to use the
     -- account.
-    action FinishUserSetupAction = do
-        case currentUserOrNothing of
-            Nothing -> redirectToPath "/"
-            _ -> do
-                user <- fetch currentUserId
-                usersWithEmail <- query @User
-                            |> filterWhere (#email, get #email user)
-                            |> fetch
-                case usersWithEmail of
-                    -- This user already has an account
-                    -- Delete this new account and then
-                    -- log them into their previously created account
-                    [user1, user2] -> do
-                        let oldUser = find (\u -> get #id u /= get #id user) usersWithEmail
-                        case oldUser of
-                            Nothing -> do
-                                Log.error $ ("We thought a user had two accounts, but something went wrong during setup userId: " :: Text) <> show (get #id user)
-                                logout user
-                                redirectToPath "/"
-                            Just oldUser -> do
-                                -- If the old account is not confirmed, then we should
-                                -- delete it and use this new account instead.
-                                -- if the new account is confirmed, use that account and 
-                                -- delete the new one.
-                                if not $ get #isConfirmed oldUser
-                                    then do
-                                        deleteInactiveUser oldUser
-                                        render FinishUserSetupView { .. }
-                                    else do
-                                        logout user
-                                        deleteInactiveUser user
-                                        login oldUser
-                                        redirectToPath "/"
-                    -- This user has only one account, it needs to be setup
-                    [user1] -> render FinishUserSetupView { .. }
-                    -- This user has either more than two accounts, or no accounts
-                    -- either way, something went wrong
-                    _ -> do
-                        Log.error $ ("There was a wrong number of accounts for a user in FinishUserSetupAction. userid: " :: Text) <> show (get #id user)
-                        logout user
-                        redirectToPath "/"
+    action FinishUserSetupAction = finishUserAccountSetup
 
     action UpdateUserSetupAction = do
         user :: User <- fetch currentUserId
@@ -152,40 +114,47 @@ instance Controller UsersController where
     -- Create a user action
     -- Anybody can create a user
     action CreateUserAction = do
+        -- Check if we've locked new user creation
+        lockUserCreation <- lockUserCreation_
+        when lockUserCreation $ do
+            setErrorMessage "We aren't accepting new users at the moment. Please try again later."
+            redirectTo NewUserAction
+
         -- Don't let loggedin users create new users
-        case currentUserOrNothing of
-            Just _ -> redirectToPath "/"
-            Nothing -> do
-                let user = newRecord @User
-                user
-                    |> fill @["email", "passwordHash", "timezone", "username"]
-                    |> validateField #email isEmail
-                    |> validateField #passwordHash nonEmpty
-                    |> validateField #username (hasMaxLength usernameMaxLength |> withCustomErrorMessage "Your username must be shorter than 15 characters.")
-                    |> validateField #username (hasMinLength usernameMinLength |> withCustomErrorMessage "Your username must be atleast than 3 characters.")
-                    |> validateField #username isUsernameChars
-                    |> validateField #timezone (isInList allTimezones)
-                    |> validateIsUnique #email
-                    >>= validateIsUnique #username
-                    >>= ifValid \case
-                        Left user -> render NewView { .. }
-                        Right user -> do
-                            hashed <- hashPassword (get #passwordHash user)
-                            confirmationKey <- randomText
-                            hashedConfirmationKey <- hashToken confirmationKey
-                            user <- user
-                                |> set #passwordHash hashed
-                                |> set #confirmationKey (Just hashedConfirmationKey)
-                                |> createRecord
-                            setUserToFollowSelf (get #id user)
-                            -- If we are in production, send an authentication email
-                            -- Otherwise, just auto confirm and sign in
-                            if True
-                                then sendMail ConfirmationMail { user, confirmationKey }
-                                else (user |> set #isConfirmed True
-                                           |> updateRecord) >> pure ()
-                            setSuccessMessage "We sent you an email!"
-                            redirectToPath "/"
+        when (isNothing currentUserOrNothing) $ do
+            redirectToPath "/"
+
+        -- Create new user
+        let user = newRecord @User
+        user
+            |> fill @["email", "passwordHash", "timezone", "username"]
+            |> validateField #email isEmail
+            |> validateField #passwordHash nonEmpty
+            |> validateField #username (hasMaxLength usernameMaxLength |> withCustomErrorMessage "Your username must be shorter than 15 characters.")
+            |> validateField #username (hasMinLength usernameMinLength |> withCustomErrorMessage "Your username must be atleast than 3 characters.")
+            |> validateField #username isUsernameChars
+            |> validateField #timezone (isInList allTimezones)
+            |> validateIsUnique #email
+            >>= validateIsUnique #username
+            >>= ifValid \case
+                Left user -> render NewView { .. }
+                Right user -> do
+                    hashed <- hashPassword (get #passwordHash user)
+                    confirmationKey <- randomText
+                    hashedConfirmationKey <- hashToken confirmationKey
+                    user <- user
+                        |> set #passwordHash hashed
+                        |> set #confirmationKey (Just hashedConfirmationKey)
+                        |> createRecord
+                    setUserToFollowSelf (get #id user)
+                    -- If we are in production, send an authentication email
+                    -- Otherwise, just auto confirm and sign in
+                    if True
+                        then sendMail ConfirmationMail { user, confirmationKey }
+                        else (user |> set #isConfirmed True
+                                    |> updateRecord) >> pure ()
+                    setSuccessMessage "We sent you an email!"
+                    redirectToPath "/"
 
     action ConfirmUserEmailAction { userId, confirmationKey } = do
         -- Send users who are signed in home
@@ -258,3 +227,46 @@ deleteInactiveUser userToDelete = do
     deleteRecords follows
     -- Delete the users
     deleteRecord userToDelete
+
+
+finishUserAccountSetup :: (?modelContext::ModelContext, ?context::ControllerContext) => IO ()
+finishUserAccountSetup = do
+        when (isNothing currentUserOrNothing) $ redirectToPath "/"
+
+        user <- fetch currentUserId
+        usersWithEmail <- query @User
+                    |> filterWhere (#email, get #email user)
+                    |> fetch
+        case usersWithEmail of
+            -- This user already has an account
+            -- Delete this new account and then
+            -- log them into their previously created account
+            [user1, user2] -> do
+                let oldUser = find (\u -> get #id u /= get #id user) usersWithEmail
+                case oldUser of
+                    Nothing -> do
+                        Log.error $ ("We thought a user had two accounts, but something went wrong during setup userId: " :: Text) <> show (get #id user)
+                        logout user
+                        redirectToPath "/"
+                    Just oldUser -> do
+                        -- If the old account is not confirmed, then we should
+                        -- delete it and use this new account instead.
+                        -- if the new account is confirmed, use that account and 
+                        -- delete the new one.
+                        if not $ get #isConfirmed oldUser
+                            then do
+                                deleteInactiveUser oldUser
+                                render FinishUserSetupView { .. }
+                            else do
+                                logout user
+                                deleteInactiveUser user
+                                login oldUser
+                                redirectToPath "/"
+            -- This user has only one account, it needs to be setup
+            [user1] -> render FinishUserSetupView { .. }
+            -- This user has either more than two accounts, or no accounts
+            -- either way, something went wrong
+            _ -> do
+                Log.error $ ("There was a wrong number of accounts for a user in FinishUserSetupAction. userid: " :: Text) <> show (get #id user)
+                logout user
+                redirectToPath "/"

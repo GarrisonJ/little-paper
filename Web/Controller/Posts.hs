@@ -17,6 +17,10 @@ import Text.HTML.SanitizeXSS (sanitizeBalance)
 import Protolude (isJust)
 import Data.Time.Calendar.WeekDate
 import IHP.ControllerPrelude (validateField)
+import Database.PostgreSQL.LibPQ (finish)
+import qualified Admin.View.Prelude as IHP.ViewSupport
+import Web.View.Users.FinishUserSetup
+import Web.Controller.Users
 
 instance Controller PostsController where
     action PostsAction = do
@@ -178,6 +182,7 @@ showPostIndex :: (?context::ControllerContext, ?modelContext::ModelContext, ?the
     -> IO ()
 showPostIndex page newPost = do
     ensureIsUser
+    unless (get #isSetup currentUser) finishUserAccountSetup
     let pageSize = 10
     let skip = if isJust page
                     then fromJust page*pageSize

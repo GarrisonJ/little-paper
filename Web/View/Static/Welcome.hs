@@ -2,13 +2,13 @@ module Web.View.Static.Welcome where
 import Web.View.Prelude
 import Application.Script.Prelude (Controller)
 
-data WelcomeView = WelcomeView
+data WelcomeView = WelcomeView { lockUserCreation :: Bool }
 
 instance View WelcomeView where
     beforeRender view = do
         setLayout welcomePageLayout
 
-    html WelcomeView = placeNextToWelcomeImage
+    html WelcomeView { .. } = placeNextToWelcomeImage
         [hsx|
         <div class="row p-3 d-flex">
             <h1 class="display-1">Daily</h1>
@@ -16,6 +16,14 @@ instance View WelcomeView where
                 A tiny social network where you post once a day
             </p>
         </div>
+        {renderLoginIfNotFull lockUserCreation}
+        |]
+
+renderLoginIfNotFull lockUserCreation = if lockUserCreation
+    then renderWeAreFull
+    else renderLogin
+
+renderLogin = [hsx|
         <div class="row p-2">
             <a type="button" class="btn btn-primary" href={NewUserAction}>Signup</a><br>
         </div>
@@ -27,8 +35,24 @@ instance View WelcomeView where
         </div>
         |]
 
+renderWeAreFull = [hsx|
+        <div>
+            <div class="p-2 yosemite-window">
+                <h2>We are full</h2>
+                We can't handle new users right now. <br>
+                Check back later, and hopefully we'll have more space.
+            </div>
+            <hr>
+            <div class="row p-2">
+                {loginWithGoogle}
+            </div>
+            <div class="row p-2">
+                <a type="button" class="btn btn-outline-secondary" href={NewSessionAction}>Login</a>
+            </div>
 
-loginWithGoogle :: Html
+        </div>
+        |]
+
 loginWithGoogle = [hsx|
     <div class="row">
         <div class="col-md-12">
