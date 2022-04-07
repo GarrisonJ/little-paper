@@ -57,6 +57,7 @@ instance Controller ProfilesController where
                                 last30DaysPosts <- map (get #createdOnDay) <$> fetchLast30DaysPostsWithMetaForProfle user
                                 last30DaysRange <- getLast30DaysRange user
 
+                                today <- getUserDay $ get #timezone currentUser
                                 render Web.View.Users.Show.ShowView { .. }
 
 

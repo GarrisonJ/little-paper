@@ -16,6 +16,7 @@ data ShowView = ShowView {
                          , user :: User
                          , followed :: Bool
                          , followerCount :: Int
+                         , today :: Day
                          }
 
 
@@ -27,16 +28,16 @@ instance View ShowView where
 
     html ShowView { .. } = [hsx|
         <div class="mb-5">
-            {renderIfSmallPost post}
+            {renderIfSmallPost today post}
             {renderBigPostHeader}
             {renderBigPostBody}
             {renderActivity likes comments commentspagination newComment}
         </div>
     |]
         where
-            renderIfSmallPost post = if get #isBigPost post 
+            renderIfSmallPost today post = if get #isBigPost post 
                 then mempty
-                else renderPost isLiked post
+                else renderPost today isLiked post
             
             renderBigPostHeader = if not (get #isBigPost post) 
                 then mempty 
@@ -245,20 +246,21 @@ renderComment user comment = [hsx|
             </div>
         |]
 
-renderPost isLiked post = if get #isBigPost post
-    then renderBigPost isLiked post
-    else renderSmallPost isLiked post
+renderPost today isLiked post = if get #isBigPost post
+    then renderBigPost today isLiked post
+    else renderSmallPost today isLiked post
 
-renderBigPost isLiked post = [hsx|
+renderBigPost today isLiked post = [hsx|
     <div class="d-flex yosemite-window big-post">
         <div class="w-100">
             <div class="p-2 ">
                 <a href={ShowProfileAction username}>
                     <img class="border rounded-circle" src={picturePath (get #pictureUrl post)} style="width:50px; height: 50px"/>
                 </a>
-                <a class="p-2" href={ShowProfileAction username}>
+                <a class="pl-2" href={ShowProfileAction username}>
                     {username} 
                 </a>
+                ·
                 <div class="float-right">
                     <div class="like-button" style={if isLiked then "color:#ff5e57;" :: String else ""} data-postid={tshow (get #id post)} data-url={CreateLikeAction}>
                         <span class="likes-counter">
@@ -269,7 +271,7 @@ renderBigPost isLiked post = [hsx|
                 </div>
                 <small class="text-muted">
                     <a href={ShowPostAction (get #id post)}>
-                        {get #createdOnDay post}
+                        {getCreatedOnDayFormated today post :: Text}
                     </a>
                     {renderControlDropdown}
                 </small>
@@ -312,14 +314,14 @@ renderBigPost isLiked post = [hsx|
             </div>
         |]
 
-renderSmallPost isLiked post = [hsx|
+renderSmallPost today isLiked post = [hsx|
     <div class="d-flex yosemite-window">
         <div class="w-100">
-            <div class="p-2 ">
+            <div class="p-2">
                 <a href={ShowProfileAction username}>
                     <img class="border rounded-circle" src={picturePath (get #pictureUrl post)} style="width:50px; height: 50px"/>
                 </a>
-                <a class="p-2" href={ShowProfileAction username}>
+                <a class="pl-2" href={ShowProfileAction username}>
                     {username}
                 </a>
                 <div class="float-right">
@@ -330,9 +332,10 @@ renderSmallPost isLiked post = [hsx|
                     {heartIcon}
                 </div>
                 </div>
+                ·
                 <small class="text-muted">
                     <a href={ShowPostAction (get #id post)}>
-                        {get #createdOnDay post}
+                        {getCreatedOnDayFormated today post :: Text}
                     </a>
                     {renderControlDropdown}
                 </small>
@@ -368,3 +371,7 @@ renderSmallPost isLiked post = [hsx|
                 </div>
             </div>
         |]
+
+getCreatedOnDayFormated today post = if diffDays today (get #createdOnDay post) < 7
+        then cs $ formatTime defaultTimeLocale "%A" $ get #createdOnDay post
+        else cs $ formatTime defaultTimeLocale "%B %d, %Y" $ get #createdOnDay post

@@ -39,6 +39,7 @@ instance Controller PostsController where
         let page = Nothing
         let newPost = newRecord
         let showBigPostLink = False
+        today <- getUserDay $ get #timezone currentUser
         render IndexView { .. }
 
     action FollowedPostsAction { page } = showPostIndex page newRecord
@@ -201,6 +202,7 @@ showPostIndex page newPost = do
     let isFridayOrWeekend = checkIfFridayOrWeekend day
     showBigPostLink <- (&& isPro currentUser) . (&& isFridayOrWeekend) . not <$> didTheCurrentUserPostAWeekendBigPost day
 
+    today <- getUserDay $ get #timezone currentUser
     render IndexView { .. }
 
 
@@ -256,6 +258,7 @@ showPost postId newComment = do
                 -- A user always follows themselves, so we subtract one
                 |> fmap pred
 
+            today <- getUserDay $ get #timezone currentUser
             render ShowView { .. }
 
 

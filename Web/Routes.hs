@@ -11,7 +11,6 @@ instance AutoRoute PasswordsController
 instance AutoRoute StaticController
 instance AutoRoute PostsController
 instance AutoRoute SessionsController
-
 profilePrefix = "/user/"
 instance CanRoute ProfilesController where
     parseRoute' = do

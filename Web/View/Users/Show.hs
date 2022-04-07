@@ -12,6 +12,7 @@ data ShowView = ShowView {
                         , postCount :: Int
                         , last30DaysPosts :: [Day]
                         , last30DaysRange :: [Day]
+                        , today :: Day
                         }
 
 instance View ShowView where
@@ -36,7 +37,7 @@ instance View ShowView where
             </div>
         </div>
         <div class="my-3 p-md-3">
-            {forEach (posts) (\post -> (Web.View.Posts.Show.renderPost (isPostLiked post likes) post))}
+            {forEach (posts) (\post -> (Web.View.Posts.Show.renderPost today (isPostLiked post likes) post))}
         </div>
     |]
         where

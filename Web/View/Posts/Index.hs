@@ -9,6 +9,7 @@ data IndexView = IndexView { posts :: [PostWithMeta]
                             , likes :: [Like]
                             , newPost :: Post
                             , showBigPostLink :: Bool
+                            , today :: Day
                             }
 
 instance View IndexView where
@@ -78,7 +79,7 @@ instance View IndexView where
 
             isPostLiked post likes = get #id post `elem` fmap (get #postId) likes
             renderPost post = [hsx|
-                {Web.View.Posts.Show.renderPost (isPostLiked post likes) post}
+                {Web.View.Posts.Show.renderPost today (isPostLiked post likes) post}
             |]
 
 renderPostForm :: Bool -> Post -> Html
