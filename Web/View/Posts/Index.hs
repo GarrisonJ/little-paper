@@ -70,7 +70,6 @@ instance View IndexView where
                     |]
                     Nothing -> [hsx|
                                 <div class="card yosemite-window">
-                                    <div class="card-header border-light">You haven't posted today!</div>
                                     <div class="card-body border-light">
                                         {renderPostForm showBigPostLink newPost}
                                     </div>
@@ -84,8 +83,12 @@ instance View IndexView where
 
 renderPostForm :: Bool -> Post -> Html
 renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [hsx|
-    {(textareaField #body) { disableLabel = True }}
-    {submitButton { label= "Submit", buttonClass="float-right send-message-button" } }
+    <div class="form-group" id="form-group-post_body">
+        <textarea type="text" name="body" rows="4" maxlength="280" placeholder="Your post." id="post_body" class="form-control post-textarea">
+        </textarea>
+        <span class="position-absolute text-muted" style="right: 25px; bottom: 75px;" id="char-count">280</span>
+    </div>
+    {submitButton { label= "Submit", buttonClass="btn-block"} }
     {renderGoToNewPostLink}
 |]
     where

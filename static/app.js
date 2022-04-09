@@ -1,5 +1,13 @@
 $(document).on('ready turbolinks:load', function () {
     // This is called on the first page load *and* also when the page is changed by turbolinks
+    $(document).ready(function() {
+        $('#post_body').on('keyup', function() {
+            var body = $(this).val();
+            var charCount = body.length;
+            var charRemaining = 280 - charCount;
+            $('#char-count').text(charRemaining);
+        });
+    });
 });
 
 (function () {
