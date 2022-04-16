@@ -258,7 +258,7 @@ showPost postId newComment = do
                 -- A user always follows themselves, so we subtract one
                 |> fmap pred
 
-            today <- getUserDay $ get #timezone currentUser
+            today <- getUserDay $ get #timezone user
             render ShowView { .. }
 
 
