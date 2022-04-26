@@ -184,7 +184,7 @@ showPostIndex :: (?context::ControllerContext, ?modelContext::ModelContext, ?the
 showPostIndex page newPost = do
     ensureIsUser
     unless (get #isSetup currentUser) finishUserAccountSetup
-    let pageSize = 10
+    let pageSize = 50
     let skip = if isJust page
                     then fromJust page*pageSize
                     else 0
