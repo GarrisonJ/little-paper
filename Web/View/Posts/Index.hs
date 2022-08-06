@@ -84,14 +84,45 @@ instance View IndexView where
 renderPostForm :: Bool -> Post -> Html
 renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [hsx|
     <div class="form-group" id="form-group-post_body">
-        <textarea type="text" name="body" rows="4" maxlength="280" placeholder="Your post." id="post_body" class="form-control post-textarea">
-        </textarea>
-        <span class="position-absolute text-muted" style="right: 25px; bottom: 75px;" id="char-count">280</span>
+        <div class="position-relative">
+            <textarea type="text" name="body" rows="4" maxlength="280" placeholder="Your post" id="post_body" class="form-control post-textarea">
+            </textarea>
+            <span class="position-absolute text-muted" style="right: 5px; bottom: 5px;" id="char-count">280</span>
+            {renderImageUploadButton}
+        </div>
+        {renderImagePreview}
     </div>
     {submitButton { label= "Submit", buttonClass="btn-block"} }
     {renderGoToNewPostLink}
 |]
     where
+        renderImageUploadButton = if get #isPro currentUser
+            then [hsx|
+                <a class="d-block text-muted text-center" href="#" onclick="document.getElementById('post_image_url_preview').click()">
+                    <span class="position-absolute" style="left: 5px; bottom: 5px;" id="upload-image">{imageIcon}</span>
+                </a>
+                |]
+            else [hsx||]
+        renderImagePreview = if get #isPro currentUser
+            then [hsx|
+                    <label for="post_image_url" class="mb-0" style="display: unset;">
+                        <div class="text-center">
+                            <img id="post_image_url_preview"
+                                  src={fromMaybe ("#" :: Text) (get #postImageUrl post)}
+                                  style="min-height"
+                                  onerror="this.style.display='none'"
+                                  class="img-fluid mx-auto d-block rounded mt-2"
+                                  alt=""/>
+                        </div>
+                        <input id="post_image_url"
+                               type="file"
+                               name="postImageUrl"
+                               class="form-control form-control-file"
+                               style="display: none"
+                               data-preview="#post_image_url_preview"/>
+                    </label>
+            |]
+            else [hsx||]
         -- render go to new post if today is Friday, Saturday, or Sunday
         renderGoToNewPostLink = if showBigPostLink
                                     then [hsx|

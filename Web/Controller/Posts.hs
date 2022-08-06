@@ -87,12 +87,19 @@ instance Controller PostsController where
             setErrorMessage "You can only have one post per day"
             redirectTo $ FollowedPostsAction Nothing
 
+        let isProUser = get #isPro currentUser
+
+        let postImageUploadSettings = uploadToStorageWithOptions $ def {
+            preprocess = applyImageMagick "jpg" "-sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -colorspace RGB"
+        }
+
         newRecord @Post
             |> set #userId currentUserId
             |> set #createdOnDay day
             |> set #userTimezoneSnapshot (get #timezone currentUser)
             |> buildPost
-            |> ifValid \case
+            |> (if (isProUser) then (postImageUploadSettings #postImageUrl) else pure)
+            >>= ifValid \case
                 Left post -> do
                     showPostIndex Nothing post
                 Right post -> do
@@ -166,7 +173,7 @@ instance Controller PostsController where
         redirectTo $ FollowedPostsAction Nothing
 
 buildPost post = post
-    |> fill @'["body"]
+    |> fill @'["body", "postImageUrl"]
     |> validateField #body (hasMaxLength 280
         |> withCustomErrorMessage "Post must be less than 280 characters")
     |> validateField #body nonEmpty

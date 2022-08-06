@@ -18,6 +18,7 @@ data PostWithMeta = PostWithMeta
     , isBigPost :: Bool
     , bigPostBody :: Maybe Text
     , bigPostTitle :: Maybe Text
+    , postImageUrl :: Maybe Text
     , username :: Text
     , pictureUrl :: Maybe Text
     , commentsCount :: Int
@@ -29,6 +30,7 @@ instance FromRow PostWithMeta where
     fromRow =
         PostWithMeta
             <$> field
+            <*> field
             <*> field
             <*> field
             <*> field

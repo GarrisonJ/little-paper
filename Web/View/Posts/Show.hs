@@ -35,12 +35,12 @@ instance View ShowView where
         </div>
     |]
         where
-            renderIfSmallPost today post = if get #isBigPost post 
+            renderIfSmallPost today post = if get #isBigPost post
                 then mempty
                 else renderPost today isLiked post
             
-            renderBigPostHeader = if not (get #isBigPost post) 
-                then mempty 
+            renderBigPostHeader = if not (get #isBigPost post)
+                then mempty
                 else [hsx|
                 <div class="container col-md-11 ">
                     <div class="justify-content-left">
@@ -79,7 +79,7 @@ instance View ShowView where
                                 </a>
                                 <div class="ml-3 w-100">
                                     <a class="text-reset" href={ShowProfileAction $ get #username user}>
-                                        <h4 class="mb-0 mt-0">by {get #username user}</h4> 
+                                        <h4 class="mb-0 mt-0">by {get #username user}</h4>
                                     </a>
                                     <div class="mb-0 mt-0">{formatTime defaultTimeLocale "%A, %B %d, %Y" $ get #createdOnDay post}</div>
                                 </div>
@@ -107,7 +107,7 @@ instance View ShowView where
                                                 else followButtonHtml
             followButtonHtml = [hsx|
                                 <button class={"btn follow-button " ++ followButtonTextClass}
-                                        data-userid={tshow (get #id user)} 
+                                        data-userid={tshow (get #id user)}
                                         data-url={CreateFollowAction}>
                                         {followButtonText}
                                 </button>
@@ -129,8 +129,8 @@ renderLike like = [hsx|
     <div class="mb-2">
         <a class="text-reset d-flex align-items-center" href={ShowProfileAction username}>
             <div class="image">
-                <img class="border rounded-circle" 
-                     src={picturePath (get #userId like |> get #pictureUrl)} 
+                <img class="border rounded-circle"
+                     src={picturePath (get #userId like |> get #pictureUrl)}
                      style="width:60px; height: 60px">
             </div>
             <div class="ml-2">
@@ -258,7 +258,7 @@ renderBigPost today isLiked post = [hsx|
                     <img class="border rounded-circle" src={picturePath (get #pictureUrl post)} style="width:50px; height: 50px"/>
                 </a>
                 <a class="pl-2" href={ShowProfileAction username}>
-                    {username} 
+                    {username}
                 </a>
                 ·
                 <div class="float-right">
@@ -343,6 +343,7 @@ renderSmallPost today isLiked post = [hsx|
             <a class="text-reset" href={ShowPostAction (get #id post)}>
                 <p class="pl-3 pr-3 post-text">
                     {get #body post}
+                    {renderPostImage post}
                 </p>
             </a>
             <div class="pl-3 pb-2">
@@ -354,6 +355,12 @@ renderSmallPost today isLiked post = [hsx|
     </div>
 |]
     where
+        renderPostImage post =
+                case get #postImageUrl post of
+                        Nothing -> [hsx||]
+                        Just _ -> [hsx|
+                            <img class="w-100 rounded" src={fromMaybe ("#" :: Text) (get #postImageUrl post)} style="width:100%; height: auto;"/>
+                        |]
         username = get #username post
         renderControlDropdown =
                 case currentUserOrNothing of

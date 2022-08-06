@@ -10,6 +10,7 @@ CREATE TABLE posts (
     is_big_post BOOLEAN DEFAULT false NOT NULL,
     big_post_body TEXT,
     big_post_title TEXT DEFAULT NULL,
+    post_image_url TEXT DEFAULT NULL,
     UNIQUE(user_id, created_on_day)
 );
 CREATE TABLE users (
