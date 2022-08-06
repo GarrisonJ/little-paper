@@ -1,7 +1,7 @@
 let
     ihp = builtins.fetchTarball {
-        url = "https://ihp.digitallyinduced.com/BuildTarball?userId=f0a92fe8-8d53-4e8d-9aba-c96e37ce6573&token=okrAbQRohprwDJtzwdrogtOMVvyielRT&version=a00e836ae8b0ebe36ac337fe4c7f845695011aee";
-        sha256 = "0ph261rhix775cq8n90gh0cy94m9068cbczsf2wdfa7j1575z8w6";
+        url = "https://ihp.digitallyinduced.com/BuildTarball?userId=f0a92fe8-8d53-4e8d-9aba-c96e37ce6573&token=okrAbQRohprwDJtzwdrogtOMVvyielRT&version=c1a83966083cc429f0d218bd3a43d539053af8d9";
+        sha256 = "06i6j6k1dbxl3329r1mz2bvrji16a9bazj3m8c82kg4c09q20ik4";
     };
     haskellEnv = import "${ihp}/NixSupport/default.nix" {
         ihp = ihp;
