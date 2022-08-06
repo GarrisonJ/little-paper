@@ -97,7 +97,7 @@ instance Controller PostsController where
         let theyUploadedAnImage = not $ isEmpty fileContent
 
         let postImageUploadSettings = uploadToStorageWithOptions $ def {
-            preprocess = applyImageMagick "jpg" ["-sampling-factor", "4:2:0", "-strip", "-gravity", "north", "-quality", "85", "-interlace", "JPEG" ]
+            preprocess = applyImageMagick "jpg" ["-sampling-factor", "4:2:0", "-gravity", "north", "-quality", "85", "-interlace", "JPEG" ]
         }
 
         newRecord @Post
