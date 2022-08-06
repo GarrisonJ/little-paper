@@ -341,7 +341,7 @@ renderSmallPost today isLiked post = [hsx|
                 </small>
             </div>
             <a class="text-reset" href={ShowPostAction (get #id post)}>
-                <p class="p-1 p-md-3 post-text">
+                <p class="p-2 p-md-3 post-text">
                     {get #body post}
                     {renderPostImage post}
                 </p>
