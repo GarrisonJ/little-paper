@@ -89,15 +89,22 @@ instance Controller PostsController where
 
         let isProUser = get #isPro currentUser
 
+
+        let fileContent :: Text = fileOrNothing "postImageUrl"
+                        |> fromMaybe (error "no file given")
+                        |> get #fileContent
+                        |> cs
+        let theyUploadedAnImage = not $ isEmpty fileContent
+
         let postImageUploadSettings = uploadToStorageWithOptions $ def {
-            preprocess = applyImageMagick "jpg" ["-sampling-factor 4:2:0 -gravity north -strip -quality 85 -interlace JPEG -colorspace RGB"]
+            preprocess = applyImageMagick "jpg" ["-sampling-factor", "4:2:0", "-strip", "-gravity", "north", "-quality", "85", "-interlace", "JPEG" ]
         }
 
         newRecord @Post
             |> set #userId currentUserId
             |> set #createdOnDay day
             |> set #userTimezoneSnapshot (get #timezone currentUser)
-            |> buildPost
+            |> (buildPost theyUploadedAnImage)
             |> (if (isProUser) then (postImageUploadSettings #postImageUrl) else pure)
             >>= ifValid \case
                 Left post -> do
@@ -172,11 +179,20 @@ instance Controller PostsController where
         deleteRecord post
         redirectTo $ FollowedPostsAction Nothing
 
-buildPost post = post
+buildPost theyUploadedAnImage post = post
     |> fill @'["body", "postImageUrl"]
     |> validateField #body (hasMaxLength 280
         |> withCustomErrorMessage "Post must be less than 280 characters")
-    |> validateField #body nonEmpty
+    |> validateField #body (validatePostHasEitherBodyOrImage theyUploadedAnImage)
+
+
+validatePostHasEitherBodyOrImage theyUploadedAnImage body =
+        if (body == "" && not theyUploadedAnImage)
+            then Failure "Your post is empty"
+            else Success
+
+-- (body = ""     && image is false) -- true
+-- (body is false && image is false) -- true
 
 getDailyPost :: (?modelContext :: ModelContext) => Id User -> Day -> IO (Maybe Post)
 getDailyPost userId day = query @Post

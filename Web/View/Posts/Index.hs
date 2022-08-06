@@ -83,6 +83,7 @@ instance View IndexView where
 
 renderPostForm :: Bool -> Post -> Html
 renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [hsx|
+    {validationResultMaybe #body}
     <div class="form-group" id="form-group-post_body">
         <div class="position-relative">
             <textarea type="text" name="body" rows="4" maxlength="280" placeholder="Your post" id="post_body" class="form-control post-textarea">
@@ -98,7 +99,7 @@ renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [h
     where
         renderImageUploadButton = if get #isPro currentUser
             then [hsx|
-                <a class="d-block text-muted text-center" href="#" onclick="document.getElementById('post_image_url_preview').click()">
+                <a class="d-block text-muted text-center" onclick="document.getElementById('post_image_url_preview').click()">
                     <span class="position-absolute" style="left: 5px; bottom: 5px;" id="upload-image">{imageIcon}</span>
                 </a>
                 |]
