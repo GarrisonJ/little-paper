@@ -90,7 +90,7 @@ instance Controller PostsController where
         let isProUser = get #isPro currentUser
 
         let postImageUploadSettings = uploadToStorageWithOptions $ def {
-            preprocess = applyImageMagick "jpg" "-sampling-factor 4:2:0 -strip -quality 85 -interlace JPEG -colorspace RGB"
+            preprocess = applyImageMagick "jpg" "-sampling-factor 4:2:0 -gravity north -strip -quality 85 -interlace JPEG -colorspace RGB"
         }
 
         newRecord @Post
