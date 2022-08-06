@@ -108,7 +108,7 @@ renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [h
                     <label for="post_image_url" class="mb-0" style="display: unset;">
                         <div class="text-center">
                             <img id="post_image_url_preview"
-                                  src={fromMaybe ("#" :: Text) (get #postImageUrl post)}
+                                  src={fromMaybe (oneTransparentPixel :: Text) (get #postImageUrl post)}
                                   style="min-height"
                                   onerror="this.style.display='none'"
                                   class="img-fluid mx-auto d-block rounded mt-2"
@@ -123,6 +123,7 @@ renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [h
                     </label>
             |]
             else [hsx||]
+        oneTransparentPixel = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==" :: Text
         -- render go to new post if today is Friday, Saturday, or Sunday
         renderGoToNewPostLink = if showBigPostLink
                                     then [hsx|
