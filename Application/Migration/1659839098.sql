@@ -1,4 +1,3 @@
-DROP FUNCTION ihp_user_id;
 ALTER TABLE posts ADD COLUMN blurhash_image_placeholder TEXT DEFAULT null;
 ALTER TABLE likes DROP CONSTRAINT likes_user_id_post_id_key;
 ALTER TABLE posts DROP CONSTRAINT posts_user_id_created_on_day_key;
