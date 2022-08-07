@@ -21,6 +21,10 @@ import Database.PostgreSQL.LibPQ (finish)
 import qualified Admin.View.Prelude as IHP.ViewSupport
 import Web.View.Users.FinishUserSetup
 import Web.Controller.Users
+import Codec.Picture (decodeImage, convertRGB8, imageHeight, imageWidth)
+import qualified Codec.Picture.Blurhash as BH
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.ByteString as B
 
 instance Controller PostsController where
     action PostsAction = do
@@ -89,22 +93,26 @@ instance Controller PostsController where
 
         let isProUser = get #isPro currentUser
 
-
-        let fileContent :: Text = fileOrNothing "postImageUrl"
+        let fileContent = fileOrNothing "postImageUrl"
                         |> fromMaybe (error "no file given")
                         |> get #fileContent
-                        |> cs
-        let theyUploadedAnImage = not $ isEmpty fileContent
+
+        let theyUploadedAnImage = not $ isEmpty $ (cs fileContent :: Text)
 
         let postImageUploadSettings = uploadToStorageWithOptions $ def {
             preprocess = applyImageMagick "jpg" ["-sampling-factor", "4:2:0", "-gravity", "north", "-quality", "85", "-interlace", "JPEG" ]
         }
+
+        let (height, width, blurImageStr) = generateImagePlaceholderData $ (cs fileContent :: ByteString)
 
         newRecord @Post
             |> set #userId currentUserId
             |> set #createdOnDay day
             |> set #userTimezoneSnapshot (get #timezone currentUser)
             |> (buildPost theyUploadedAnImage)
+            |> (if (theyUploadedAnImage) then (set #blurhashImagePlaceholder (cs <$> blurImageStr :: Maybe Text)) else \x -> x)
+            |> (if (theyUploadedAnImage) then (set #postImageHeight $ Just height) else \x -> x)
+            |> (if (theyUploadedAnImage) then (set #postImageWidth $ Just width) else \x -> x)
             |> (if (isProUser) then (postImageUploadSettings #postImageUrl) else pure)
             >>= ifValid \case
                 Left post -> do
@@ -284,12 +292,27 @@ showPost postId newComment = do
             today <- getUserDay $ get #timezone user
             render ShowView { .. }
 
+generateImagePlaceholderData ::  ByteString -> (Int, Int, Maybe LB.ByteString)
+generateImagePlaceholderData imageContent = (height, width, blurImage)
+    where
+        dynamicImage = decodeImage imageContent
+        (height, width) = getImageDimensions dynamicImage
+        blurImage = case dynamicImage of
+            Right dynamicImage -> rightToMaybe $ BH.encodeDynamic dynamicImage
+            Left _ -> Nothing
+
+getImageDimensions dynamicImage = (height, width)
+    where
+        convertedImage = case dynamicImage of
+            Right dynamicImage -> convertRGB8 dynamicImage
+            Left _ -> error "Could not decode image"
+        height = imageHeight convertedImage
+        width = imageWidth convertedImage
 
 checkIfFridayOrWeekend :: Day -> Bool
 checkIfFridayOrWeekend day =
     let (year, week, dayOfWeek) = toWeekDate day
     in dayOfWeek == 5 || dayOfWeek == 6 || dayOfWeek == 7
-
 
 didTheCurrentUserPostAWeekendBigPost day = do
         bigPostThisWeekendCount :: Int <- query @Post

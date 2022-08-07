@@ -11,6 +11,9 @@ CREATE TABLE posts (
     big_post_body TEXT,
     big_post_title TEXT DEFAULT NULL,
     post_image_url TEXT DEFAULT NULL,
+    blurhash_image_placeholder TEXT DEFAULT NULL,
+    post_image_height INT DEFAULT NULL,
+    post_image_width INT,
     UNIQUE(user_id, created_on_day)
 );
 CREATE TABLE users (

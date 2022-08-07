@@ -17,6 +17,7 @@ let
             string-interpolate
             ihp-oauth-google
             ihp-sentry
+            JuicyPixels-blurhash
         ];
         otherDeps = p: with p; [
             imagemagick

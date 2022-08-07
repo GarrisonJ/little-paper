@@ -5,6 +5,10 @@ import Text.XML.Unresolved (renderBuilder)
 import qualified Admin.Controller.Prelude as Data.Maybe
 import Generated.Types (Post'(bigPostTitle))
 import Web.View.Layout (wideLayout)
+import qualified Codec.Picture.Blurhash as BH
+import Codec.Picture (encodePng)
+import qualified Data.Text.Encoding as DTE
+import qualified Data.ByteString.Base64 as B64
 
 data ShowView = ShowView {
                            post :: PostWithMeta
@@ -359,8 +363,26 @@ renderSmallPost today isLiked post = [hsx|
                 case get #postImageUrl post of
                         Nothing -> [hsx||]
                         Just _ -> [hsx|
-                            <img class="w-100 rounded" src={fromMaybe ("#" :: Text) (get #postImageUrl post)} style="width:100%; height: auto;"/>
+                            <img class="w-100 rounded"
+                                height={getHeight}
+                                width={getWidth}
+                                src={fromMaybe ("#" :: Text) (get #postImageUrl post)}
+                                style={"width:100%; height: auto; background-size: cover; background-image: " ++ placeHolderBackground}
+                                 />
                         |]
+
+        placeHolderBackground = "url(data:image/png;base64," ++ (getPlaceHolder post) ++ ")"
+        getPlaceHolder :: PostWithMeta -> ByteString
+        getPlaceHolder post = case get #blurhashImagePlaceholder post of
+            Nothing -> ""
+            Just hash -> B64.encode $ cs $ fromMaybe ("") $ rightToMaybe $ fmap encodePng $ BH.decodeRGB8 $ cs hash
+
+        getWidth = cs $ show $ fromMaybe 0 (get #postImageWidth post) :: ByteString
+        getHeight = cs $ show $ fromMaybe 0 (get #postImageHeight post) :: ByteString
+
+        rightToMaybe :: Either a b -> Maybe b
+        rightToMaybe (Left _)  = Nothing
+        rightToMaybe (Right x) = Just x
         username = get #username post
         renderControlDropdown =
                 case currentUserOrNothing of

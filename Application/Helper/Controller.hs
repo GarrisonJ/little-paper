@@ -3,7 +3,8 @@ module Application.Helper.Controller (
       getUserDay,
       isUsernameChars,
       usernameMaxLength,
-      usernameMinLength
+      usernameMinLength,
+      rightToMaybe
 ) where
 
 import IHP.ControllerPrelude
@@ -28,3 +29,7 @@ usernameMaxLength :: Int
 usernameMaxLength = 15
 usernameMinLength :: Int
 usernameMinLength = 3
+
+rightToMaybe :: Either a b -> Maybe b
+rightToMaybe (Left _)  = Nothing
+rightToMaybe (Right x) = Just x

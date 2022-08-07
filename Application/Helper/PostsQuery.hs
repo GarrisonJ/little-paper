@@ -19,6 +19,9 @@ data PostWithMeta = PostWithMeta
     , bigPostBody :: Maybe Text
     , bigPostTitle :: Maybe Text
     , postImageUrl :: Maybe Text
+    , blurhashImagePlaceholder :: Maybe Text
+    , postImageHeight :: Maybe Int
+    , postImageWidth :: Maybe Int
     , username :: Text
     , pictureUrl :: Maybe Text
     , commentsCount :: Int
@@ -30,6 +33,9 @@ instance FromRow PostWithMeta where
     fromRow =
         PostWithMeta
             <$> field
+            <*> field
+            <*> field
+            <*> field
             <*> field
             <*> field
             <*> field
