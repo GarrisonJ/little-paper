@@ -90,10 +90,11 @@ instance Controller UsersController where
         user <- fetch userId
         accessDeniedUnless (get #id user == currentUserId)
 
-        let profilePictureOptions = ImageUploadOptions
-                { convertTo = "jpg"
-                , imageMagickOptions = "-resize '1024x1024^' -gravity north -extent 1024x1024 -quality 85% -strip"
-                }
+
+        let profilePictureOptions = uploadToStorageWithOptions $ def {
+            preprocess = applyImageMagick "jpg" ["-resize", "512x512^", "-gravity", "north", "-extent", "512x512", "-quality", "85%"]
+        }
+
         user
             |> fill @["timezone","bio","pictureUrl"]
             |> validateField #bio (hasMaxLength 160)
@@ -101,7 +102,7 @@ instance Controller UsersController where
             |> validateField #username (hasMinLength usernameMinLength |> withCustomErrorMessage "Your username must be atleast than 3 characters.")
             |> validateField #username isUsernameChars
             |> validateField #timezone (isInList allTimezones)
-            |> uploadToStorage #pictureUrl
+            |> profilePictureOptions #pictureUrl
             >>= validateIsUnique #email
             >>= validateIsUnique #username
             >>= ifValid \case
