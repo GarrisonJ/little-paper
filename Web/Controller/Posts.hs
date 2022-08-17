@@ -97,13 +97,13 @@ instance Controller PostsController where
                         |> fromMaybe (error "no file given")
                         |> get #fileContent
 
-        let theyUploadedAnImage = not $ isEmpty $ (cs fileContent :: Text)
+        let theyUploadedAnImage = not $ null fileContent
 
         let postImageUploadSettings = uploadToStorageWithOptions $ def {
             preprocess = applyImageMagick "jpg" ["-sampling-factor", "4:2:0", "-gravity", "north", "-quality", "85", "-interlace", "JPEG" ]
         }
 
-        let (height, width, blurImageStr) = generateImagePlaceholderData $ (cs fileContent :: ByteString)
+        let (height, width, blurImageStr) = generateImagePlaceholderData fileContent
 
         newRecord @Post
             |> set #userId currentUserId
@@ -292,10 +292,10 @@ showPost postId newComment = do
             today <- getUserDay $ get #timezone user
             render ShowView { .. }
 
-generateImagePlaceholderData ::  ByteString -> (Int, Int, Maybe LB.ByteString)
+generateImagePlaceholderData :: LB.ByteString -> (Int, Int, Maybe LB.ByteString)
 generateImagePlaceholderData imageContent = (height, width, blurImage)
     where
-        dynamicImage = decodeImage imageContent
+        dynamicImage = decodeImage $ cs imageContent
         (height, width) = getImageDimensions dynamicImage
         blurImage = case dynamicImage of
             Right dynamicImage -> rightToMaybe $ BH.encodeDynamic dynamicImage
