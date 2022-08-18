@@ -364,6 +364,7 @@ renderSmallPost today isLiked post = [hsx|
                         Nothing -> [hsx||]
                         Just _ -> [hsx|
                             <img class="w-100 rounded"
+                                loading="lazy"
                                 height={getHeight}
                                 width={getWidth}
                                 src={fromMaybe ("#" :: Text) (get #postImageUrl post)}
