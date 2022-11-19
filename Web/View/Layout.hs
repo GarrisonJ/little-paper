@@ -77,7 +77,7 @@ layout wide inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 </body>
 |]
     where
-        contentClasses = (if wide then "col-12" else "col-12 col-md-8") ++ (" pm-4" :: Text)
+        contentClasses = (if wide then "col-12" else "col-12 col-md-6") ++ (" pm-4" :: Text)
 
 topnav:: Html
 topnav = case currentUserOrNothing of
