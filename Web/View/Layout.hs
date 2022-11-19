@@ -83,12 +83,18 @@ topnav:: Html
 topnav = case currentUserOrNothing of
     Nothing -> [hsx|
     <nav class="navbar d-block sticky-top">
-        <a class="navbar-brand" href="/">Daily</a>
+        <a class="navbar-brand" href="/">
+            <img class="nav-logo" src={ assetPath "/logo.png" } />
+            Daily
+        </a>
     </nav>
     |]
     Just _ -> [hsx|
         <nav class="py-0 navbar navbar-expand navbar-light sticky-top">
-        <a class="navbar-brand" href="/">Daily</a>
+        <a class="navbar-brand" href="/">
+            <img class="nav-logo" src={ assetPath "/logo.png" } />
+            Daily
+        </a>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <div class="ml-auto">
             <a class="text-reset" href={NotificationsAction}>

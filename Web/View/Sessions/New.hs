@@ -13,7 +13,10 @@ instance View (NewView User) where
             <div class="d-flex justify-content-md-center align-items-center vh-100">
                 <div class="w-100">
                     <div style="max-width: 400px" class="mx-auto mb-5">
-                        <h1><a href="/">Daily</a></h1>
+                        <h1><a href="/">
+                            <img class="welcome-logo-sm" src={ assetPath "/logo.png" } />
+                            Daily
+                            </a></h1>
                         <h5>Please log in</h5>
                         {renderForm user}
                         <div class="text-center m-2">

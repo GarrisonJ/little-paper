@@ -11,7 +11,10 @@ instance View WelcomeView where
     html WelcomeView { .. } = placeNextToWelcomeImage
         [hsx|
         <div class="row p-3 d-flex">
-            <h1 class="display-1">Daily</h1>
+            <h1 class="display-1">
+                <img class="welcome-logo" src={ assetPath "/logo.png" } />
+                Daily
+            </h1>
             <p class="w-100">
                 A tiny social network where you post once a day
             </p>
