@@ -118,6 +118,12 @@ instance Controller PostsController where
                 Left post -> do
                     showPostIndex Nothing post
                 Right post -> do
+                    -- Check one more time if there is already a post today
+                    -- so we can return a nice error if so.
+                    dailyPost <- getDailyPost currentUserId day
+                    when (isJust dailyPost) $ do
+                        setErrorMessage "You can only have one post per day"
+                        redirectTo $ FollowedPostsAction Nothing
                     post <- post |> createRecord
                     redirectTo $ FollowedPostsAction Nothing
 
