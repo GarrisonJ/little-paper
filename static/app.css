@@ -8,9 +8,11 @@
     --dark-bg: #002b36;
     --dark-color: #eee8d5;
     --dark-code: #93a1a1;
-    --light-bg: #fffff8;
     --light-color: #111;
     --light-code: #657b83;
+
+    --light-bg-no-grad: #e0d9cb;
+    --light-bg: linear-gradient(327deg, rgba(173,160,143,1) 0%, rgba(223,213,192,1) 100%);
 }
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
@@ -71,13 +73,12 @@
     font-style: normal;
 }
 
-
-
 body {
     /* TODO: Choose a font and import properly */
     font-family: 'Poppins', sans-serif;
     background: var(--light-bg);
     color: var(--light-color);
+    background-attachment:fixed
 }
 
 #content {
@@ -108,7 +109,7 @@ a, a:hover, a:focus {
 }
 
 .yosemite-window {
-    background: #fff;
+    background: #e0d9cb;
     margin: auto;
     margin-top: 5px;
     border: 1px solid #acacac;
@@ -140,14 +141,15 @@ a, a:hover, a:focus {
     outline: none;
     resize: none;
     padding: 0.5rem;
+    background: #e0d9cb;
 }
 
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-    background: linear-gradient(0deg, rgba(53,63,215,1) 0%, rgba(55,113,255,1) 100%);
+    background-color: #252525;
 }
 
 .btn-primary:active {
-  background: rgba(53,63,215,1) !important;
+    background-color: #252525 !important;
 }
 
 .btn-primary {
@@ -228,7 +230,7 @@ button:focus {
 /************ END Sidebar ************/
 
 .navbar {
-    background: var(--light-bg);
+    background: var(--light-bg-no-grad);
 }
 
 .navbar-toggler-icon {
@@ -246,6 +248,21 @@ button:focus {
 
 .nav-tabs {
     border-bottom: none;
+}
+
+textarea {
+    background-color: inherit !important;;
+    color: inherit !important;;
+}
+
+input {
+    background-color: inherit !important;;
+    color: inherit !important;;
+}
+
+select {
+    background-color: inherit !important;;
+    color: inherit !important;;
 }
 
 /************ Profile graph ************/
@@ -270,6 +287,18 @@ button:focus {
         --light-bg: #002b36;
         --light-color: #eee8d5;
         --light-code: #93a1a1;
+    }
+
+    .navbar {
+        background: var(--light-bg);
+    }
+
+    .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+        background: linear-gradient(0deg, rgba(53,63,215,1) 0%, rgba(55,113,255,1) 100%);
+    }
+
+    .btn-primary:active {
+        background: rgba(53, 63, 215, 1) !important;
     }
 
     #continue-with-google {
