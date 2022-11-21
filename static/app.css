@@ -238,7 +238,6 @@ button:focus {
 .navbar-brand {
     color: var(--light-color) !important;
     z-index: 1; /* Something is in front of the logo, so it's unclickable */
-    margin-right: -5%; /* Removing margin so notification icon is center*/
 }
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {

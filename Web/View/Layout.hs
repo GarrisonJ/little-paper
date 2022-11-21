@@ -90,34 +90,35 @@ topnav = case currentUserOrNothing of
     </nav>
     |]
     Just _ -> [hsx|
-        <nav class="py-0 navbar navbar-expand navbar-light sticky-top">
-        <a class="navbar-brand" href="/">
-            <img class="nav-logo" src={ assetPath "/logo.png" } />
-            Daily
-        </a>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <div class="ml-auto">
-            <a class="text-reset" href={NotificationsAction}>
-                {bellIcon notficationCount}
+        <nav class="py-0 navbar navbar-expand navbar-light sticky-top nav-fill">
+            <a class="navbar-brand ml-auto" href="/">
+                <img class="nav-logo" src={ assetPath "/logo.png" } />
+                Daily
             </a>
-        </div>
-            <ul class="nav navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <div class="btn-group dropleft">
-                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Menu
+            <div class="nav-item ml-auto">
+                <a class="text-reset" href={NotificationsAction}>
+                    {bellIcon notficationCount}
                 </a>
-                <div class="dropdown-menu">
-                    <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
-                    <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
-                    <a class="nav-link" href={UsersAction}>Find People</a>
-                    <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
-                    <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
-                </div>
-                </div>
-            </li>
-            </ul>
-        </div>
+            </div>
+            <div class="nav-item collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="nav navbar-nav ml-auto">
+                    <div class="header-spacer" style="width: 38px;"></div>
+                    <li class="nav-item dropdown">
+                        <div class="btn-group dropleft">
+                        <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="nav-link" href={FollowedPostsAction Nothing}>Home</a>
+                            <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
+                            <a class="nav-link" href={UsersAction}>Find People</a>
+                            <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
+                            <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+                        </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </nav>
 |]
 
