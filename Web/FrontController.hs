@@ -42,8 +42,17 @@ instance InitControllerContext WebApplication where
         setLayout defaultLayout
         initAutoRefresh
         initAuthentication @User
+        checkUserIsNotBlocked
         setTitle "Daily"
         initNotficationContext
+
+
+-- Check that the user is not blocked
+checkUserIsNotBlocked :: (?context :: ControllerContext, ?modelContext :: ModelContext) => IO ()
+checkUserIsNotBlocked = case currentUserOrNothing of
+        Just currentUser -> do
+            unless (not $ isBlocked currentUser) $ logout currentUser
+        Nothing -> pure ()
 
 -- Get notfication count for current user
 initNotficationContext :: (?context :: ControllerContext, ?modelContext :: ModelContext) => IO ()

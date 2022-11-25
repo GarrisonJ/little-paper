@@ -32,7 +32,8 @@ CREATE TABLE users (
     bio TEXT DEFAULT '' NOT NULL,
     google_user_id TEXT,
     is_setup BOOLEAN DEFAULT false NOT NULL,
-    is_pro BOOLEAN DEFAULT false NOT NULL
+    is_pro BOOLEAN DEFAULT false NOT NULL,
+    is_blocked BOOLEAN DEFAULT false NOT NULL
 );
 CREATE INDEX posts_user_id_index ON posts (user_id);
 CREATE TABLE user_follows (

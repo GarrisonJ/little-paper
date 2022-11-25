@@ -95,6 +95,7 @@ singlePostQuery = [i|
     INNER JOIN users
         ON posts.user_id = users.id 
     WHERE users.is_confirmed = true 
+        AND users.is_blocked = false
         AND users.is_setup = true
         AND posts.id = ? 
 |]
@@ -113,6 +114,7 @@ bigPostQuery pageSize skip userId = [i|
         ON posts.user_id = users.id 
     WHERE users.is_confirmed = true 
         AND users.is_setup = true 
+        AND users.is_blocked = false
         AND user_follows.follower_id = '#{userId}'
     ORDER BY created_on DESC 
     LIMIT #{pageSize} 
@@ -131,6 +133,7 @@ profileQuery userId = [i|
     ON posts.user_id = users.id 
     WHERE users.is_confirmed = true 
         AND users.is_setup = true 
+        AND users.is_blocked = false
         AND posts.user_id = '#{userId}'
     ORDER BY created_on DESC 
 |]

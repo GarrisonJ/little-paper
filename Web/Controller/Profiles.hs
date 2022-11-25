@@ -18,6 +18,7 @@ instance Controller ProfilesController where
                         user <- query @User
                                     |> filterWhere (#isConfirmed, True)
                                     |> filterWhere (#isSetup, True)
+                                    |> filterWhere (#isBlocked, False)
                                     |> filterWhere (#username, username)
                                     |> fetchOneOrNothing
                         case user of
