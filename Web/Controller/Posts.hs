@@ -113,7 +113,7 @@ instance Controller PostsController where
             |> (if (theyUploadedAnImage) then (set #blurhashImagePlaceholder (cs <$> blurImageStr :: Maybe Text)) else \x -> x)
             |> (if (theyUploadedAnImage) then (set #postImageHeight $ Just height) else \x -> x)
             |> (if (theyUploadedAnImage) then (set #postImageWidth $ Just width) else \x -> x)
-            |> (if (isProUser) then (postImageUploadSettings #postImageUrl) else pure)
+            |> postImageUploadSettings #postImageUrl
             >>= ifValid \case
                 Left post -> do
                     showPostIndex Nothing post

@@ -97,15 +97,12 @@ renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [h
     {renderGoToNewPostLink}
 |]
     where
-        renderImageUploadButton = if get #isPro currentUser
-            then [hsx|
+        renderImageUploadButton = [hsx|
                 <a class="d-block text-muted text-center" onclick="document.getElementById('post_image_url_preview').click()">
                     <span class="position-absolute" style="left: 5px; bottom: 5px;" id="upload-image">{imageIcon}</span>
                 </a>
                 |]
-            else [hsx||]
-        renderImagePreview = if get #isPro currentUser
-            then [hsx|
+        renderImagePreview = [hsx|
                     <label for="post_image_url" class="mb-0" style="display: unset;">
                         <div class="text-center">
                             <img id="post_image_url_preview"
@@ -123,7 +120,6 @@ renderPostForm showBigPostLink post = formForWithOptions post postFormOptions [h
                                data-preview="#post_image_url_preview"/>
                     </label>
             |]
-            else [hsx||]
         -- render go to new post if today is Friday, Saturday, or Sunday
         renderGoToNewPostLink = if showBigPostLink
                                     then [hsx|
