@@ -16,7 +16,7 @@ instance View WelcomeView where
                 Daily
             </h1>
             <p class="w-100">
-                A social network where you post once a day
+                A social network where you can post once a day
             </p>
         </div>
         {renderLoginIfNotFull lockUserCreation}
