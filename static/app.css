@@ -4,15 +4,13 @@
     --steel-blue: #527da4ff;
     --dark-purple: #2f131eff;
 
-
     --dark-bg: #002b36;
     --dark-color: #eee8d5;
     --dark-code: #93a1a1;
-    --light-color: #111;
-    --light-code: #657b83;
 
-    --light-bg-no-grad: #e0d9cb;
-    --light-bg: linear-gradient(327deg, rgba(173,160,143,1) 0%, rgba(223,213,192,1) 100%);
+    --light-bg: #002b36;
+    --light-color: #eee8d5;
+    --light-code: #93a1a1;
 }
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
@@ -109,12 +107,12 @@ a, a:hover, a:focus {
 }
 
 .yosemite-window {
-    background: #e0d9cb;
+    background: #004252;
     margin: auto;
     margin-top: 5px;
-    border: 1px solid #acacac;
+    border: none;
     border-radius: 11px;
-    box-shadow: 0px 0px 10px #acacac;
+    box-shadow: none;
 }
 
 .bg-body{
@@ -145,11 +143,11 @@ a, a:hover, a:focus {
 }
 
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-    background-color: #252525;
+    background: linear-gradient(0deg, rgba(53,63,215,1) 0%, rgba(55,113,255,1) 100%);
 }
 
 .btn-primary:active {
-    background-color: #252525 !important;
+    background: rgba(53, 63, 215, 1) !important;
 }
 
 .btn-primary {
@@ -177,7 +175,6 @@ button:focus {
 .form-control.edit-text-area {
     height: 150px;
 }
-
 
 /************ Logo ************/
 .welcome-logo {
@@ -230,11 +227,12 @@ button:focus {
 /************ END Sidebar ************/
 
 .navbar {
-    background: var(--light-bg-no-grad);
+    background: var(--light-bg);
 }
 
 .navbar-toggler-icon {
     width: 50px;
+    color: var(--light-color) !important;
 }
 
 .navbar-brand {
@@ -244,6 +242,14 @@ button:focus {
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
     background: inherit;
+}
+
+.nav-link {
+    color: var(--light-color) !important;
+}
+
+.dropdown-menu {
+    background: #004252;
 }
 
 .nav-tabs {
@@ -261,8 +267,8 @@ input {
 }
 
 select {
-    background-color: inherit !important;;
-    color: inherit !important;;
+    background-color: inherit !important;
+    color: inherit !important;
 }
 
 /************ Profile graph ************/
@@ -279,72 +285,6 @@ select {
     grid-gap: 2px;
 }
 
-
-/************ Dark mode ************/
-@media (prefers-color-scheme: dark) {
-    /* rename these colors so they aren't light/dark */
-    :root {
-        --light-bg: #002b36;
-        --light-color: #eee8d5;
-        --light-code: #93a1a1;
-    }
-
-    .navbar {
-        background: var(--light-bg);
-    }
-
-    .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-        background: linear-gradient(0deg, rgba(53,63,215,1) 0%, rgba(55,113,255,1) 100%);
-    }
-
-    .btn-primary:active {
-        background: rgba(53, 63, 215, 1) !important;
-    }
-
-    #continue-with-google {
-        background-color: var(--light-bg);
-
-    }
-
-    textarea {
-        background-color: inherit !important;;
-        color: inherit !important;;
-    }
-
-    input {
-        background-color: inherit !important;;
-        color: inherit !important;;
-    }
-
-    select {
-        background-color: inherit !important;;
-        color: inherit !important;;
-    }
-
-    .nav-link {
-        color: var(--light-color) !important;
-    }
-
-    .navbar-toggler-icon {
-        color: var(--light-color) !important;
-    }
-
-    .dropdown-menu {
-        background: #004252;
-    }
-
-    .yosemite-window {
-        background: #004252;
-        border: none;
-        box-shadow: none;
-    }
-
-    /* This sets the background of the dropdown on the text editor  */
-    .ql-picker-options {
-        background-color: var(--light-bg) !important;
-    }
-}
-
 .ql-toolbar .ql-stroke {
     fill: none;
     stroke: var(--light-color);
@@ -355,6 +295,10 @@ select {
     stroke: none;
 }
 
+/* This sets the background of the dropdown on the text editor  */
+.ql-picker-options {
+    background-color: var(--light-bg) !important;
+}
 
 .ql-toolbar .ql-picker {
     color: var(--light-color);
@@ -364,7 +308,6 @@ select {
     color: var(--manatee);
 }
 
-
 .ql-editor {
     resize: vertical;
     overflow-y: scroll;
@@ -373,5 +316,4 @@ select {
 .ql-container {
     resize: vertical;
     overflow-y: scroll;
-  }
-  
+}
