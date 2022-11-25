@@ -61,6 +61,12 @@ renderForm user = formFor user [hsx|
         {(textField #username) { disableLabel=True, disableGroup=True, placeholder="Username" }}
     </div>
     {(hiddenField #timezone)}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="termsOfService" required="required">
+        <label class="form-check-label" for="termsOfService">
+            I agree to the <a  target="_blank" href={urlTo TermsAction}>terms of service</a>
+        </label>
+    </div>
     <div class="d-grid mx-auto">
         {submitButton {label="Signup", buttonClass="btn rainbow-button"}}
     </div>
