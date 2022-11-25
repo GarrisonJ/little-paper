@@ -245,7 +245,7 @@ renderComment user comment = [hsx|
                     {kebabHorizontal}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item js-delete text-muted" href={DeleteCommentAction (get #id comment)}>Delete</a>
+                    <a class="dropdown-item js-delete" href={DeleteCommentAction (get #id comment)}>Delete</a>
                 </div>
             </div>
         |]
@@ -313,7 +313,7 @@ renderBigPost today isLiked post = [hsx|
                     {kebabHorizontal}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
+                    <a class="dropdown-item js-delete" href={DeletePostAction (get #id post)}>Delete</a>
                 </div>
             </div>
         |]
@@ -397,7 +397,7 @@ renderSmallPost today isLiked post = [hsx|
                     {kebabHorizontal}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item js-delete text-muted" href={DeletePostAction (get #id post)}>Delete</a>
+                    <a class="dropdown-item js-delete" href={DeletePostAction (get #id post)}>Delete</a>
                 </div>
             </div>
         |]

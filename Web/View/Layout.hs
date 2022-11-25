@@ -8,6 +8,7 @@ import Generated.Types
 import IHP.Controller.RequestContext
 import Web.Types
 import Web.Routes
+import Application.Helper.View(safariUploadIcon, safariPlusSquareIcon)
 
 welcomePageLayout :: Html -> Html
 welcomePageLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
@@ -113,6 +114,7 @@ topnav = case currentUserOrNothing of
                             <a class="nav-link" href={ShowProfileAction (get #username currentUser)}>Profile</a>
                             <a class="nav-link" href={UsersAction}>Find People</a>
                             <a class="nav-link" href={EditCurrentUserAction}>Settings</a>
+                            <a class="nav-link installAppModalLink" data-toggle="modal" data-target="#installAppModal">Install iOS App</a>
                             <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
                         </div>
                         </div>
@@ -120,6 +122,34 @@ topnav = case currentUserOrNothing of
                 </ul>
             </div>
         </nav>
+        {installIosAppModal}
+|]
+
+installIosAppModal = [hsx|
+    <div class="modal fade" id="installAppModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Install iOS App</h5>
+                    <button type="button" class="close close-x-icon" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <ul class="list-group">
+                                <li class="list-group-item">Open Daily in Safari, Tap {safariUploadIcon}</li>
+                                <li class="list-group-item">Tap <b>Add to Home Screen</b> {safariPlusSquareIcon}</li>
+                                <li class="list-group-item">Enjoy!</li>
+                                <li class="list-group-item"> <img class="rounded w-100" src="./app.jpg" /></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 |]
 
 notficationCount :: (?context :: ControllerContext) => Int

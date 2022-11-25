@@ -115,6 +115,24 @@ a, a:hover, a:focus {
     box-shadow: none;
 }
 
+.modal-content {
+    background: var(--light-bg);
+}
+
+.close-x-icon {
+    color: var(--light-color);
+    text-shadow: none;
+    opacity: 1;
+}
+
+.close-x-icon:hover {
+    color: var(--light-color);
+}
+
+.installAppModalLink {
+    cursor: pointer;
+}
+
 .bg-body{
     background: var(--light-bg) !important;
 }
