@@ -1,9 +1,14 @@
 module Web.Controller.Static where
 import Web.Controller.Prelude
 import Web.View.Static.Welcome
+import Web.View.Static.Terms
+import Web.View.Static.PrivacyPolicy
 import Web.View.Users.FinishUserSetup
 
 instance Controller StaticController where
+    action TermsAction = render TermsView
+    action PrivacyPolicyAction = render PrivacyPolicyView
+
     action WelcomeAction = do
         case currentUserOrNothing of
             Nothing -> do

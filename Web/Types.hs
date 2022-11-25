@@ -7,7 +7,11 @@ import IHP.LoginSupport.Types
 
 data WebApplication = WebApplication deriving (Eq, Show)
 
-data StaticController = WelcomeAction deriving (Eq, Show, Data)
+data StaticController
+    = WelcomeAction
+    | TermsAction
+    | PrivacyPolicyAction
+    deriving (Eq, Show, Data)
 
 newtype NotficationCount = NotficationCount Int
 
