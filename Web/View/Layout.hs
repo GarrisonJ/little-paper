@@ -142,7 +142,7 @@ installIosAppModal = [hsx|
                                 <li class="list-group-item">Open Daily in Safari, Tap {safariUploadIcon}</li>
                                 <li class="list-group-item">Tap <b>Add to Home Screen</b> {safariPlusSquareIcon}</li>
                                 <li class="list-group-item">Enjoy!</li>
-                                <li class="list-group-item"> <img class="rounded w-100" src="./app.jpg" /></li>
+                                <li class="list-group-item"> <img class="rounded w-100" src="/app.jpg" /></li>
                             </ul>
                         </div>
                     </div>
