@@ -96,8 +96,8 @@ instance View ShowView where
             renderBigPostBody = case get #bigPostBody post of
                 Nothing -> [hsx||]
                 Just body -> [hsx|
-                            <div class="d-flex yosemite-window col-12 col-md-11">
-                                <div class="w-100 p-4 ql-editor">
+                            <div class="d-flex yosemite-window p-1 p-md-2 col-12 col-md-11">
+                                <div class="w-100 pl-0 pr-0 p-sm-3 ql-editor">
                                     {preEscapedToHtml body}
                                 </div>
                             </div>
