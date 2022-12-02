@@ -161,11 +161,15 @@ a, a:hover, a:focus {
 }
 
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-    background: linear-gradient(0deg, rgba(53,63,215,1) 0%, rgba(55,113,255,1) 100%);
+    background: #026B84;
 }
 
 .btn-primary:active {
-    background: rgba(53, 63, 215, 1) !important;
+    background: #026B84 !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #026B84;
 }
 
 .btn-primary {
