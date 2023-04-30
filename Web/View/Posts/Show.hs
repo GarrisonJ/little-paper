@@ -1,4 +1,5 @@
 module Web.View.Posts.Show where
+
 import Web.View.Prelude
 import Application.Helper.PostsQuery
 import Text.XML.Unresolved (renderBuilder)

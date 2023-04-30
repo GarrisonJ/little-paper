@@ -1,5 +1,7 @@
 module Application.Helper.View where
 
+import Codec.Picture.Blurhash
+
 import IHP.ViewPrelude
 
 -- Here you can add functions which are available in all your views

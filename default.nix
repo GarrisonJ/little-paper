@@ -1,7 +1,7 @@
 let
     ihp = builtins.fetchTarball {
-        url = "https://ihp.digitallyinduced.com/BuildTarball?userId=f0a92fe8-8d53-4e8d-9aba-c96e37ce6573&token=okrAbQRohprwDJtzwdrogtOMVvyielRT&version=c1a83966083cc429f0d218bd3a43d539053af8d9";
-        sha256 = "06i6j6k1dbxl3329r1mz2bvrji16a9bazj3m8c82kg4c09q20ik4";
+        url = "https://ihp.digitallyinduced.com/BuildTarball?userId=f0a92fe8-8d53-4e8d-9aba-c96e37ce6573&token=okrAbQRohprwDJtzwdrogtOMVvyielRT&version=e378330edf00bdfd804d23db05b9bc7756dffd3e";
+        sha256 = "0q1w7kclyr73a9m7scxsa5k5jl3a08q122fxi91rgsbczaq227l2";
     };
     haskellEnv = import "${ihp}/NixSupport/default.nix" {
         ihp = ihp;
@@ -17,7 +17,7 @@ let
             string-interpolate
             ihp-oauth-google
             ihp-sentry
-            JuicyPixels-blurhash
+            JuicyPixels
         ];
         otherDeps = p: with p; [
             imagemagick

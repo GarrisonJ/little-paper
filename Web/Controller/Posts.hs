@@ -14,7 +14,6 @@ import Application.Helper.PostsQuery
 import Admin.Controller.Prelude (Post'(bigPostTitle))
 import IHP.Controller.Redirect (redirectBack)
 import Text.HTML.SanitizeXSS (sanitizeBalance)
-import Protolude (isJust)
 import Data.Time.Calendar.WeekDate
 import IHP.ControllerPrelude (validateField)
 import Database.PostgreSQL.LibPQ (finish)
