@@ -12,7 +12,7 @@
   nix.settings.trusted-public-keys = [
     "digitallyinduced.cachix.org-1:y+wQvrnxQ+PdEsCt91rmvv39qRCYzEgGQaldK26hCKE="
   ];
-  swapDevices = [{ device = "/swapfile"; size = 4096; }];
+  swapDevices = [{ device = "/swapfile"; size = 8192; }];
 
   # Add system-level packages for your server here
   environment.systemPackages = with pkgs; [
