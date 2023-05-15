@@ -27,8 +27,8 @@ in
   };
   services.nginx.virtualHosts = {
     # you can switch out "localhost" with a custom domain name
-    "localhost" = {
-      serverAliases = [ ];
+   "daily.computer" = {
+      serverAliases = [ "www.daily.computer" ];
       enableACME = httpsEnabled;
       forceSSL = httpsEnabled;
       locations = {
