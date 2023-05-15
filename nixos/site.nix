@@ -3,7 +3,7 @@ let
   ihpApp = import ../.;
   # TODO: Enable SSL/HTTPS when your domain records are hooked up
   # By enabling SSL, you accept the terms and conditions of LetsEncrypt
-  httpsEnabled = false;
+  httpsEnabled = true;
   jobsEnabled = false;
 in
 {
