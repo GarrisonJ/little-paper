@@ -20,7 +20,7 @@ import IHP.Log.Types
 
 config :: ConfigBuilder
 config = do
-    option Development
+    option Production
     option (AppHostname "www.daily.computer")
 
     initSentry "https://6d6350e9bbb949cc93e1c4c12589db87@o1014737.ingest.sentry.io/5979975"
