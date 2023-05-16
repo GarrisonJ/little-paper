@@ -21,7 +21,7 @@ import IHP.Log.Types
 config :: ConfigBuilder
 config = do
     option Development
-    option (AppHostname "localhost")
+    option (AppHostname "www.daily.computer")
 
     initSentry "https://6d6350e9bbb949cc93e1c4c12589db87@o1014737.ingest.sentry.io/5979975"
 
@@ -32,12 +32,11 @@ config = do
     option logger
 
     initGoogleOAuth
-
+    --initStaticDirStorage
     initS3Storage "us-west-2" "little-paper-dev"
 
     -- other options here, then add:
 
-  {-
     awsSesAccessKey <- liftIO $ fromString <$> System.Environment.getEnv "IHP_AWS_SES_ACCESS_KEY"
     awsSesSecretKey <- liftIO $ fromString <$> System.Environment.getEnv "IHP_AWS_SES_SECRET_KEY"
     option $ SES
@@ -45,4 +44,4 @@ config = do
         , secretKey = awsSesSecretKey
         , region = "us-west-2" -- YOUR REGION
         }
-  -}
+  
