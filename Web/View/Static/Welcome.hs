@@ -81,4 +81,4 @@ loginWithGoogle = [hsx|
     <script src="https://accounts.google.com/gsi/client"></script>
 |]
     where
-        googleClientId :: Text = "320597488038-48jb9rncvt1mcal20fp559tm8775p63j"
+        googleClientId :: Text = "320597488038-48jb9rncvt1mcal20fp559tm8775p63j.apps.googleusercontent.com"
