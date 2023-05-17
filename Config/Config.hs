@@ -33,7 +33,7 @@ config = do
 
     initGoogleOAuth
     --initStaticDirStorage
-    initS3Storage "us-west-2" "little-paper-dev"
+    initS3Storage "us-west-2" "little-paper"
 
     -- other options here, then add:
 
