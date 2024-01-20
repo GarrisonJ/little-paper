@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - curl -L https://nixos.org/nix/install | sh
+  pre_build:
+    commands:
+      - echo "hello"
+      
+  build:
+    commands:
+      - ls -l
